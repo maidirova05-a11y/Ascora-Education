@@ -32,7 +32,7 @@ export default function EnrollModal({ camp, onClose }) {
   }
 
   return (
-    <div className="modal-overlay" onClick={(e) => e.target === e.currentTarget && onClose()}>
+    <div className="modal-overlay open" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal-box">
         <button className="modal-close" onClick={onClose}>✕</button>
         <h3 className="modal-title">{t('enroll.title')}</h3>
