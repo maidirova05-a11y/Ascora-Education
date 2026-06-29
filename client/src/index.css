@@ -1,4 +1,8 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+/* Казахский язык — Noto Sans вместо декоративных шрифтов */
+:lang(kk) body,:lang(kk) p,:lang(kk) span,:lang(kk) div,:lang(kk) a,:lang(kk) button,:lang(kk) input,:lang(kk) textarea,:lang(kk) label{font-family:'Noto Sans',sans-serif!important}
+:lang(kk) h1,:lang(kk) h2,:lang(kk) h3,:lang(kk) h4{font-family:'Noto Sans',sans-serif!important;letter-spacing:-0.5px}
+:lang(kk) .about-quote,:lang(kk) .hero-stat-num,:lang(kk) .modal-title,:lang(kk) .section-label{font-family:'Noto Sans',sans-serif!important;font-style:normal}
 :root{
   --navy:#0A1628;--navy-mid:#13243D;--navy-light:#1E3554;
   --gold:#C9A84C;--gold-light:#DDBC6E;--gold-pale:#F5EDD4;--gold-ultra:#FAF6EA;
