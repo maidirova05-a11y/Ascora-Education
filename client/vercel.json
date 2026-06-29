@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "RENDER_URL_PLACEHOLDER/api/:path*"
+      "destination": "https://ascora-education.on-forge.com/api/:path*"
     },
     {
       "source": "/(.*)",
