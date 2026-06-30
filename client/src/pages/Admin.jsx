@@ -26,6 +26,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
   const [expanded, setExpanded] = useState(null);
+  const [confirmDelete, setConfirmDelete] = useState(null);
 
   const fetchInquiries = useCallback(async () => {
     if (!token) return;
@@ -73,6 +74,42 @@ export default function Admin() {
   }
 
   function logout() { setToken(''); localStorage.removeItem('ascora_admin_token'); }
+
+  async function deleteInquiry(id) {
+    await fetch(`/api/admin/inquiries/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    setConfirmDelete(null);
+    fetchInquiries();
+  }
+
+  function exportToExcel() {
+    const BOM = '﻿';
+    const headers = ['#', 'Дата', 'Имя', 'Телефон', 'Email', 'Программа', 'Цена ($)', 'Язык', 'Сообщение', 'Статус'];
+    const rows = inquiries.map(inq => [
+      inq.id,
+      new Date(inq.created_at).toLocaleString('ru-RU'),
+      inq.name,
+      inq.phone,
+      inq.email || '',
+      inq.camp_name || '',
+      inq.camp_price || '',
+      (inq.lang || 'ru').toUpperCase(),
+      inq.message || '',
+      STATUS[inq.status]?.label || inq.status,
+    ]);
+    const csv = BOM + [headers, ...rows]
+      .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';'))
+      .join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `ascora-zajavki-${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   const counts = Object.fromEntries(Object.keys(STATUS).map(s => [s, inquiries.filter(i => i.status === s).length]));
 
@@ -146,10 +183,16 @@ export default function Admin() {
             <div className="adm-page-title">Заявки</div>
             <div className="adm-page-sub">Управление входящими обращениями</div>
           </div>
-          <button className="adm-refresh" onClick={fetchInquiries}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15"/></svg>
-            Обновить
-          </button>
+          <div style={{ display: 'flex', gap: 10 }}>
+            <button className="adm-refresh" onClick={exportToExcel} title="Скачать Excel">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              Excel
+            </button>
+            <button className="adm-refresh" onClick={fetchInquiries}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15"/></svg>
+              Обновить
+            </button>
+          </div>
         </div>
 
         {/* Stats */}
@@ -198,6 +241,7 @@ export default function Admin() {
                     <th>Контакты</th>
                     <th>Программа</th>
                     <th>Статус</th>
+                    <th></th>
                   </tr>
                 </thead>
                 <tbody>
@@ -233,10 +277,22 @@ export default function Admin() {
                             ))}
                           </select>
                         </td>
+                        <td className="adm-td-del" onClick={e => e.stopPropagation()}>
+                          {confirmDelete === inq.id ? (
+                            <div className="adm-del-confirm">
+                              <button className="adm-del-yes" onClick={() => deleteInquiry(inq.id)}>Да</button>
+                              <button className="adm-del-no" onClick={() => setConfirmDelete(null)}>Нет</button>
+                            </div>
+                          ) : (
+                            <button className="adm-del-btn" onClick={() => setConfirmDelete(inq.id)} title="Удалить">
+                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="15" height="15"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                            </button>
+                          )}
+                        </td>
                       </tr>
                       {expanded === inq.id && inq.message && (
                         <tr className="adm-expand-row" key={`${inq.id}-expand`}>
-                          <td colSpan={6}>
+                          <td colSpan={7}>
                             <div className="adm-expand">
                               <strong>Сообщение:</strong> {inq.message}
                             </div>
