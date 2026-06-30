@@ -14,6 +14,8 @@ app.use(helmet());
 // ── CORS: разрешаем только наш домен ────────────────────────────────────────
 const allowedOrigins = [
   process.env.CLIENT_URL,
+  'https://ascora.education',
+  'https://www.ascora.education',
   'http://localhost:5173',
   'http://localhost:5175',
 ].filter(Boolean);
