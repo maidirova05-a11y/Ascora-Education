@@ -2,10 +2,14 @@ const { google } = require('googleapis');
 
 const SHEET_ID = '1hLsIK8NPMZ_Gh5eXnxjAVXpWpn8-Ysck1GDhl8FO4Y4';
 
+const rawKey = process.env.GOOGLE_PRIVATE_KEY_B64
+  ? Buffer.from(process.env.GOOGLE_PRIVATE_KEY_B64, 'base64').toString('utf8')
+  : (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
+
 const auth = new google.auth.GoogleAuth({
   credentials: {
     client_email: process.env.GOOGLE_CLIENT_EMAIL,
-    private_key: (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n'),
+    private_key: rawKey,
   },
   scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
