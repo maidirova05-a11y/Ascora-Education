@@ -58,4 +58,26 @@ async function appendInquiry(inq) {
   }
 }
 
-module.exports = { appendInquiry, initSheet };
+async function updateInquiryStatus(id, status) {
+  try {
+    const sheets = google.sheets({ version: 'v4', auth });
+    const res = await sheets.spreadsheets.values.get({
+      spreadsheetId: SHEET_ID,
+      range: 'A:A',
+    });
+    const rows = res.data.values || [];
+    const rowIndex = rows.findIndex(r => String(r[0]) === String(id));
+    if (rowIndex === -1) return;
+    const statusLabels = { new: 'Новая', contacted: 'Связались', enrolled: 'Записан', cancelled: 'Отменена' };
+    await sheets.spreadsheets.values.update({
+      spreadsheetId: SHEET_ID,
+      range: `J${rowIndex + 1}`,
+      valueInputOption: 'RAW',
+      resource: { values: [[statusLabels[status] || status]] },
+    });
+  } catch (err) {
+    console.error('Sheets updateStatus error:', err.message);
+  }
+}
+
+module.exports = { appendInquiry, initSheet, updateInquiryStatus };

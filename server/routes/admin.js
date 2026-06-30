@@ -3,6 +3,7 @@ const db = require('../db');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const requireAuth = require('../middleware/auth');
+const { updateInquiryStatus } = require('../sheets');
 
 router.post('/login', async (req, res) => {
   const { username, password } = req.body;
@@ -51,6 +52,7 @@ router.patch('/inquiries/:id', requireAuth, async (req, res) => {
   if (!allowed.includes(status)) return res.status(400).json({ error: 'Invalid status' });
   try {
     await db.query('UPDATE inquiries SET status=$1 WHERE id=$2', [status, req.params.id]);
+    updateInquiryStatus(req.params.id, status);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: 'Database error' });
