@@ -58,7 +58,7 @@ h2 em{font-style:italic;color:var(--gold);font-size:122%;font-weight:700;line-he
 
 /* HERO */
 #hero{position:relative;display:flex;flex-direction:column;align-items:stretch;overflow:visible;background:#0B1929}
-.hero-bg{position:absolute;inset:0;background:linear-gradient(rgba(8,18,36,0.72) 0%,rgba(8,18,36,0.78) 40%,rgba(8,18,36,0.78) 65%,rgba(8,18,36,0.75) 100%),url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&q=90&fit=crop&auto=format') center 30%/cover no-repeat;z-index:0}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(rgba(8,18,36,0.72) 0%,rgba(8,18,36,0.78) 40%,rgba(8,18,36,0.78) 65%,rgba(8,18,36,0.75) 100%),url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80&fit=crop&auto=format') center 30%/cover no-repeat;z-index:0}
 .hero-bg::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 50% 65% at 78% 52%,rgba(201,168,76,0.06) 0%,transparent 65%)}
 .hero-content{position:relative;z-index:2;max-width:900px;width:100%;margin:0 auto;padding:80px 6% 0;display:grid;grid-template-columns:1fr;gap:48px;align-items:start}
 .hero-eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:40px}

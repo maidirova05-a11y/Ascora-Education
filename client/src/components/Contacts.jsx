@@ -115,8 +115,8 @@ export default function Contacts() {
                     <input type="email" placeholder="your@email.com" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                   </div>
                   <div className="form-group">
-                    <label>{t('form.topic.label')}</label>
-                    <select value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })}>
+                    <label htmlFor="topic-select">{t('form.topic.label')}</label>
+                    <select id="topic-select" value={form.topic} onChange={(e) => setForm({ ...form, topic: e.target.value })}>
                       <option value="">{t('form.topic.choose')}</option>
                       {OPTS.map((k) => <option key={k} value={t(k)}>{t(k)}</option>)}
                     </select>
