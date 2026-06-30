@@ -84,7 +84,7 @@ setInterval(async () => {
 // ── Маршруты ─────────────────────────────────────────────────────────────────
 app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/admin', require('./routes/admin'));
-app.get('/api/health', (_req, res) => res.json({ ok: true }));
+app.get('/api/health', (_req, res) => res.json({ ok: true, build: 'autodeploy-1' }));
 
 // ── Статика для продакшна ─────────────────────────────────────────────────────
 if (process.env.NODE_ENV === 'production') {
