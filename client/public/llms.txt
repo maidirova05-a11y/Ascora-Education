@@ -9,11 +9,13 @@ ASCORA Education — агентство зарубежного образова�
 - Языковые и спортивные программы для детей от 7 до 17 лет
 - Полное сопровождение — от выбора вуза до получения визы
 
-## Контакты
-
-- Сайт: https://ascora-education.vercel.app
-- Email: info@ascora.kz
-
-## О компании
+## Статистика
 
 Более 300 выпускников, 20+ стран партнёров, 95% успешных поступлений, 10 программ на выбор.
+
+## Ссылки
+
+- [Главная страница](https://ascora-education.vercel.app)
+- [Летние лагеря](https://ascora-education.vercel.app/#camps)
+- [Обучение за рубежом](https://ascora-education.vercel.app/#education)
+- [Контакты](https://ascora-education.vercel.app/#contacts)

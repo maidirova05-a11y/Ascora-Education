@@ -47,7 +47,7 @@ export default function News() {
               <div className="news-card-img" style={{ backgroundImage: `url('${item.img}')` }} />
               <div style={{ padding: '20px 22px' }}>
                 <span className="news-tag">{t(item.tagKey)}</span>
-                <h4>{t(`news.${item.key}.h`)}</h4>
+                <h3>{t(`news.${item.key}.h`)}</h3>
                 <p>{t(`news.${item.key}.p`)}</p>
                 <div className="news-date">{item.date}</div>
               </div>
