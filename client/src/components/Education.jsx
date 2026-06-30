@@ -18,11 +18,11 @@ const StarIcon = () => (
 );
 
 const DEST_BIG = [
-  { name: 'Великобритания', unis: 'Oxford · Cambridge · UCL · LSE · Imperial · King\'s', img: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1200&q=80&fit=crop&auto=format', large: true },
-  { name: 'США', unis: 'MIT · NYU · Columbia · UCLA', img: 'https://images.unsplash.com/photo-1543716091-a840c05249ec?w=800&q=80&fit=crop&auto=format' },
-  { name: 'Германия', unis: 'TU Munich · LMU · Heidelberg', img: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=800&q=80&fit=crop&auto=format' },
-  { name: 'Канада', unis: 'UofT · UBC · McGill · Waterloo', img: 'https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=800&q=80&fit=crop&auto=format' },
-  { name: 'ОАЭ', unis: 'AUS · Sorbonne AD · NYUAD', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80&fit=crop&auto=format' },
+  { name: 'Великобритания', unis: 'Oxford · Cambridge · UCL · LSE · Imperial · King\'s', img: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=500&q=70&fit=crop&auto=format', large: true },
+  { name: 'США', unis: 'MIT · NYU · Columbia · UCLA', img: 'https://images.unsplash.com/photo-1543716091-a840c05249ec?w=500&q=70&fit=crop&auto=format' },
+  { name: 'Германия', unis: 'TU Munich · LMU · Heidelberg', img: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=500&q=70&fit=crop&auto=format' },
+  { name: 'Канада', unis: 'UofT · UBC · McGill · Waterloo', img: 'https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=500&q=70&fit=crop&auto=format' },
+  { name: 'ОАЭ', unis: 'AUS · Sorbonne AD · NYUAD', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=500&q=70&fit=crop&auto=format' },
 ];
 const DEST_SM = [
   { name: 'Нидерланды', count: '12+ вузов' },
@@ -32,29 +32,29 @@ const DEST_SM = [
 ];
 
 const SERVICES = [
-  { num: '01', titleKey: 'svc.1', descKey: 'svc.1.p', img: 'https://images.unsplash.com/photo-1576495199011-eb94736d05d6?w=700&q=80&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> },
-  { num: '02', titleKey: 'svc.2', descKey: 'svc.2.p', img: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=700&q=80&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
-  { num: '03', titleKey: 'svc.3', descKey: 'svc.3.p', img: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=700&q=80&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
-  { num: '04', titleKey: 'svc.4', descKey: 'svc.4.p', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=700&q=80&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> },
-  { num: '05', titleKey: 'svc.5', descKey: 'svc.5.p', img: 'https://images.unsplash.com/photo-1623461487986-9400110de28e?w=700&q=80&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg> },
-  { num: '06', titleKey: 'svc.6', descKey: 'svc.6.p', img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=700&q=80&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
+  { num: '01', titleKey: 'svc.1', descKey: 'svc.1.p', img: 'https://images.unsplash.com/photo-1576495199011-eb94736d05d6?w=400&q=70&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg> },
+  { num: '02', titleKey: 'svc.2', descKey: 'svc.2.p', img: 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=400&q=70&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg> },
+  { num: '03', titleKey: 'svc.3', descKey: 'svc.3.p', img: 'https://images.unsplash.com/photo-1532012197267-da84d127e765?w=400&q=70&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg> },
+  { num: '04', titleKey: 'svc.4', descKey: 'svc.4.p', img: 'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400&q=70&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg> },
+  { num: '05', titleKey: 'svc.5', descKey: 'svc.5.p', img: 'https://images.unsplash.com/photo-1623461487986-9400110de28e?w=400&q=70&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"/></svg> },
+  { num: '06', titleKey: 'svc.6', descKey: 'svc.6.p', img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=400&q=70&fit=crop&auto=format', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg> },
 ];
 
 const STEPS = ['proc.1','proc.2','proc.3','proc.4'];
 
 const PARTNERS = [
-  { name: 'University of London', img: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=600&q=80&fit=crop&auto=format' },
-  { name: 'TU Munich', img: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=600&q=80&fit=crop&auto=format' },
-  { name: 'University of Toronto', img: 'https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=600&q=80&fit=crop&auto=format' },
-  { name: 'AUS Dubai', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80&fit=crop&auto=format' },
-  { name: 'Sciences Po Paris', img: 'https://images.unsplash.com/photo-1549144511-f099e773c147?w=600&q=80&fit=crop&auto=format' },
-  { name: 'Erasmus University', img: 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=600&q=80&fit=crop&auto=format' },
-  { name: "King's College London", img: 'https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?w=600&q=80&fit=crop&auto=format' },
-  { name: 'UBC Vancouver', img: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=600&q=80&fit=crop&auto=format' },
-  { name: 'University of Amsterdam', img: 'https://images.unsplash.com/photo-1459679749680-18eb1eb37418?w=600&q=80&fit=crop&auto=format' },
-  { name: 'University of Edinburgh', img: 'https://images.unsplash.com/photo-1506377585622-bedcbb027afc?w=600&q=80&fit=crop&auto=format' },
-  { name: 'NYU New York', img: 'https://images.unsplash.com/photo-1543716091-a840c05249ec?w=600&q=80&fit=crop&auto=format' },
-  { name: 'Waseda University', img: 'https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=600&q=80&fit=crop&auto=format' },
+  { name: 'University of London', img: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=300&q=65&fit=crop&auto=format' },
+  { name: 'TU Munich', img: 'https://images.unsplash.com/photo-1467269204594-9661b134dd2b?w=300&q=65&fit=crop&auto=format' },
+  { name: 'University of Toronto', img: 'https://images.unsplash.com/photo-1559734840-f9509ee5677f?w=300&q=65&fit=crop&auto=format' },
+  { name: 'AUS Dubai', img: 'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=300&q=65&fit=crop&auto=format' },
+  { name: 'Sciences Po Paris', img: 'https://images.unsplash.com/photo-1549144511-f099e773c147?w=300&q=65&fit=crop&auto=format' },
+  { name: 'Erasmus University', img: 'https://images.unsplash.com/photo-1534351590666-13e3e96b5017?w=300&q=65&fit=crop&auto=format' },
+  { name: "King's College London", img: 'https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?w=300&q=65&fit=crop&auto=format' },
+  { name: 'UBC Vancouver', img: 'https://images.unsplash.com/photo-1512470876302-972faa2aa9a4?w=300&q=65&fit=crop&auto=format' },
+  { name: 'University of Amsterdam', img: 'https://images.unsplash.com/photo-1459679749680-18eb1eb37418?w=300&q=65&fit=crop&auto=format' },
+  { name: 'University of Edinburgh', img: 'https://images.unsplash.com/photo-1506377585622-bedcbb027afc?w=300&q=65&fit=crop&auto=format' },
+  { name: 'NYU New York', img: 'https://images.unsplash.com/photo-1543716091-a840c05249ec?w=300&q=65&fit=crop&auto=format' },
+  { name: 'Waseda University', img: 'https://images.unsplash.com/photo-1513407030348-c983a97b98d8?w=300&q=65&fit=crop&auto=format' },
 ];
 
 const REVIEWS = [

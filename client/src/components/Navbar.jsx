@@ -21,7 +21,7 @@ export default function Navbar() {
     <>
       <nav className={scrolled ? 'scrolled' : ''}>
         <a href="#hero" className="nav-logo">
-          <img src="/logo.png" alt="ASCORA Education" className="nav-logo-img" />
+          <img src="/logo-small.png" alt="ASCORA Education" className="nav-logo-img" width="168" height="70" />
         </a>
         <ul className="nav-links">
           <li><a href="#about">{t('nav.about')}</a></li>

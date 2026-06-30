@@ -9,13 +9,13 @@ export default function Hero() {
     {
       id: 'edu', href: '#education', colorClass: 'fbc-navy',
       topClass: 'faction-top-navy',
-      img: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=900&q=85&fit=crop&auto=format',
+      img: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=500&q=72&fit=crop&auto=format',
       icon: <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
     },
     {
       id: 'camps', href: '#camps', colorClass: 'fbc-gold',
       topClass: 'faction-top-gold',
-      img: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&q=85&fit=crop&auto=format',
+      img: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500&q=72&fit=crop&auto=format',
       icon: <svg viewBox="0 0 24 24"><path d="M3 17l4-8 4 5 3-3 4 6H3z"/><path d="M12 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="currentColor" stroke="none"/></svg>
     },
   ];

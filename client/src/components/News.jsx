@@ -3,7 +3,7 @@ import { useLang } from '../context/LangContext';
 const NEWS = [
   {
     key: '1', tagKey: 'news.tag.camp',
-    img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1000&q=80&fit=crop&auto=format',
+    img: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=600&q=70&fit=crop&auto=format',
     date: 'Июнь 2025', main: true,
   },
   {
