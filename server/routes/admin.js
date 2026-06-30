@@ -57,4 +57,14 @@ router.patch('/inquiries/:id', requireAuth, async (req, res) => {
   }
 });
 
+router.delete('/inquiries/:id', requireAuth, async (req, res) => {
+  try {
+    const { rowCount } = await db.query('DELETE FROM inquiries WHERE id=$1', [req.params.id]);
+    if (rowCount === 0) return res.status(404).json({ error: 'Not found' });
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
 module.exports = router;
