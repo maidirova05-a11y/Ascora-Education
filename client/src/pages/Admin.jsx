@@ -81,7 +81,7 @@ export default function Admin() {
     <div className="adm-login-bg">
       <div className="adm-login-card">
         <div className="adm-login-logo">
-          <img src="/logo.png" alt="ASCORA" style={{ height: 44 }} />
+          <img src="/logo-small.png" alt="ASCORA" style={{ height: 44 }} />
         </div>
         <div className="adm-login-title">Панель управления</div>
         <div className="adm-login-sub">Войдите в систему</div>
@@ -121,7 +121,7 @@ export default function Admin() {
       {/* Sidebar */}
       <aside className="adm-sidebar">
         <div className="adm-sidebar-logo">
-          <img src="/logo.png" alt="ASCORA" style={{ height: 36 }} />
+          <img src="/logo-small.png" alt="ASCORA" style={{ height: 36 }} />
         </div>
         <nav className="adm-nav">
           <div className="adm-nav-item active">

@@ -8,7 +8,7 @@ export default function Footer() {
         <div className="footer-grid">
           <div className="footer-brand">
             <a href="#hero" className="nav-logo">
-              <img src="/logo.png" alt="ASCORA Education" className="nav-logo-img" />
+              <img src="/logo-small.png" alt="ASCORA Education" className="nav-logo-img" width="168" height="70" />
             </a>
             <p>{t('footer.desc')}</p>
             <div className="footer-socials">
