@@ -37,7 +37,7 @@ async function appendInquiry(inq) {
     await sheets.spreadsheets.values.append({
       spreadsheetId: SHEET_ID,
       range: 'A:J',
-      valueInputOption: 'USER_ENTERED',
+      valueInputOption: 'RAW',
       resource: {
         values: [[
           inq.id,

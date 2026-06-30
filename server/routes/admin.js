@@ -67,12 +67,4 @@ router.delete('/inquiries/:id', requireAuth, async (req, res) => {
   }
 });
 
-router.get('/test-sheets', (_req, res) => {
-  const hasB64 = !!process.env.GOOGLE_PRIVATE_KEY_B64;
-  const hasRaw = !!process.env.GOOGLE_PRIVATE_KEY;
-  const email = process.env.GOOGLE_CLIENT_EMAIL || 'NOT SET';
-  const b64Len = (process.env.GOOGLE_PRIVATE_KEY_B64 || '').length;
-  res.json({ email, hasB64, hasRaw, b64Len });
-});
-
 module.exports = router;
