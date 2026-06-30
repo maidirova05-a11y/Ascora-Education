@@ -73,6 +73,11 @@ async function initDb() {
 }
 initDb().catch(e => console.error('❌ DB init error:', e.message));
 
+// Пинг каждые 4 минуты чтобы Neon не засыпал (cold start = +2 сек для пользователя)
+setInterval(async () => {
+  try { await db.query('SELECT 1'); } catch (_) {}
+}, 4 * 60 * 1000);
+
 // ── Маршруты ─────────────────────────────────────────────────────────────────
 app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/admin', require('./routes/admin'));
