@@ -67,25 +67,12 @@ router.delete('/inquiries/:id', requireAuth, async (req, res) => {
   }
 });
 
-router.get('/test-sheets', async (_req, res) => {
-  try {
-    const { google } = require('googleapis');
-    const hasB64 = !!process.env.GOOGLE_PRIVATE_KEY_B64;
-    const hasRaw = !!process.env.GOOGLE_PRIVATE_KEY;
-    const email = process.env.GOOGLE_CLIENT_EMAIL || 'NOT SET';
-    const rawKey = hasB64
-      ? Buffer.from(process.env.GOOGLE_PRIVATE_KEY_B64, 'base64').toString('utf8')
-      : (process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n');
-    const auth = new google.auth.GoogleAuth({
-      credentials: { client_email: email, private_key: rawKey },
-      scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-    });
-    const sheets = google.sheets({ version: 'v4', auth });
-    await sheets.spreadsheets.values.get({ spreadsheetId: '1hLsIK8NPMZ_Gh5eXnxjAVXpWpn8-Ysck1GDhl8FO4Y4', range: 'A1' });
-    res.json({ ok: true, email, hasB64, hasRaw });
-  } catch (err) {
-    res.json({ ok: false, error: err.message, email: process.env.GOOGLE_CLIENT_EMAIL || 'NOT SET', hasB64: !!process.env.GOOGLE_PRIVATE_KEY_B64 });
-  }
+router.get('/test-sheets', (_req, res) => {
+  const hasB64 = !!process.env.GOOGLE_PRIVATE_KEY_B64;
+  const hasRaw = !!process.env.GOOGLE_PRIVATE_KEY;
+  const email = process.env.GOOGLE_CLIENT_EMAIL || 'NOT SET';
+  const b64Len = (process.env.GOOGLE_PRIVATE_KEY_B64 || '').length;
+  res.json({ email, hasB64, hasRaw, b64Len });
 });
 
 module.exports = router;
