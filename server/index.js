@@ -73,6 +73,9 @@ async function initDb() {
 }
 initDb().catch(e => console.error('❌ DB init error:', e.message));
 
+const { initSheet } = require('./sheets');
+initSheet();
+
 // Пинг каждые 4 минуты чтобы Neon не засыпал (cold start = +2 сек для пользователя)
 setInterval(async () => {
   try { await db.query('SELECT 1'); } catch (_) {}

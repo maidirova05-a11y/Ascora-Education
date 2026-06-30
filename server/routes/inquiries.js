@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const db = require('../db');
+const { appendInquiry } = require('../sheets');
 
 async function ensureTable() {
   await db.query(`
@@ -24,6 +25,8 @@ router.post('/', async (req, res) => {
        VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id, created_at`,
       [name, phone, email || null, camp_name || null, camp_price || null, lang || 'ru', message || null]
     );
+    const saved = { ...req.body, id: rows[0].id, created_at: rows[0].created_at };
+    appendInquiry(saved); // не ждём — не блокируем ответ пользователю
     res.status(201).json({ ok: true, id: rows[0].id });
   } catch (err) {
     console.error(err);
