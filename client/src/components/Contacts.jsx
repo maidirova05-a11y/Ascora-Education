@@ -50,7 +50,7 @@ export default function Contacts() {
                 </div>
                 <div>
                   <div className="contact-label">Email</div>
-                  <div className="contact-val"><a href="mailto:info@ascora.edu">info@ascora.edu</a></div>
+                  <div className="contact-val"><a href="mailto:info@az-group.kz">info@az-group.kz</a></div>
                 </div>
               </div>
               <div className="contact-item">
@@ -77,14 +77,6 @@ export default function Contacts() {
               <a href="https://www.instagram.com/ascora.education" target="_blank" rel="noopener" className="social-btn instagram">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                 @ascora.education
-              </a>
-              <a href="#" className="social-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 001.46 6.42 29 29 0 001 12a29 29 0 00.46 5.58 2.78 2.78 0 001.95 1.95C5.12 20 12 20 12 20s6.88 0 8.59-.47a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02"/></svg>
-                YouTube
-              </a>
-              <a href="#" className="social-btn">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 5H3a1 1 0 00-1 1v12a1 1 0 001 1h18a1 1 0 001-1V6a1 1 0 00-1-1z"/><path d="M22 6l-10 7L2 6"/></svg>
-                Telegram
               </a>
             </div>
           </div>
