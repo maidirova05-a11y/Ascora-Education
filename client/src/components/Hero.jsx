@@ -1,5 +1,82 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLang } from '../context/LangContext';
+
+const SLIDES = [
+  {
+    img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80&fit=crop&auto=format',
+    pos: 'center 30%',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80&fit=crop&auto=format',
+    pos: 'center center',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80&fit=crop&auto=format',
+    pos: 'center 40%',
+  },
+  {
+    img: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80&fit=crop&auto=format',
+    pos: 'center center',
+  },
+];
+
+const INTERVAL = 5000;
+
+function HeroBgSlider() {
+  const [current, setCurrent] = useState(0);
+  const touchStartX = useRef(null);
+  const timerRef = useRef(null);
+
+  const next = useCallback(() => setCurrent(i => (i + 1) % SLIDES.length), []);
+  const prev = useCallback(() => setCurrent(i => (i - 1 + SLIDES.length) % SLIDES.length), []);
+
+  const resetTimer = useCallback(() => {
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(next, INTERVAL);
+  }, [next]);
+
+  useEffect(() => {
+    timerRef.current = setInterval(next, INTERVAL);
+    return () => clearInterval(timerRef.current);
+  }, [next]);
+
+  const goTo = (idx) => { setCurrent(idx); resetTimer(); };
+
+  const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(dx) > 40) { dx < 0 ? next() : prev(); resetTimer(); }
+    touchStartX.current = null;
+  };
+
+  return (
+    <div
+      className="hero-slider"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      {SLIDES.map((slide, idx) => (
+        <div
+          key={idx}
+          className={`hero-slide ${idx === current ? 'hero-slide--active' : ''}`}
+          style={{ backgroundImage: `url('${slide.img}')`, backgroundPosition: slide.pos }}
+        />
+      ))}
+      <div className="hero-slide-overlay" />
+      <div className="hero-slide-dots">
+        {SLIDES.map((_, idx) => (
+          <button
+            key={idx}
+            className={`hero-dot ${idx === current ? 'hero-dot--active' : ''}`}
+            onClick={() => goTo(idx)}
+            aria-label={`Слайд ${idx + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
 
 export default function Hero() {
   const { t } = useLang();
@@ -22,7 +99,7 @@ export default function Hero() {
 
   return (
     <section id="hero">
-      <div className="hero-bg" />
+      <HeroBgSlider />
       <div className="hero-content">
         <div className="hero-main">
           <h1 dangerouslySetInnerHTML={{ __html: t('hero.h1') }} />
@@ -95,7 +172,6 @@ export default function Hero() {
           </div>
         </div>
       </div>
-
     </section>
   );
 }
