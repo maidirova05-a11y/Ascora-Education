@@ -50,7 +50,7 @@ export default function Hero() {
 
   const { contextSafe } = useGSAP({ scope: heroRef });
 
-  // ── Counter animation ─────────────────────────────────────────────────
+  // ── Counter animation (CountUp-style: expo.out, fast start → slow end) ──
   const runCounters = contextSafe(() => {
     const numEls = statsRef.current?.querySelectorAll('.hero-stat-num');
     if (!numEls) return;
@@ -58,11 +58,19 @@ export default function Hero() {
       const { target, suffix } = STATS[i];
       const obj = { val: 0 };
       el.textContent = '0' + suffix;
+
+      // Scale-in the number element itself
+      gsap.fromTo(el,
+        { autoAlpha: 0, scale: 0.7, y: 10 },
+        { autoAlpha: 1, scale: 1, y: 0, duration: 0.5, ease: 'back.out(1.4)', delay: i * 0.14 }
+      );
+
+      // Count up with expo.out — same feel as CountUp.js
       gsap.to(obj, {
         val: target,
-        duration: 1.8,
-        ease: 'power2.out',
-        delay: i * 0.12,
+        duration: 2.2,
+        ease: 'expo.out',
+        delay: i * 0.14,
         onUpdate() { el.textContent = Math.round(obj.val) + suffix; },
       });
     });
