@@ -42,6 +42,7 @@ export default function Hero() {
   const introBgRef  = useRef(null);
   const swiperElRef = useRef(null);
   const introRef    = useRef(null);
+  const hotRef      = useRef(null);
   const h1Ref       = useRef(null);
   const watchRef    = useRef(null);
   const statsRef    = useRef(null);
@@ -88,11 +89,17 @@ export default function Hero() {
     gsap.set(introBgRef.current, { autoAlpha: 1 });
     gsap.set(introRef.current, { display: 'flex' });
     gsap.set(statsRef.current, { autoAlpha: 0, y: 28 });
+    gsap.set(hotRef.current, { autoAlpha: 0, y: -16 });
 
     const tl = gsap.timeline();
 
+    // hot offer badge pops in first
+    tl.fromTo(hotRef.current,
+      { autoAlpha: 0, y: -16, scale: 0.9 },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.6, ease: 'back.out(1.6)' }
+    )
     // h1 flies in
-    tl.fromTo(h1Ref.current,
+    .fromTo(h1Ref.current,
       { autoAlpha: 0, y: 60 },
       { autoAlpha: 1, y: 0, duration: 1.0, ease: 'power3.out' }
     )
@@ -116,8 +123,10 @@ export default function Hero() {
     phaseRef.current = 'programs';
 
     gsap.timeline()
+      // hot badge slides up first
+      .to(hotRef.current, { autoAlpha: 0, y: -16, duration: 0.24, ease: 'power2.in' })
       // slide button out first
-      .to(watchRef.current, { autoAlpha: 0, y: -24, duration: 0.28, ease: 'power2.in' })
+      .to(watchRef.current, { autoAlpha: 0, y: -24, duration: 0.28, ease: 'power2.in' }, '<')
       // h1 follows
       .to(h1Ref.current, { autoAlpha: 0, y: -36, duration: 0.32, ease: 'power2.in' }, '<+=0.05')
       // stats slide down
@@ -213,6 +222,21 @@ export default function Hero() {
 
       {/* ── Intro layer: h1 + watch button ── */}
       <div className="hero-intro-layer" ref={introRef}>
+        <a
+          href="#camp-11"
+          ref={hotRef}
+          className="hero-hot-badge"
+          onClick={(e) => {
+            e.preventDefault();
+            document.getElementById('camp-11')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }}
+        >
+          <span className="hero-hot-badge-fire">🔥</span>
+          <span className="hero-hot-badge-text">
+            <strong>{t('hero.hot.label')}</strong> — {t('hero.hot.title')} · {t('hero.hot.until')}
+          </span>
+          <span className="hero-hot-badge-arrow">{t('hero.hot.cta')}</span>
+        </a>
         <h1 ref={h1Ref} dangerouslySetInnerHTML={{ __html: t('hero.h1') }} />
         <button ref={watchRef} className="hero-watch-btn" onClick={showPrograms}>
           {t('hero.watch')}

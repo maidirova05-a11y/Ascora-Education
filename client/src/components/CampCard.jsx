@@ -4,7 +4,12 @@ export default function CampCard({ camp, onEnroll }) {
   const { lang, t } = useLang();
 
   return (
-    <div className="camp-card" id={`camp-${camp.id}`}>
+    <div className={`camp-card ${camp.hot ? 'camp-card--hot' : ''}`} id={`camp-${camp.id}`}>
+      {camp.hot && (
+        <div className="camp-hot-ribbon">
+          🔥 {t('hero.hot.label')}
+        </div>
+      )}
       <div className="camp-card-inner">
         <div
           className="camp-flag-block"
@@ -42,7 +47,7 @@ export default function CampCard({ camp, onEnroll }) {
         <div className="camp-price-block">
           <div>
             <div className="camp-price-from">{t('camp.price.from')}</div>
-            <div className="camp-price-val">{camp.price.toLocaleString()} $</div>
+            <div className="camp-price-val">{camp.price.toLocaleString()} {camp.currency === 'kzt' ? '₸' : '$'}</div>
             <div className="camp-dates">
               <div className="camp-dates-title">{t('camp.dates')}</div>
               {camp.dates[lang].split('\n').map((d, i) => (

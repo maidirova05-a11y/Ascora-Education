@@ -41,7 +41,7 @@ export default function Contacts() {
                 </div>
                 <div>
                   <div className="contact-label">{t('contact.phone.label')}</div>
-                  <div className="contact-val"><a href="tel:+77001234567">+7 700 123 45 67</a></div>
+                  <div className="contact-val"><a href="tel:+77003127912">+7 700 312 79 12</a></div>
                 </div>
               </div>
               <div className="contact-item">

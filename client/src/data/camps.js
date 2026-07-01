@@ -1,5 +1,26 @@
 const camps = [
   {
+    id: 11,
+    hot: true,
+    country: 'turkey',
+    countryLabel: { ru: 'Турция', kz: 'Түркия', en: 'Turkey' },
+    city: { ru: 'Анталья · отель 5⭐ Ultra All Inclusive', kz: 'Анталья · 5⭐ қонақүй Ultra All Inclusive', en: 'Antalya · 5⭐ Ultra All Inclusive Hotel' },
+    org: 'ASCORA Summer Camp',
+    price: 890000,
+    currency: 'kzt',
+    ageMin: 7, ageMax: 17,
+    img: 'https://images.unsplash.com/photo-1509233725247-49e657c54213?w=600&q=80&fit=crop&auto=format',
+    tags: { ru: ['Летний лагерь', 'Ultra All Inclusive'], kz: ['Жазғы лагерь', 'Ultra All Inclusive'], en: ['Summer Camp', 'Ultra All Inclusive'] },
+    ageTag: '7–17',
+    durTag: { ru: '7 дней / 6 ночей', kz: '7 күн / 6 түн', en: '7 days / 6 nights' },
+    includes: {
+      ru: ['Перелёт из Астаны (Turkish Airlines / Air Astana)', 'Проживание в отеле 5⭐ Ultra All Inclusive', 'Трансфер и медицинская страховка', 'Английский язык, STEM и робототехника на практике', 'Лидерство, командные проекты и soft skills', 'Круглосуточное сопровождение и безопасность детей'],
+      kz: ['Астанадан ұшу (Turkish Airlines / Air Astana)', '5⭐ Ultra All Inclusive қонақүйде тұру', 'Трансфер және медициналық сақтандыру', 'Ағылшын тілі, STEM және робототехника тәжірибесі', 'Көшбасшылық, командалық жобалар және soft skills', 'Балалардың тәулік бойы қауіпсіздігі мен сүйемелдеуі'],
+      en: ['Flight from Astana (Turkish Airlines / Air Astana)', '5⭐ Ultra All Inclusive hotel accommodation', 'Transfer and medical insurance', 'English language, STEM and robotics in practice', 'Leadership, team projects and soft skills', '24/7 supervision and child safety'],
+    },
+    dates: { ru: '20 – 26 июля 2026\n28 июля – 3 августа 2026\n2 – 8 августа 2026', kz: '20 – 26 шілде 2026\n28 шілде – 3 тамыз 2026\n2 – 8 тамыз 2026', en: 'July 20 – 26, 2026\nJuly 28 – Aug 3, 2026\nAug 2 – 8, 2026' },
+  },
+  {
     id: 1,
     country: 'bulgaria',
     countryLabel: { ru: 'Болгария', kz: 'Болгария', en: 'Bulgaria' },

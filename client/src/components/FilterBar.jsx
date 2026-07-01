@@ -74,7 +74,7 @@ export default function FilterBar({ onFilter }) {
     const filtered = campsData.filter((c) => {
       if (country !== 'all' && c.country !== country) return false;
       if (program !== 'all' && c.type !== program) return false;
-      if (budget !== 'all') {
+      if (budget !== 'all' && c.currency !== 'kzt') {
         const [min, max] = budget === '4000+' ? [4000, 99999] : budget.split('-').map(Number);
         if (c.price < min || c.price > max) return false;
       }
@@ -196,7 +196,9 @@ export default function FilterBar({ onFilter }) {
                   <div className="fb-card-body">
                     <div className="fb-card-country">{camp.countryLabel?.[lang] ?? camp.country}</div>
                     <div className="fb-card-org">{camp.org}</div>
-                    <div className="fb-card-price">от ${camp.price.toLocaleString()}</div>
+                    <div className="fb-card-price">
+                      {camp.currency === 'kzt' ? `от ${camp.price.toLocaleString()} ₸` : `от $${camp.price.toLocaleString()}`}
+                    </div>
                     <div className="fb-card-age">{camp.ageMin}–{camp.ageMax} {L({ ru: 'лет', kz: 'жас', en: 'y.o.' })}</div>
                   </div>
                 </div>

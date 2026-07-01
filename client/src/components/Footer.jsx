@@ -52,7 +52,7 @@ export default function Footer() {
           <div className="footer-col">
             <h4>{t('nav.contacts')}</h4>
             <ul>
-              <li><a href="tel:+77001234567">+7 700 123 45 67</a></li>
+              <li><a href="tel:+77003127912">+7 700 312 79 12</a></li>
               <li><a href="mailto:info@ascora.edu">info@ascora.edu</a></li>
               <li><a href="https://www.instagram.com/ascora.education" target="_blank" rel="noopener">@ascora.education</a></li>
               <li><a href="#contacts">{t('footer.address')}</a></li>

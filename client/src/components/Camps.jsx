@@ -16,7 +16,7 @@ export default function Camps({ filter, onEnroll }) {
   const visible = useMemo(() => {
     return campsData.filter((camp) => {
       if (filter.country !== 'all' && camp.country !== filter.country) return false;
-      if (filter.budget !== 'all') {
+      if (filter.budget !== 'all' && camp.currency !== 'kzt') {
         const [min, max] = filter.budget.split('-').map(Number);
         if (camp.price < min || camp.price > max) return false;
       }

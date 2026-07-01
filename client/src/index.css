@@ -112,6 +112,13 @@ h2 em{font-style:italic;color:var(--gold);font-size:122%;font-weight:700;line-he
 .hero-intro-layer h1{pointer-events:none;margin:0}
 .hero-watch-btn{pointer-events:auto;display:inline-flex;align-items:center;gap:12px;font-size:17px;font-weight:700;font-family:'Manrope',sans-serif;color:var(--navy);background:var(--gold);padding:15px 40px;border-radius:100px;border:none;cursor:pointer;box-shadow:0 6px 28px rgba(201,168,76,0.50);transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.35s ease,gap 0.2s}
 .hero-watch-btn:hover{transform:scale(1.10);gap:18px;box-shadow:0 0 0 6px rgba(201,168,76,0.18),0 14px 48px rgba(201,168,76,0.80)}
+.hero-hot-badge{pointer-events:auto;display:inline-flex;align-items:center;gap:10px;text-decoration:none;background:rgba(255,255,255,0.08);border:1px solid rgba(255,90,60,0.55);backdrop-filter:blur(10px);border-radius:100px;padding:8px 20px 8px 14px;box-shadow:0 4px 20px rgba(255,90,60,0.20);transition:transform 220ms var(--ease),box-shadow 220ms var(--ease),background 220ms var(--ease)}
+.hero-hot-badge:hover{transform:translateY(-2px) scale(1.02);background:rgba(255,255,255,0.14);box-shadow:0 8px 28px rgba(255,90,60,0.32)}
+.hero-hot-badge-fire{font-size:16px;line-height:1;animation:hotPulse 1.8s ease-in-out infinite}
+.hero-hot-badge-text{font-size:13px;font-weight:500;color:rgba(255,255,255,0.92);letter-spacing:0.1px}
+.hero-hot-badge-text strong{color:#FF7A54;font-weight:700}
+.hero-hot-badge-arrow{font-size:12px;font-weight:700;color:var(--gold);white-space:nowrap}
+@keyframes hotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.18)}}
 /* ── MOMENT 3: Programs layer (card content + nav) ── */
 .hero-programs-layer{position:absolute;inset:0;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:90px 5% 110px;gap:0;visibility:hidden}
 .hero-programs-content{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;max-width:800px;width:100%}
@@ -386,8 +393,11 @@ h1 em{font-style:italic;color:var(--gold);font-weight:700}
 .camp-why-title{font-size:14px;font-weight:500;margin-bottom:6px;color:var(--white)}
 .camp-why-text{font-size:13px;color:rgba(255,255,255,0.45);line-height:1.68}
 .camps-grid{display:flex;flex-direction:column;gap:20px}
-.camp-card{background:var(--white);border-radius:var(--radius-xl);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow-sm);transition:border-color 220ms var(--ease),transform 220ms var(--ease-out),box-shadow 220ms var(--ease-out)}
+.camp-card{position:relative;background:var(--white);border-radius:var(--radius-xl);border:1px solid var(--border);overflow:hidden;box-shadow:var(--shadow-sm);transition:border-color 220ms var(--ease),transform 220ms var(--ease-out),box-shadow 220ms var(--ease-out)}
 .camp-card:hover{border-color:var(--border-gold);transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.camp-card--hot{border-color:rgba(255,90,60,0.45);box-shadow:0 6px 28px rgba(255,90,60,0.14)}
+.camp-card--hot:hover{border-color:rgba(255,90,60,0.65);box-shadow:0 16px 48px rgba(255,90,60,0.24)}
+.camp-hot-ribbon{position:absolute;top:18px;left:-38px;z-index:5;transform:rotate(-45deg);background:linear-gradient(135deg,#FF7A54,#E5493C);color:#fff;font-size:12px;font-weight:700;letter-spacing:0.2px;padding:6px 44px;box-shadow:0 3px 10px rgba(229,73,60,0.4)}
 .camp-card-inner{display:grid;grid-template-columns:280px 1fr auto;gap:0}
 .camp-flag-block{background:var(--navy);padding:32px 26px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background-size:cover;background-position:center}
 .camp-flag-block::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:rgba(201,168,76,0.06)}
@@ -532,6 +542,9 @@ footer{background:#060D18;padding:64px 6% 32px;color:rgba(255,255,255,0.35)}
   /* ── Hero mobile ── */
   #hero{min-height:100dvh}
   .hero-intro-layer{padding:80px 6% 130px;gap:24px}
+  .hero-hot-badge{padding:7px 16px 7px 12px;gap:8px;max-width:92vw}
+  .hero-hot-badge-text{font-size:11.5px}
+  .hero-hot-badge-arrow{display:none}
   h1{font-size:clamp(34px,8vw,52px);letter-spacing:-1.5px;margin-bottom:20px}
   .hero-watch-btn{font-size:15px;padding:13px 32px}
   .hero-static-stats{grid-template-columns:1fr 1fr;max-width:100%;padding:0 6% 24px;gap:0}
