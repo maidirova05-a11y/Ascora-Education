@@ -15,7 +15,10 @@ export default function Navbar() {
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
   }, [open]);
+
+  const close = () => setOpen(false);
 
   return (
     <>
@@ -38,23 +41,62 @@ export default function Navbar() {
             </button>
           ))}
         </div>
-        <button className="burger" onClick={() => setOpen(true)} aria-label="Меню">
+        {/* Burger — toggles open/close */}
+        <button
+          className={`burger ${open ? 'burger--open' : ''}`}
+          onClick={() => setOpen(v => !v)}
+          aria-label="Меню"
+          aria-expanded={open}
+        >
           <span /><span /><span />
         </button>
       </nav>
 
-      <div className={`mobile-menu ${open ? 'open' : ''}`}>
-        <button className="mobile-close" onClick={() => setOpen(false)}>
-          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M18 6L6 18M6 6l12 12"/>
-          </svg>
-        </button>
-        <a href="#about" onClick={() => setOpen(false)}>{t('nav.about')}</a>
-        <a href="#education" onClick={() => setOpen(false)}>{t('nav.edu')}</a>
-        <a href="#camps" onClick={() => setOpen(false)}>{t('nav.camps')}</a>
-        <a href="#news" onClick={() => setOpen(false)}>{t('nav.news')}</a>
-        <a href="#contacts" onClick={() => setOpen(false)}>{t('nav.contacts')}</a>
-        <a href="#contacts" onClick={() => setOpen(false)} style={{ color: 'var(--gold)' }}>{t('nav.mob.cta')}</a>
+      {/* Backdrop — click outside to close */}
+      {open && <div className="mobile-backdrop" onClick={close} aria-hidden="true" />}
+
+      <div className={`mobile-menu ${open ? 'open' : ''}`} role="dialog" aria-modal="true">
+        {/* Header row */}
+        <div className="mm-header">
+          <a href="#hero" className="mm-logo" onClick={close}>
+            <img src="/logo-small.png" alt="ASCORA" height="36" />
+          </a>
+          <button className="mm-close" onClick={close} aria-label="Закрыть">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M18 6L6 18M6 6l12 12"/>
+            </svg>
+          </button>
+        </div>
+
+        {/* Nav links */}
+        <div className="mm-nav" role="navigation">
+          <a href="#about"     className="mm-link" onClick={close}>{t('nav.about')}</a>
+          <a href="#education" className="mm-link" onClick={close}>{t('nav.edu')}</a>
+          <a href="#camps"     className="mm-link" onClick={close}>{t('nav.camps')}</a>
+          <a href="#news"      className="mm-link" onClick={close}>{t('nav.news')}</a>
+          <a href="#contacts"  className="mm-link" onClick={close}>{t('nav.contacts')}</a>
+        </div>
+
+        {/* Footer row */}
+        <div className="mm-footer">
+          <a href="#contacts" className="mm-cta" onClick={close}>
+            {t('nav.mob.cta')}
+            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
+              <path d="M3 8h10M9 4l4 4-4 4"/>
+            </svg>
+          </a>
+          <div className="mm-langs">
+            {['ru', 'kz', 'en'].map((l) => (
+              <button
+                key={l}
+                className={`mm-lang-btn ${lang === l ? 'active' : ''}`}
+                onClick={() => { setLang(l); }}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </>
   );

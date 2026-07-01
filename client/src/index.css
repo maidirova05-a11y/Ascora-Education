@@ -33,14 +33,50 @@ nav.scrolled{background:rgba(10,22,40,0.82);backdrop-filter:blur(24px) saturate(
 .nav-links a:hover{color:rgba(255,255,255,0.95)}
 .nav-cta{background:var(--gold)!important;color:var(--navy)!important;padding:9px 22px!important;border-radius:100px!important;font-weight:500!important;box-shadow:0 2px 12px rgba(201,168,76,0.28);transition:background 200ms var(--ease),transform 200ms var(--ease),box-shadow 200ms var(--ease)!important}
 .nav-cta:hover{background:var(--gold-light)!important;transform:translateY(-1px)!important;box-shadow:0 4px 20px rgba(201,168,76,0.38)!important}
-.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:6px;background:none;border:none}
-.burger span{width:22px;height:1.5px;background:rgba(255,255,255,0.75);border-radius:2px;display:block;transition:transform 220ms var(--ease),opacity 180ms var(--ease)}
-.mobile-menu{display:none;position:fixed;inset:0;background:var(--navy);z-index:999;flex-direction:column;align-items:center;justify-content:center;gap:32px}
-.mobile-menu.open{display:flex}
-.mobile-menu a{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:300;color:rgba(255,255,255,0.65);text-decoration:none;transition:color 180ms var(--ease)}
-.mobile-menu a:hover{color:var(--gold)}
-.mobile-close{position:absolute;top:24px;right:6%;background:none;border:none;color:rgba(255,255,255,0.4);font-size:26px;cursor:pointer;padding:8px;transition:color 180ms var(--ease)}
-.mobile-close:hover{color:rgba(255,255,255,0.9)}
+/* ── Burger ── */
+.burger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:8px;background:none;border:none}
+.burger span{width:22px;height:1.5px;background:rgba(255,255,255,0.80);border-radius:2px;display:block;transition:transform 260ms var(--ease),opacity 200ms var(--ease)}
+/* Animate to X when open */
+.burger--open span:nth-child(1){transform:translateY(6.5px) rotate(45deg)}
+.burger--open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.burger--open span:nth-child(3){transform:translateY(-6.5px) rotate(-45deg)}
+
+/* ── Mobile backdrop ── */
+.mobile-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:998;backdrop-filter:blur(2px)}
+
+/* ── Mobile menu panel ── */
+.mobile-menu{
+  position:fixed;top:0;right:0;bottom:0;width:min(88vw,360px);
+  background:linear-gradient(160deg,#0d1f38 0%,#081220 100%);
+  z-index:999;
+  display:flex;flex-direction:column;
+  transform:translateX(100%);
+  transition:transform 340ms cubic-bezier(0.32,0.72,0,1);
+  border-left:1px solid rgba(255,255,255,0.06);
+  box-shadow:-12px 0 48px rgba(0,0,0,0.45);
+}
+.mobile-menu.open{transform:translateX(0)}
+
+/* Header row */
+.mm-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.07)}
+.mm-logo img{height:32px;width:auto;opacity:0.9}
+.mm-close{background:none;border:none;color:rgba(255,255,255,0.45);cursor:pointer;padding:8px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background 180ms,color 180ms}
+.mm-close:hover{background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.9)}
+
+/* Nav links */
+.mm-nav{display:flex;flex-direction:column;flex:1;padding:16px 0;overflow-y:auto}
+.mm-link{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:rgba(255,255,255,0.60);text-decoration:none;padding:14px 28px;border-bottom:1px solid rgba(255,255,255,0.05);transition:color 180ms,background 180ms;letter-spacing:-0.3px}
+.mm-link:last-child{border-bottom:none}
+.mm-link:hover,.mm-link:active{color:var(--gold);background:rgba(201,168,76,0.05)}
+
+/* Footer */
+.mm-footer{padding:20px 24px;border-top:1px solid rgba(255,255,255,0.07);display:flex;flex-direction:column;gap:16px}
+.mm-cta{display:inline-flex;align-items:center;gap:10px;font-family:'Manrope',sans-serif;font-size:16px;font-weight:700;color:var(--navy);background:var(--gold);padding:14px 28px;border-radius:100px;text-decoration:none;transition:opacity 180ms;justify-content:center}
+.mm-cta:hover{opacity:0.9}
+.mm-langs{display:flex;gap:8px}
+.mm-lang-btn{background:none;border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.45);font-size:12px;font-weight:600;letter-spacing:0.5px;padding:7px 14px;border-radius:100px;cursor:pointer;transition:all 180ms;font-family:'Manrope',sans-serif}
+.mm-lang-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,0.08)}
+.mm-lang-btn:hover:not(.active){border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.75)}
 
 /* SECTIONS BASE */
 section{padding:112px 6%}
@@ -493,12 +529,27 @@ footer{background:#060D18;padding:64px 6% 32px;color:rgba(255,255,255,0.35)}
   .dest-small-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:768px){
-  .hero-stats{grid-template-columns:1fr 1fr;gap:0;padding-top:28px}
-  .hero-stat{padding:20px 0!important;border-right:none!important;text-align:center!important;display:flex;flex-direction:column;align-items:center}
-  .hero-stat:nth-child(odd){border-right:1px solid rgba(255,255,255,0.18)!important}
-  .hero-stat:nth-child(1),.hero-stat:nth-child(2){border-bottom:1px solid rgba(255,255,255,0.18)!important}
-  .hero-stat-num{font-size:38px!important;letter-spacing:-1px}
-  .hero-stat-label{font-size:11px;text-align:center}
+  /* ── Hero mobile ── */
+  #hero{min-height:100dvh}
+  .hero-intro-layer{padding:80px 6% 130px;gap:24px}
+  h1{font-size:clamp(34px,8vw,52px);letter-spacing:-1.5px;margin-bottom:20px}
+  .hero-watch-btn{font-size:15px;padding:13px 32px}
+  .hero-static-stats{grid-template-columns:1fr 1fr;max-width:100%;padding:0 6% 24px;gap:0}
+  .hero-stat{padding:16px 12px!important;align-items:flex-start;border-right:none!important}
+  .hero-stat:nth-child(odd){border-right:1px solid rgba(255,255,255,0.14)!important}
+  .hero-stat:nth-child(1),.hero-stat:nth-child(2){border-bottom:1px solid rgba(255,255,255,0.14)!important}
+  .hero-stat::before{width:20px;margin-bottom:10px}
+  .hero-stat-num{font-size:clamp(28px,7vw,40px)!important;letter-spacing:-1px}
+  .hero-stat-label{font-size:11px}
+  /* Programs layer mobile */
+  .hero-programs-layer{padding:70px 5% 100px}
+  .hero-programs-content{gap:12px;max-width:100%}
+  .hsc-title{font-size:clamp(28px,7vw,40px)}
+  .hsc-desc{font-size:14px}
+  .hsc-bullets li{font-size:13px;padding:10px 14px}
+  .hsc-btn{font-size:16px;padding:14px 36px}
+  .hero-slide-nav{bottom:24px}
+  /* General */
   .filter-bar-gd{flex-direction:column;border-radius:20px;padding:16px;gap:0;height:auto!important;align-items:stretch}
   .fgd-item{width:100%;padding:12px 16px;border-radius:12px}
   .fgd-sep{width:100%;height:1px;margin:0}
