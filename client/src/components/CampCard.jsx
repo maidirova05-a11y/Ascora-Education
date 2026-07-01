@@ -5,11 +5,6 @@ export default function CampCard({ camp, onEnroll }) {
 
   return (
     <div className={`camp-card ${camp.hot ? 'camp-card--hot' : ''}`} id={`camp-${camp.id}`}>
-      {camp.hot && (
-        <div className="camp-hot-ribbon">
-          🔥 {t('hero.hot.label')}
-        </div>
-      )}
       <div className="camp-card-inner">
         <div
           className="camp-flag-block"
@@ -19,6 +14,11 @@ export default function CampCard({ camp, onEnroll }) {
             backgroundPosition: 'center',
           }}
         >
+          {camp.hot && (
+            <div className="camp-hot-badge">
+              🔥 {t('hero.hot.label')}
+            </div>
+          )}
           <div>
             <div className="camp-country">{camp.countryLabel[lang]}</div>
             <div className="camp-city">{camp.city[lang]}</div>
