@@ -7,7 +7,6 @@ import gsap from 'gsap';
 
 gsap.registerPlugin(useGSAP);
 
-// Static hero background for intro phase
 const HERO_BG = 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&q=90&fit=crop&auto=format';
 
 const SLIDES = [
@@ -25,11 +24,12 @@ const SLIDES = [
   },
 ];
 
+// target value + suffix for counter animation
 const STATS = [
-  { num: '300+', key: 'stat.students' },
-  { num: '20+',  key: 'stat.countries' },
-  { num: '95%',  key: 'stat.success' },
-  { num: '10',   key: 'stat.programs' },
+  { target: 300, suffix: '+', key: 'stat.students' },
+  { target: 20,  suffix: '+', key: 'stat.countries' },
+  { target: 95,  suffix: '%', key: 'stat.success' },
+  { target: 10,  suffix: '',  key: 'stat.programs' },
 ];
 
 export default function Hero() {
@@ -44,86 +44,119 @@ export default function Hero() {
   const introRef    = useRef(null);
   const h1Ref       = useRef(null);
   const watchRef    = useRef(null);
+  const statsRef    = useRef(null);
   const programsRef = useRef(null);
   const contentRef  = useRef(null);
 
   const { contextSafe } = useGSAP({ scope: heroRef });
 
-  // ── Play intro: static bg + h1 + watch button ────────────────────────
+  // ── Counter animation ─────────────────────────────────────────────────
+  const runCounters = contextSafe(() => {
+    const numEls = statsRef.current?.querySelectorAll('.hero-stat-num');
+    if (!numEls) return;
+    numEls.forEach((el, i) => {
+      const { target, suffix } = STATS[i];
+      const obj = { val: 0 };
+      el.textContent = '0' + suffix;
+      gsap.to(obj, {
+        val: target,
+        duration: 1.8,
+        ease: 'power2.out',
+        delay: i * 0.12,
+        onUpdate() { el.textContent = Math.round(obj.val) + suffix; },
+      });
+    });
+  });
+
+  // ── Moment 1+2: static bg + h1 + button + stats counter ──────────────
   const playIntro = contextSafe(() => {
     phaseRef.current = 'intro';
 
-    // Hide programs layer and Swiper
+    // Reset programs phase
     gsap.set(programsRef.current, { autoAlpha: 0, display: 'none' });
     gsap.set(swiperElRef.current, { autoAlpha: 0 });
 
-    // Show static bg and intro layer
+    // Prepare intro elements
     gsap.set(introBgRef.current, { autoAlpha: 1 });
     gsap.set(introRef.current, { display: 'flex' });
+    gsap.set(statsRef.current, { autoAlpha: 0, y: 28 });
 
-    gsap.timeline()
-      .fromTo(h1Ref.current,
-        { autoAlpha: 0, y: 60 },
-        { autoAlpha: 1, y: 0, duration: 1.0, ease: 'power3.out' }
-      )
-      .fromTo(watchRef.current,
-        { autoAlpha: 0, y: 36, scale: 0.92 },
-        { autoAlpha: 1, y: 0, scale: 1, duration: 0.75, ease: 'back.out(1.6)' },
-        '+=0.15'
-      );
+    const tl = gsap.timeline();
+
+    // h1 flies in
+    tl.fromTo(h1Ref.current,
+      { autoAlpha: 0, y: 60 },
+      { autoAlpha: 1, y: 0, duration: 1.0, ease: 'power3.out' }
+    )
+    // button bounces in
+    .fromTo(watchRef.current,
+      { autoAlpha: 0, y: 36, scale: 0.92 },
+      { autoAlpha: 1, y: 0, scale: 1, duration: 0.75, ease: 'back.out(1.6)' },
+      '+=0.15'
+    )
+    // stats bar slides up
+    .to(statsRef.current,
+      { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power3.out' },
+      '-=0.3'
+    )
+    // counters start after stats appear
+    .call(runCounters);
   });
 
-  // ── Moment 3: click "Посмотреть программы" ───────────────────────────
+  // ── Moment 3: "Посмотреть программы" → programs phase ────────────────
   const showPrograms = contextSafe(() => {
     phaseRef.current = 'programs';
 
     gsap.timeline()
-      // Fade out intro text
-      .to(watchRef.current, { autoAlpha: 0, y: -24, duration: 0.30, ease: 'power2.in' })
-      .to(h1Ref.current,    { autoAlpha: 0, y: -36, duration: 0.35, ease: 'power2.in' }, '<+=0.05')
+      // slide button out first
+      .to(watchRef.current, { autoAlpha: 0, y: -24, duration: 0.28, ease: 'power2.in' })
+      // h1 follows
+      .to(h1Ref.current, { autoAlpha: 0, y: -36, duration: 0.32, ease: 'power2.in' }, '<+=0.05')
+      // stats slide down
+      .to(statsRef.current, { autoAlpha: 0, y: 32, duration: 0.32, ease: 'power2.in' }, '<+=0.04')
       .call(() => {
         gsap.set(introRef.current, { display: 'none' });
         gsap.set(programsRef.current, { display: 'flex' });
       })
-      // Cross-fade: static bg out, Swiper in
-      .to(introBgRef.current,  { autoAlpha: 0, duration: 0.70, ease: 'power2.inOut' }, '+=0.05')
-      .to(swiperElRef.current, { autoAlpha: 1, duration: 0.70, ease: 'power2.inOut' }, '<')
-      // Programs content fades up
+      // static bg fades out, Swiper fades in simultaneously
+      .to(introBgRef.current,  { autoAlpha: 0, duration: 0.65, ease: 'power2.inOut' }, '+=0.04')
+      .to(swiperElRef.current, { autoAlpha: 1, duration: 0.65, ease: 'power2.inOut' }, '<')
+      // programs content rises up
       .fromTo(programsRef.current,
         { autoAlpha: 0, y: 40 },
-        { autoAlpha: 1, y: 0,  duration: 0.65, ease: 'power3.out' },
-        '<+=0.20'
+        { autoAlpha: 1, y: 0, duration: 0.65, ease: 'power3.out' },
+        '<+=0.18'
       );
   });
 
-  // ── Moment 4: hero re-enters viewport → reset to intro ───────────────
+  // ── Moment 4: re-enter viewport → replay intro ───────────────────────
   const resetToIntro = contextSafe(() => {
     if (phaseRef.current === 'intro') { playIntro(); return; }
-
-    gsap.timeline()
-      .to(programsRef.current, { autoAlpha: 0, y: -24, duration: 0.35, ease: 'power2.in' })
-      .call(playIntro);
+    gsap.to(programsRef.current, {
+      autoAlpha: 0, y: -24, duration: 0.35, ease: 'power2.in',
+      onComplete: playIntro,
+    });
   });
 
   useEffect(() => {
     const hero = heroRef.current;
     let wasGone = false;
-    const observer = new IntersectionObserver(([e]) => {
-      if (!e.isIntersecting) { wasGone = true; }
-      else if (wasGone)      { wasGone = false; resetToIntro(); }
+    const obs = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) wasGone = true;
+      else if (wasGone) { wasGone = false; resetToIntro(); }
     }, { threshold: 0.35 });
-    if (hero) observer.observe(hero);
-    return () => observer.disconnect();
+    if (hero) obs.observe(hero);
+    return () => obs.disconnect();
   }, []); // eslint-disable-line
 
-  // First mount
+  // First mount setup
   useGSAP(() => {
     gsap.set(swiperElRef.current, { autoAlpha: 0 });
     gsap.set(programsRef.current, { autoAlpha: 0, display: 'none' });
     playIntro();
   }, { scope: heroRef });
 
-  // Cross-fade slide content on slide change
+  // Slide content cross-fade on auto-advance
   const handleSlideChange = contextSafe((sw) => {
     const newIdx = sw.realIndex;
     if (phaseRef.current !== 'programs' || !contentRef.current) {
@@ -146,22 +179,18 @@ export default function Hero() {
   return (
     <section id="hero" ref={heroRef}>
 
-      {/* ── Static intro background (hidden when programs show) ── */}
-      <div
-        ref={introBgRef}
-        className="hero-static-bg"
-        style={{ backgroundImage: `url('${HERO_BG}')` }}
-      />
+      {/* Static intro bg */}
+      <div ref={introBgRef} className="hero-static-bg"
+        style={{ backgroundImage: `url('${HERO_BG}')` }} />
       <div className="hero-static-bg-overlay" />
 
-      {/* ── Swiper (programs phase background) ── */}
+      {/* Swiper — programs phase only */}
       <div ref={swiperElRef} className="hero-swiper-wrap">
         <Swiper
           className="hero-swiper-full"
           modules={[Autoplay]}
           autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-          loop
-          speed={850}
+          loop speed={850}
           onSwiper={(sw) => { swiperRef.current = sw; }}
           onSlideChange={handleSlideChange}
         >
@@ -174,7 +203,7 @@ export default function Hero() {
         </Swiper>
       </div>
 
-      {/* ── МОМЕНТ 1 + 2: Intro layer ── */}
+      {/* ── Intro layer: h1 + watch button ── */}
       <div className="hero-intro-layer" ref={introRef}>
         <h1 ref={h1Ref} dangerouslySetInnerHTML={{ __html: t('hero.h1') }} />
         <button ref={watchRef} className="hero-watch-btn" onClick={showPrograms}>
@@ -185,7 +214,17 @@ export default function Hero() {
         </button>
       </div>
 
-      {/* ── МОМЕНТ 3: Programs layer ── */}
+      {/* ── Stats counter (intro only) ── */}
+      <div className="hero-static-stats" ref={statsRef}>
+        {STATS.map((s) => (
+          <div key={s.key} className="hero-stat">
+            <div className="hero-stat-num">0{s.suffix}</div>
+            <div className="hero-stat-label">{t(s.key)}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Programs layer ── */}
       <div className="hero-programs-layer" ref={programsRef}>
         <div className="hero-programs-content" ref={contentRef}>
           <div className="hsc-tag">{t(`card.${slide.id}.sub`)}</div>
@@ -217,8 +256,7 @@ export default function Hero() {
           </button>
           <div className="hsn-dots">
             {SLIDES.map((_, idx) => (
-              <button
-                key={idx}
+              <button key={idx}
                 className={`hsn-dot ${idx === activeIdx ? 'hsn-dot--active' : ''}`}
                 onClick={() => swiperRef.current?.slideToLoop(idx)}
                 aria-label={`Слайд ${idx + 1}`}
@@ -229,16 +267,6 @@ export default function Hero() {
             <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 4l4 4-4 4"/></svg>
           </button>
         </div>
-      </div>
-
-      {/* ── Static stats (always visible) ── */}
-      <div className="hero-static-stats">
-        {STATS.map((s) => (
-          <div key={s.key} className="hero-stat">
-            <div className="hero-stat-num">{s.num}</div>
-            <div className="hero-stat-label">{t(s.key)}</div>
-          </div>
-        ))}
       </div>
 
     </section>
