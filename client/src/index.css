@@ -59,6 +59,7 @@ h2 em{font-style:italic;color:var(--gold);font-size:122%;font-weight:700;line-he
 /* HERO */
 #hero{position:relative;display:flex;flex-direction:column;align-items:stretch;overflow:visible;background:#0B1929}
 /* Slider */
+.hero-bg{position:absolute;inset:0;z-index:0;background-size:cover;background-repeat:no-repeat}
 .hero-slider{position:absolute;inset:0;z-index:0;overflow:hidden}
 .hero-slide{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;opacity:0;transition:opacity 1s ease;will-change:opacity}
 .hero-slide--active{opacity:1}
