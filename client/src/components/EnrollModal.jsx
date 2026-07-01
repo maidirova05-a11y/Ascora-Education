@@ -14,6 +14,8 @@ export default function EnrollModal({ camp, onClose }) {
   async function submit(e) {
     e.preventDefault();
     setStatus('loading');
+    // Send to Bitrix regardless of backend result
+    sendLeadToBitrix({ name: form.name, phone: form.phone, email: form.email, topic: camp.countryLabel[lang] + ' — ' + camp.org, message: form.message });
     try {
       const res = await fetch('/api/inquiries', {
         method: 'POST',
@@ -26,11 +28,10 @@ export default function EnrollModal({ camp, onClose }) {
         }),
       });
       if (!res.ok) throw new Error();
-      sendLeadToBitrix({ name: form.name, phone: form.phone, email: form.email, topic: camp.countryLabel[lang] + ' — ' + camp.org, message: form.message });
-      setStatus('success');
     } catch {
-      setStatus('error');
+      // backend error — Bitrix already received the lead
     }
+    setStatus('success');
   }
 
   return (

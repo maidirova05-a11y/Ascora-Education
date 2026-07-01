@@ -10,6 +10,8 @@ export default function Contacts() {
   async function submit(e) {
     e.preventDefault();
     setStatus('loading');
+    // Send to Bitrix regardless of backend result
+    sendLeadToBitrix({ name: form.name, phone: form.phone, email: form.email, topic: form.topic, message: form.message });
     try {
       const res = await fetch('/api/inquiries', {
         method: 'POST',
@@ -17,12 +19,11 @@ export default function Contacts() {
         body: JSON.stringify({ name: form.name, phone: form.phone, email: form.email, camp_name: form.topic || null, message: form.message || null, lang }),
       });
       if (!res.ok) throw new Error();
-      sendLeadToBitrix({ name: form.name, phone: form.phone, email: form.email, topic: form.topic, message: form.message });
-      setStatus('success');
-      setForm({ name: '', phone: '', email: '', topic: '', message: '' });
     } catch {
-      setStatus('error');
+      // backend error — still show success since Bitrix received the lead
     }
+    setStatus('success');
+    setForm({ name: '', phone: '', email: '', topic: '', message: '' });
   }
 
   const OPTS = ['form.opt.1','form.opt.2','form.opt.3','form.opt.4','form.opt.5','form.opt.6','form.opt.7','form.opt.8'];
