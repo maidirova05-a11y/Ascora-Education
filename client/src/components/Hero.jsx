@@ -33,7 +33,7 @@ export default function Hero() {
   return (
     <section id="hero">
 
-      {/* ── Full-coverage Swiper (background + sliding card content) ── */}
+      {/* ── Full-coverage Swiper ── */}
       <Swiper
         className="hero-swiper-full"
         modules={[Autoplay]}
@@ -45,11 +45,10 @@ export default function Hero() {
       >
         {SLIDES.map((slide) => (
           <SwiperSlide key={slide.id}>
-            {/* Background */}
             <div className="hero-slide-bg" style={{ backgroundImage: `url('${slide.img}')` }} />
             <div className="hero-slide-overlay" />
 
-            {/* Sliding card content — sits in the middle of the hero */}
+            {/* Card content + nav — all slide together */}
             <div className="hero-slide-inner">
               <div className="hsc-tag">{t(`card.${slide.id}.sub`)}</div>
               <h2 className="hsc-title">{t(`card.${slide.id}.title`)}</h2>
@@ -59,67 +58,45 @@ export default function Hero() {
                   <li key={b}>{t(`card.${slide.id}.${b}`)}</li>
                 ))}
               </ul>
-              <div className="hsc-btn-wrap">
-                <a
-                  href={slide.href}
-                  className="hsc-btn"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    document.querySelector(slide.href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                  }}
-                >
-                  {t('go')}
-                  <svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5">
-                    <path d="M3 8h10M9 4l4 4-4 4"/>
-                  </svg>
-                </a>
+              <a
+                href={slide.href}
+                className="hsc-btn"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.querySelector(slide.href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+              >
+                {t('go')}
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
+                  <path d="M3 8h10M9 4l4 4-4 4"/>
+                </svg>
+              </a>
+
+              <div className="hero-slide-nav">
+                <button className="hsn-arrow" onClick={() => swiperRef.current?.slidePrev()} aria-label="Назад">
+                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M10 4l-4 4 4 4"/></svg>
+                </button>
+                <div className="hsn-dots">
+                  {SLIDES.map((_, idx) => (
+                    <button key={idx} className={`hsn-dot ${idx === activeIdx ? 'hsn-dot--active' : ''}`}
+                      onClick={() => swiperRef.current?.slideToLoop(idx)} aria-label={`Слайд ${idx + 1}`} />
+                  ))}
+                </div>
+                <button className="hsn-arrow" onClick={() => swiperRef.current?.slideNext()} aria-label="Вперёд">
+                  <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 4l4 4-4 4"/></svg>
+                </button>
               </div>
             </div>
           </SwiperSlide>
         ))}
       </Swiper>
 
-      {/* ── Static h1 — floats over Swiper at top ── */}
+      {/* ── Static h1 — never slides ── */}
       <div className="hero-static-top">
         <h1 dangerouslySetInnerHTML={{ __html: t('hero.h1') }} />
       </div>
 
-      {/* ── Static nav + CTA — floats in lower-middle area ── */}
-      <div className="hero-static-nav">
-        <div className="hero-slide-nav">
-          <button className="hsn-arrow" onClick={() => swiperRef.current?.slidePrev()} aria-label="Назад">
-            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M10 4l-4 4 4 4"/>
-            </svg>
-          </button>
-          <div className="hsn-dots">
-            {SLIDES.map((_, idx) => (
-              <button
-                key={idx}
-                className={`hsn-dot ${idx === activeIdx ? 'hsn-dot--active' : ''}`}
-                onClick={() => swiperRef.current?.slideToLoop(idx)}
-                aria-label={`Слайд ${idx + 1}`}
-              />
-            ))}
-          </div>
-          <button className="hsn-arrow" onClick={() => swiperRef.current?.slideNext()} aria-label="Вперёд">
-            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M6 4l4 4-4 4"/>
-            </svg>
-          </button>
-        </div>
-
-        <div className="faction-cta-bar">
-          <a href="#contacts" className="btn-primary faction-big-cta">
-            <span>{t('hero.cta')}</span>
-            <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M3 8h10M9 4l4 4-4 4"/>
-            </svg>
-          </a>
-        </div>
-      </div>
-
-      {/* ── Static stats — floats at bottom ── */}
+      {/* ── Static stats — never slides ── */}
       <div className="hero-static-stats">
         {STATS.map((s) => (
           <div key={s.key} className="hero-stat">

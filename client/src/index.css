@@ -66,28 +66,26 @@ h2 em{font-style:italic;color:var(--gold);font-size:122%;font-weight:700;line-he
 /* Slide background */
 .hero-slide-bg{position:absolute;inset:0;background-size:cover;background-position:center;background-repeat:no-repeat}
 .hero-slide-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(to bottom,rgba(8,18,36,0.60) 0%,rgba(8,18,36,0.42) 30%,rgba(8,18,36,0.55) 65%,rgba(8,18,36,0.90) 100%)}
-/* Sliding card content — centered vertically in the hero */
-.hero-slide-inner{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:200px 6% 170px;text-align:center}
-.hsc-tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;font-family:'Manrope',sans-serif;margin-bottom:14px}
-.hsc-title{font-family:'Manrope',sans-serif;font-size:clamp(30px,3.4vw,48px);font-weight:800;color:#fff;margin-bottom:14px;line-height:1.12;letter-spacing:-0.6px;text-shadow:0 2px 20px rgba(0,0,0,0.55)}
-.hsc-desc{font-size:16px;color:rgba(255,255,255,0.80);line-height:1.72;max-width:600px;margin-bottom:22px;text-shadow:0 1px 8px rgba(0,0,0,0.45)}
-.hsc-bullets{list-style:none;padding:0;margin:0 0 28px;display:flex;flex-direction:column;gap:9px;text-align:left;width:100%;max-width:560px}
-.hsc-bullets li{font-size:14px;color:rgba(255,255,255,0.90);font-family:'Manrope',sans-serif;background:rgba(8,18,36,0.38);border:1px solid rgba(255,255,255,0.12);padding:10px 18px;border-radius:10px;line-height:1.5;backdrop-filter:blur(6px)}
-.hsc-btn-wrap{text-align:center}
-.hsc-btn{display:inline-flex;align-items:center;gap:10px;font-size:17px;font-weight:700;color:var(--navy);font-family:'Manrope',sans-serif;text-decoration:none;background:var(--gold);padding:15px 40px;border-radius:100px;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.35s ease,gap 0.2s;box-shadow:0 6px 28px rgba(201,168,76,0.45)}
-.hsc-btn:hover{transform:scale(1.13);gap:16px;box-shadow:0 0 0 6px rgba(201,168,76,0.18),0 12px 48px rgba(201,168,76,0.75)}
-/* Static h1 overlay — always on top, never slides */
-.hero-static-top{position:absolute;top:0;left:0;right:0;z-index:10;padding:76px 6% 0;text-align:center;pointer-events:none}
-/* Static nav + CTA — positioned in lower portion */
-.hero-static-nav{position:absolute;bottom:130px;left:0;right:0;z-index:10;display:flex;flex-direction:column;align-items:center;gap:0;pointer-events:auto}
-.hero-slide-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px}
-.hsn-arrow{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.22);color:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0;transition:background 0.2s}
+/* Sliding card content — sits between h1 and stats */
+.hero-slide-inner{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:240px 6% 130px;text-align:center;gap:12px}
+.hsc-tag{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--gold);font-weight:700;font-family:'Manrope',sans-serif}
+.hsc-title{font-family:'Manrope',sans-serif;font-size:clamp(26px,3vw,40px);font-weight:800;color:#fff;line-height:1.14;letter-spacing:-0.5px;text-shadow:0 2px 20px rgba(0,0,0,0.6);margin:0}
+.hsc-desc{font-size:15px;color:rgba(255,255,255,0.78);line-height:1.68;max-width:580px;text-shadow:0 1px 8px rgba(0,0,0,0.45);margin:0}
+.hsc-bullets{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:7px;text-align:left;width:100%;max-width:540px}
+.hsc-bullets li{font-size:13.5px;color:rgba(255,255,255,0.88);font-family:'Manrope',sans-serif;background:rgba(8,18,36,0.40);border:1px solid rgba(255,255,255,0.11);padding:9px 16px;border-radius:10px;line-height:1.5;backdrop-filter:blur(6px)}
+.hsc-btn{display:inline-flex;align-items:center;gap:10px;font-size:16px;font-weight:700;color:var(--navy);font-family:'Manrope',sans-serif;text-decoration:none;background:var(--gold);padding:13px 36px;border-radius:100px;transition:transform 0.35s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.35s ease,gap 0.2s;box-shadow:0 6px 24px rgba(201,168,76,0.45)}
+.hsc-btn:hover{transform:scale(1.13);gap:16px;box-shadow:0 0 0 6px rgba(201,168,76,0.18),0 12px 44px rgba(201,168,76,0.75)}
+/* Static h1 — always on top, never slides */
+.hero-static-top{position:absolute;top:0;left:0;right:0;z-index:10;padding:72px 6% 0;text-align:center;pointer-events:none}
+/* Nav dots + arrows — inside each slide, at bottom of card content */
+.hero-slide-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:4px}
+.hsn-arrow{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.22);color:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0;transition:background 0.2s}
 .hsn-arrow:hover{background:rgba(255,255,255,0.22)}
 .hsn-dots{display:flex;gap:8px;align-items:center}
-.hsn-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.30);border:none;cursor:pointer;padding:0;transition:background 0.3s,transform 0.3s}
+.hsn-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.30);border:none;cursor:pointer;padding:0;transition:background 0.3s,transform 0.3s}
 .hsn-dot--active{background:var(--gold);transform:scale(1.35)}
-/* Static stats overlay — always on bottom, never slides */
-.hero-static-stats{position:absolute;bottom:0;left:0;right:0;z-index:10;max-width:860px;margin:0 auto;left:50%;transform:translateX(-50%);display:grid;grid-template-columns:repeat(4,1fr);padding:24px 6% 36px;border-top:1px solid rgba(255,255,255,0.18);pointer-events:none}
+/* Static stats — always on bottom, never slides */
+.hero-static-stats{position:absolute;bottom:0;left:50%;transform:translateX(-50%);right:auto;z-index:10;width:100%;max-width:860px;display:grid;grid-template-columns:repeat(4,1fr);padding:20px 6% 32px;border-top:1px solid rgba(255,255,255,0.18);pointer-events:none}
 .hero-eyebrow{display:flex;align-items:center;gap:14px;margin-bottom:40px}
 .hero-eyebrow-line{width:32px;height:1px;background:rgba(255,255,255,0.35);flex-shrink:0;opacity:1}
 .hero-eyebrow-text{font-size:10px;letter-spacing:4.5px;text-transform:uppercase;color:rgba(255,255,255,0.60);font-weight:500;font-family:'Manrope',sans-serif;opacity:1}
