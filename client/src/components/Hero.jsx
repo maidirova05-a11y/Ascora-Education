@@ -15,6 +15,7 @@ const SLIDES = [
     href: '#camp-11',
     img: 'https://images.unsplash.com/photo-1509233725247-49e657c54213?w=1400&q=85&fit=crop&auto=format',
     bullets: ['b1', 'b2', 'b3'],
+    hot: true,
   },
   {
     id: 'edu',
@@ -294,6 +295,11 @@ export default function Hero() {
               <path d="M3 8h10M9 4l4 4-4 4"/>
             </svg>
           </a>
+          {slide.hot && (
+            <div className="hsc-dontmiss-cloud">
+              🔥 {t('hero.hot.dontmiss')}
+            </div>
+          )}
         </div>
 
         <div className="hero-slide-nav">
