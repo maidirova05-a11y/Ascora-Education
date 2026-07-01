@@ -7,6 +7,9 @@ import gsap from 'gsap';
 
 gsap.registerPlugin(useGSAP);
 
+// Static hero background for intro phase
+const HERO_BG = 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&q=90&fit=crop&auto=format';
+
 const SLIDES = [
   {
     id: 'edu',
@@ -32,31 +35,32 @@ const STATS = [
 export default function Hero() {
   const { t } = useLang();
   const [activeIdx, setActiveIdx] = useState(0);
-  const phaseRef = useRef('intro'); // 'intro' | 'programs'
+  const phaseRef = useRef('intro');
 
-  const heroRef    = useRef(null);
-  const swiperRef  = useRef(null);
-  const introRef   = useRef(null);
-  const h1Ref      = useRef(null);
-  const watchRef   = useRef(null);
+  const heroRef     = useRef(null);
+  const swiperRef   = useRef(null);
+  const introBgRef  = useRef(null);
+  const swiperElRef = useRef(null);
+  const introRef    = useRef(null);
+  const h1Ref       = useRef(null);
+  const watchRef    = useRef(null);
   const programsRef = useRef(null);
   const contentRef  = useRef(null);
 
-  // ── GSAP context (for contextSafe wrapping) ──────────────────────────
   const { contextSafe } = useGSAP({ scope: heroRef });
 
-  // ── Play intro animation ─────────────────────────────────────────────
+  // ── Play intro: static bg + h1 + watch button ────────────────────────
   const playIntro = contextSafe(() => {
     phaseRef.current = 'intro';
 
-    // Reset programs layer
-    gsap.set(programsRef.current, { autoAlpha: 0, y: 50, display: 'none' });
+    // Hide programs layer and Swiper
+    gsap.set(programsRef.current, { autoAlpha: 0, display: 'none' });
+    gsap.set(swiperElRef.current, { autoAlpha: 0 });
 
-    // Show intro layer
+    // Show static bg and intro layer
+    gsap.set(introBgRef.current, { autoAlpha: 1 });
     gsap.set(introRef.current, { display: 'flex' });
-    gsap.set([h1Ref.current, watchRef.current], { clearProps: 'all' });
 
-    // Стagger: h1 → button
     gsap.timeline()
       .fromTo(h1Ref.current,
         { autoAlpha: 0, y: 60 },
@@ -65,80 +69,73 @@ export default function Hero() {
       .fromTo(watchRef.current,
         { autoAlpha: 0, y: 36, scale: 0.92 },
         { autoAlpha: 1, y: 0, scale: 1, duration: 0.75, ease: 'back.out(1.6)' },
-        '+=0.2'
+        '+=0.15'
       );
   });
 
-  // ── Moment 3: intro → programs ───────────────────────────────────────
+  // ── Moment 3: click "Посмотреть программы" ───────────────────────────
   const showPrograms = contextSafe(() => {
     phaseRef.current = 'programs';
 
     gsap.timeline()
-      // Fade out intro
-      .to(watchRef.current, { autoAlpha: 0, y: -24, duration: 0.35, ease: 'power2.in' })
-      .to(h1Ref.current,    { autoAlpha: 0, y: -36, duration: 0.40, ease: 'power2.in' }, '<+=0.06')
+      // Fade out intro text
+      .to(watchRef.current, { autoAlpha: 0, y: -24, duration: 0.30, ease: 'power2.in' })
+      .to(h1Ref.current,    { autoAlpha: 0, y: -36, duration: 0.35, ease: 'power2.in' }, '<+=0.05')
       .call(() => {
         gsap.set(introRef.current, { display: 'none' });
         gsap.set(programsRef.current, { display: 'flex' });
       })
-      // Fade in programs
+      // Cross-fade: static bg out, Swiper in
+      .to(introBgRef.current,  { autoAlpha: 0, duration: 0.70, ease: 'power2.inOut' }, '+=0.05')
+      .to(swiperElRef.current, { autoAlpha: 1, duration: 0.70, ease: 'power2.inOut' }, '<')
+      // Programs content fades up
       .fromTo(programsRef.current,
-        { autoAlpha: 0, y: 52 },
-        { autoAlpha: 1, y: 0, duration: 0.70, ease: 'power3.out' }
+        { autoAlpha: 0, y: 40 },
+        { autoAlpha: 1, y: 0,  duration: 0.65, ease: 'power3.out' },
+        '<+=0.20'
       );
   });
 
-  // ── Moment 4: navigate away then come back → replay intro ────────────
+  // ── Moment 4: hero re-enters viewport → reset to intro ───────────────
   const resetToIntro = contextSafe(() => {
-    if (phaseRef.current === 'intro') {
-      // Already in intro — just replay animation
-      playIntro();
-      return;
-    }
-    gsap.to(programsRef.current, {
-      autoAlpha: 0, y: -32, duration: 0.40, ease: 'power2.in',
-      onComplete: playIntro,
-    });
+    if (phaseRef.current === 'intro') { playIntro(); return; }
+
+    gsap.timeline()
+      .to(programsRef.current, { autoAlpha: 0, y: -24, duration: 0.35, ease: 'power2.in' })
+      .call(playIntro);
   });
 
-  // IntersectionObserver: when hero leaves and re-enters viewport
   useEffect(() => {
     const hero = heroRef.current;
     let wasGone = false;
-
-    const observer = new IntersectionObserver(([entry]) => {
-      if (!entry.isIntersecting) {
-        wasGone = true;
-      } else if (wasGone) {
-        wasGone = false;
-        resetToIntro();
-      }
+    const observer = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) { wasGone = true; }
+      else if (wasGone)      { wasGone = false; resetToIntro(); }
     }, { threshold: 0.35 });
-
     if (hero) observer.observe(hero);
     return () => observer.disconnect();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line
 
-  // First mount → play intro
+  // First mount
   useGSAP(() => {
+    gsap.set(swiperElRef.current, { autoAlpha: 0 });
     gsap.set(programsRef.current, { autoAlpha: 0, display: 'none' });
     playIntro();
   }, { scope: heroRef });
 
-  // Slide change: cross-fade content text
+  // Cross-fade slide content on slide change
   const handleSlideChange = contextSafe((sw) => {
     const newIdx = sw.realIndex;
     if (phaseRef.current !== 'programs' || !contentRef.current) {
-      setActiveIdx(newIdx);
-      return;
+      setActiveIdx(newIdx); return;
     }
     gsap.to(contentRef.current, {
-      autoAlpha: 0, y: -10, duration: 0.22,
+      autoAlpha: 0, y: -10, duration: 0.20,
       onComplete: () => {
         setActiveIdx(newIdx);
         gsap.fromTo(contentRef.current,
           { autoAlpha: 0, y: 10 },
-          { autoAlpha: 1, y: 0, duration: 0.30 }
+          { autoAlpha: 1, y: 0, duration: 0.28 }
         );
       },
     });
@@ -149,23 +146,33 @@ export default function Hero() {
   return (
     <section id="hero" ref={heroRef}>
 
-      {/* ── Background Swiper (images only) ── */}
-      <Swiper
-        className="hero-swiper-full"
-        modules={[Autoplay]}
-        autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-        loop
-        speed={850}
-        onSwiper={(sw) => { swiperRef.current = sw; }}
-        onSlideChange={handleSlideChange}
-      >
-        {SLIDES.map((s) => (
-          <SwiperSlide key={s.id}>
-            <div className="hero-slide-bg" style={{ backgroundImage: `url('${s.img}')` }} />
-            <div className="hero-slide-overlay" />
-          </SwiperSlide>
-        ))}
-      </Swiper>
+      {/* ── Static intro background (hidden when programs show) ── */}
+      <div
+        ref={introBgRef}
+        className="hero-static-bg"
+        style={{ backgroundImage: `url('${HERO_BG}')` }}
+      />
+      <div className="hero-static-bg-overlay" />
+
+      {/* ── Swiper (programs phase background) ── */}
+      <div ref={swiperElRef} className="hero-swiper-wrap">
+        <Swiper
+          className="hero-swiper-full"
+          modules={[Autoplay]}
+          autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
+          loop
+          speed={850}
+          onSwiper={(sw) => { swiperRef.current = sw; }}
+          onSlideChange={handleSlideChange}
+        >
+          {SLIDES.map((s) => (
+            <SwiperSlide key={s.id}>
+              <div className="hero-slide-bg" style={{ backgroundImage: `url('${s.img}')` }} />
+              <div className="hero-slide-overlay" />
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
 
       {/* ── МОМЕНТ 1 + 2: Intro layer ── */}
       <div className="hero-intro-layer" ref={introRef}>
@@ -210,7 +217,8 @@ export default function Hero() {
           </button>
           <div className="hsn-dots">
             {SLIDES.map((_, idx) => (
-              <button key={idx}
+              <button
+                key={idx}
                 className={`hsn-dot ${idx === activeIdx ? 'hsn-dot--active' : ''}`}
                 onClick={() => swiperRef.current?.slideToLoop(idx)}
                 aria-label={`Слайд ${idx + 1}`}

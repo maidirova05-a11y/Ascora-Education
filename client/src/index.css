@@ -59,6 +59,11 @@ h2 em{font-style:italic;color:var(--gold);font-size:122%;font-weight:700;line-he
 /* HERO */
 /* ── HERO ──────────────────────────────────────────────────────── */
 #hero{position:relative;overflow:hidden;background:#0B1929;min-height:100dvh;min-height:100vh}
+/* Static intro background */
+.hero-static-bg{position:absolute;inset:0;z-index:1;background-size:cover;background-position:center;background-repeat:no-repeat}
+.hero-static-bg-overlay{position:absolute;inset:0;z-index:2;background:linear-gradient(to bottom,rgba(8,18,36,0.55) 0%,rgba(8,18,36,0.38) 35%,rgba(8,18,36,0.50) 65%,rgba(8,18,36,0.88) 100%)}
+/* Swiper wrapper (programs phase) */
+.hero-swiper-wrap{position:absolute;inset:0;z-index:1}
 /* Full-coverage Swiper (manual CSS, no swiper/css import) */
 .hero-swiper-full{position:absolute;inset:0}
 .hero-swiper-full .swiper-wrapper{display:flex;height:100%;transition-timing-function:cubic-bezier(0.77,0,0.18,1)}
