@@ -84,18 +84,19 @@ h1 em{font-style:italic;color:var(--gold);font-weight:700}
 /* Faction cards */
 .hero-factions{display:flex;flex-direction:column;gap:0;margin-bottom:32px}
 .faction-big-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:0}
-/* Card Slider (Swiper) */
-.faction-card-slider{position:relative;width:100%;margin-bottom:0}
-.faction-swiper{--swiper-pagination-color:var(--gold);--swiper-pagination-bullet-inactive-color:rgba(255,255,255,0.35);--swiper-pagination-bullet-inactive-opacity:1;--swiper-navigation-color:rgba(255,255,255,0.85);--swiper-navigation-size:18px;padding-bottom:36px!important;overflow:visible}
-.faction-swiper .swiper-pagination{bottom:0}
-.faction-swiper .swiper-pagination-bullet{width:9px;height:9px;transition:transform 0.3s,background 0.3s}
-.faction-swiper .swiper-pagination-bullet-active{transform:scale(1.35)}
-.faction-swiper .swiper-button-prev,.faction-swiper .swiper-button-next{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.22);top:auto;bottom:0;margin-top:0;transition:background 0.2s}
-.faction-swiper .swiper-button-prev{left:calc(50% - 72px)}
-.faction-swiper .swiper-button-next{right:calc(50% - 72px)}
-.faction-swiper .swiper-button-prev:hover,.faction-swiper .swiper-button-next:hover{background:rgba(255,255,255,0.22)}
-.faction-swiper .swiper-button-prev::after,.faction-swiper .swiper-button-next::after{font-size:10px;font-weight:900}
-.faction-big-card{display:flex;flex-direction:column;min-height:480px;padding:0;background:var(--white);border:1px solid var(--border-mid);border-radius:var(--radius-xl);text-decoration:none;color:var(--text);box-shadow:var(--shadow-sm);overflow:hidden;transition:border-color 280ms var(--ease),transform 280ms var(--ease-out),box-shadow 280ms var(--ease)}
+/* Card Slider */
+.fcs-wrap{position:relative;width:100%}
+.fcs-track{position:relative;overflow:hidden;border-radius:var(--radius-xl)}
+.fcs-slide{display:none}
+.fcs-slide--active{display:block;animation:fcsIn 0.42s ease both}
+@keyframes fcsIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:none}}
+.fcs-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:12px}
+.fcs-arrow{width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.10);border:1px solid rgba(255,255,255,0.20);color:rgba(255,255,255,0.85);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0;transition:background 0.2s}
+.fcs-arrow:hover{background:rgba(255,255,255,0.22)}
+.fcs-dots{display:flex;gap:8px;align-items:center}
+.fcs-dot{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,0.30);border:none;cursor:pointer;padding:0;transition:background 0.3s,transform 0.3s}
+.fcs-dot--active{background:var(--gold);transform:scale(1.35)}
+.faction-big-card{display:flex;flex-direction:column;min-height:420px;padding:0;background:var(--white);border:1px solid var(--border-mid);border-radius:var(--radius-xl);text-decoration:none;color:var(--text);box-shadow:var(--shadow-sm);overflow:hidden;transition:border-color 280ms var(--ease),transform 280ms var(--ease-out),box-shadow 280ms var(--ease)}
 .faction-big-card:hover{transform:translateY(-6px);border-color:var(--border-gold);box-shadow:0 20px 52px rgba(0,0,0,0.14)}
 .faction-big-card.is-active{transform:scale(1.045)!important;box-shadow:0 28px 72px rgba(0,0,0,0.22)!important;border-color:transparent!important;transition:transform 180ms var(--ease-out),box-shadow 180ms var(--ease)!important}
 .fbc-navy.is-active .faction-card-body{background:linear-gradient(155deg,#081224 0%,#0f2240 55%,#1a3560 100%)!important;transition:background 180ms var(--ease)}
@@ -104,7 +105,7 @@ h1 em{font-style:italic;color:var(--gold);font-weight:700}
 .fbc-gold.is-active .faction-card-body{background:linear-gradient(155deg,#2e1c00 0%,#5c3900 55%,#8a5a0a 100%)!important;transition:background 180ms var(--ease)}
 .fbc-gold.is-active .faction-big-title,.fbc-gold.is-active .faction-big-sub,.fbc-gold.is-active .faction-big-desc{color:rgba(255,255,255,0.93)!important}
 .fbc-gold.is-active .faction-go{color:#F5D98A!important;border-top-color:rgba(255,255,255,0.15)!important}
-.faction-card-top{display:flex;align-items:center;justify-content:center;padding:90px 0 86px;flex-shrink:0;background-size:cover;background-position:center;position:relative}
+.faction-card-top{display:flex;align-items:center;justify-content:center;padding:72px 0 68px;flex-shrink:0;background-size:cover;background-position:center;position:relative}
 .faction-top-navy{background-color:var(--navy)}
 .faction-top-navy::after{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(8,18,36,0.80) 0%,rgba(10,22,40,0.55) 100%)}
 .faction-top-gold{background-color:#8B6120}

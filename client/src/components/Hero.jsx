@@ -1,52 +1,33 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useLang } from '../context/LangContext';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination, Navigation } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/navigation';
 
-const SLIDES = [
-  {
-    img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80&fit=crop&auto=format',
-    pos: 'center 30%',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80&fit=crop&auto=format',
-    pos: 'center center',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80&fit=crop&auto=format',
-    pos: 'center 40%',
-  },
-  {
-    img: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80&fit=crop&auto=format',
-    pos: 'center center',
-  },
+/* ── Background slider ───────────────────────────────────────────────── */
+const BG_SLIDES = [
+  { img: 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1200&q=80&fit=crop&auto=format', pos: 'center 30%' },
+  { img: 'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=1200&q=80&fit=crop&auto=format', pos: 'center center' },
+  { img: 'https://images.unsplash.com/photo-1488190211105-8b0e65b80b4e?w=1200&q=80&fit=crop&auto=format', pos: 'center 40%' },
+  { img: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=1200&q=80&fit=crop&auto=format', pos: 'center center' },
 ];
-
-const INTERVAL = 5000;
 
 function HeroBgSlider() {
   const [current, setCurrent] = useState(0);
   const touchStartX = useRef(null);
   const timerRef = useRef(null);
 
-  const next = useCallback(() => setCurrent(i => (i + 1) % SLIDES.length), []);
-  const prev = useCallback(() => setCurrent(i => (i - 1 + SLIDES.length) % SLIDES.length), []);
+  const next = useCallback(() => setCurrent(i => (i + 1) % BG_SLIDES.length), []);
+  const prev = useCallback(() => setCurrent(i => (i - 1 + BG_SLIDES.length) % BG_SLIDES.length), []);
 
   const resetTimer = useCallback(() => {
     clearInterval(timerRef.current);
-    timerRef.current = setInterval(next, INTERVAL);
+    timerRef.current = setInterval(next, 5000);
   }, [next]);
 
   useEffect(() => {
-    timerRef.current = setInterval(next, INTERVAL);
+    timerRef.current = setInterval(next, 5000);
     return () => clearInterval(timerRef.current);
   }, [next]);
 
   const goTo = (idx) => { setCurrent(idx); resetTimer(); };
-
   const onTouchStart = (e) => { touchStartX.current = e.touches[0].clientX; };
   const onTouchEnd = (e) => {
     if (touchStartX.current === null) return;
@@ -56,86 +37,90 @@ function HeroBgSlider() {
   };
 
   return (
-    <div
-      className="hero-slider"
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      {SLIDES.map((slide, idx) => (
-        <div
-          key={idx}
-          className={`hero-slide ${idx === current ? 'hero-slide--active' : ''}`}
-          style={{ backgroundImage: `url('${slide.img}')`, backgroundPosition: slide.pos }}
-        />
+    <div className="hero-slider" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      {BG_SLIDES.map((slide, idx) => (
+        <div key={idx} className={`hero-slide ${idx === current ? 'hero-slide--active' : ''}`}
+          style={{ backgroundImage: `url('${slide.img}')`, backgroundPosition: slide.pos }} />
       ))}
       <div className="hero-slide-overlay" />
       <div className="hero-slide-dots">
-        {SLIDES.map((_, idx) => (
-          <button
-            key={idx}
-            className={`hero-dot ${idx === current ? 'hero-dot--active' : ''}`}
-            onClick={() => goTo(idx)}
-            aria-label={`Слайд ${idx + 1}`}
-          />
+        {BG_SLIDES.map((_, idx) => (
+          <button key={idx} className={`hero-dot ${idx === current ? 'hero-dot--active' : ''}`}
+            onClick={() => goTo(idx)} aria-label={`Слайд ${idx + 1}`} />
         ))}
       </div>
     </div>
   );
 }
 
+/* ── Card slider ─────────────────────────────────────────────────────── */
 const CARDS = [
   {
-    id: 'edu', href: '#education', colorClass: 'fbc-navy',
-    topClass: 'faction-top-navy',
+    id: 'edu', href: '#education', colorClass: 'fbc-navy', topClass: 'faction-top-navy',
     img: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=900&q=80&fit=crop&auto=format',
-    icon: <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>,
   },
   {
-    id: 'camps', href: '#camps', colorClass: 'fbc-gold',
-    topClass: 'faction-top-gold',
+    id: 'camps', href: '#camps', colorClass: 'fbc-gold', topClass: 'faction-top-gold',
     img: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=900&q=80&fit=crop&auto=format',
-    icon: <svg viewBox="0 0 24 24"><path d="M3 17l4-8 4 5 3-3 4 6H3z"/><path d="M12 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" fill="currentColor" stroke="none"/></svg>,
   },
 ];
 
 function FactionCardSlider({ t }) {
-  const [activeCard, setActiveCard] = useState(null);
+  const [current, setCurrent] = useState(0);
+  const [dir, setDir] = useState(1);
+  const [active, setActive] = useState(null);
+  const timerRef = useRef(null);
+
+  const goTo = useCallback((idx, direction = 1) => {
+    setDir(direction);
+    setCurrent(idx);
+    clearInterval(timerRef.current);
+    timerRef.current = setInterval(() => {
+      setCurrent(i => { setDir(1); return (i + 1) % CARDS.length; });
+    }, 4000);
+  }, []);
+
+  useEffect(() => {
+    timerRef.current = setInterval(() => {
+      setCurrent(i => { setDir(1); return (i + 1) % CARDS.length; });
+    }, 4000);
+    return () => clearInterval(timerRef.current);
+  }, []);
+
+  const touchX = useRef(null);
+  const onTouchStart = (e) => { touchX.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (touchX.current === null) return;
+    const dx = e.changedTouches[0].clientX - touchX.current;
+    if (Math.abs(dx) > 40) {
+      if (dx < 0) goTo((current + 1) % CARDS.length, 1);
+      else goTo((current - 1 + CARDS.length) % CARDS.length, -1);
+    }
+    touchX.current = null;
+  };
 
   return (
-    <div className="faction-card-slider">
-      <Swiper
-        modules={[Autoplay, Pagination, Navigation]}
-        autoplay={{ delay: 4500, disableOnInteraction: false, pauseOnMouseEnter: true }}
-        pagination={{ clickable: true }}
-        navigation
-        loop
-        speed={550}
-        className="faction-swiper"
-      >
-        {CARDS.map((card) => (
-          <SwiperSlide key={card.id}>
+    <div className="fcs-wrap" onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <div className="fcs-track">
+        {CARDS.map((card, idx) => (
+          <div key={card.id} className={`fcs-slide ${idx === current ? 'fcs-slide--active' : ''}`}
+            style={{ '--dir': dir }}>
             <a
               href={card.href}
-              className={`faction-big-card ${card.colorClass} ${activeCard === card.id ? 'is-active' : ''}`}
-              onMouseDown={() => setActiveCard(card.id)}
-              onMouseLeave={() => setTimeout(() => setActiveCard(null), 400)}
-              onTouchStart={() => setActiveCard(card.id)}
-              onTouchEnd={() => setTimeout(() => setActiveCard(null), 400)}
+              className={`faction-big-card ${card.colorClass} ${active === card.id ? 'is-active' : ''}`}
+              onMouseDown={() => setActive(card.id)}
+              onMouseLeave={() => setTimeout(() => setActive(null), 400)}
               onClick={(e) => {
                 e.preventDefault();
-                setActiveCard(card.id);
+                setActive(card.id);
                 setTimeout(() => {
-                  setActiveCard(null);
+                  setActive(null);
                   document.querySelector(card.href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 340);
               }}
             >
-              <div
-                className={`faction-card-top ${card.topClass}`}
-                style={{ backgroundImage: `url('${card.img}')` }}
-              >
-                <div className="faction-icon">{card.icon}</div>
-              </div>
+              <div className={`faction-card-top ${card.topClass}`}
+                style={{ backgroundImage: `url('${card.img}')` }} />
               <div className="faction-card-body">
                 <div className="faction-big-title">{t(`card.${card.id}.title`)}</div>
                 <div className="faction-big-sub">{t(`card.${card.id}.sub`)}</div>
@@ -148,13 +133,29 @@ function FactionCardSlider({ t }) {
                 </div>
               </div>
             </a>
-          </SwiperSlide>
+          </div>
         ))}
-      </Swiper>
+      </div>
+
+      <div className="fcs-nav">
+        <button className="fcs-arrow" onClick={() => goTo((current - 1 + CARDS.length) % CARDS.length, -1)} aria-label="Назад">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M10 4l-4 4 4 4"/></svg>
+        </button>
+        <div className="fcs-dots">
+          {CARDS.map((_, idx) => (
+            <button key={idx} className={`fcs-dot ${idx === current ? 'fcs-dot--active' : ''}`}
+              onClick={() => goTo(idx, idx > current ? 1 : -1)} aria-label={`Карточка ${idx + 1}`} />
+          ))}
+        </div>
+        <button className="fcs-arrow" onClick={() => goTo((current + 1) % CARDS.length, 1)} aria-label="Вперёд">
+          <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M6 4l4 4-4 4"/></svg>
+        </button>
+      </div>
     </div>
   );
 }
 
+/* ── Hero ────────────────────────────────────────────────────────────── */
 export default function Hero() {
   const { t } = useLang();
 
@@ -167,7 +168,6 @@ export default function Hero() {
 
           <div className="hero-factions">
             <FactionCardSlider t={t} />
-
             <div className="faction-cta-bar">
               <a href="#contacts" className="btn-primary faction-big-cta">
                 <span>{t('hero.cta')}</span>
