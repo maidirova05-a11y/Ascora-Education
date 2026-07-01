@@ -1,6 +1,7 @@
 const router = require('express').Router();
 const db = require('../db');
 const { appendInquiry } = require('../sheets');
+const { sendLead } = require('../bitrix');
 
 async function ensureTable() {
   await db.query(`
@@ -27,6 +28,7 @@ router.post('/', async (req, res) => {
     );
     const saved = { ...req.body, id: rows[0].id, created_at: rows[0].created_at };
     appendInquiry(saved); // не ждём — не блокируем ответ пользователю
+    sendLead(saved);      // отправка лида в Bitrix24 (fire-and-forget)
     res.status(201).json({ ok: true, id: rows[0].id });
   } catch (err) {
     console.error(err);
