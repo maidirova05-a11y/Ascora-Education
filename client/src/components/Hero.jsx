@@ -11,6 +11,12 @@ const HERO_BG = 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=
 
 const SLIDES = [
   {
+    id: 'antalya',
+    href: '#camp-11',
+    img: 'https://images.unsplash.com/photo-1509233725247-49e657c54213?w=1400&q=85&fit=crop&auto=format',
+    bullets: ['b1', 'b2', 'b3'],
+  },
+  {
     id: 'edu',
     href: '#education',
     img: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=1400&q=85&fit=crop&auto=format',
@@ -84,6 +90,11 @@ export default function Hero() {
     // Reset programs phase
     gsap.set(programsRef.current, { autoAlpha: 0, display: 'none' });
     gsap.set(swiperElRef.current, { autoAlpha: 0 });
+    // Stop autoplay + rewind to the first slide while hidden — Swiper's
+    // transition-end events misfire on a visibility:hidden element, which
+    // makes autoplay race through slides invisibly if left running.
+    swiperRef.current?.autoplay?.stop();
+    swiperRef.current?.slideTo(0, 0);
 
     // Prepare intro elements
     gsap.set(introBgRef.current, { autoAlpha: 1 });
@@ -121,6 +132,8 @@ export default function Hero() {
   // ── Moment 3: "Посмотреть программы" → programs phase ────────────────
   const showPrograms = contextSafe(() => {
     phaseRef.current = 'programs';
+    swiperRef.current?.slideTo(0, 0);
+    setActiveIdx(0);
 
     gsap.timeline()
       // hot badge slides up first
@@ -143,7 +156,8 @@ export default function Hero() {
         { autoAlpha: 0, y: 40 },
         { autoAlpha: 1, y: 0, duration: 0.65, ease: 'power3.out' },
         '<+=0.18'
-      );
+      )
+      .call(() => swiperRef.current?.autoplay?.start());
   });
 
   // ── Moment 4: re-enter viewport → replay intro ───────────────────────
@@ -175,7 +189,7 @@ export default function Hero() {
 
   // Slide content cross-fade on auto-advance
   const handleSlideChange = contextSafe((sw) => {
-    const newIdx = sw.realIndex;
+    const newIdx = sw.activeIndex;
     if (phaseRef.current !== 'programs' || !contentRef.current) {
       setActiveIdx(newIdx); return;
     }
@@ -207,7 +221,7 @@ export default function Hero() {
           className="hero-swiper-full"
           modules={[Autoplay]}
           autoplay={{ delay: 5000, disableOnInteraction: false, pauseOnMouseEnter: true }}
-          loop speed={850}
+          rewind speed={850}
           onSwiper={(sw) => { swiperRef.current = sw; }}
           onSlideChange={handleSlideChange}
         >
@@ -290,7 +304,7 @@ export default function Hero() {
             {SLIDES.map((_, idx) => (
               <button key={idx}
                 className={`hsn-dot ${idx === activeIdx ? 'hsn-dot--active' : ''}`}
-                onClick={() => swiperRef.current?.slideToLoop(idx)}
+                onClick={() => swiperRef.current?.slideTo(idx)}
                 aria-label={`Слайд ${idx + 1}`}
               />
             ))}
