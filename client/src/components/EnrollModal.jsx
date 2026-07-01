@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLang } from '../context/LangContext';
+import { sendLeadToBitrix } from '../utils/bitrix';
 
 export default function EnrollModal({ camp, onClose }) {
   const { lang, t } = useLang();
@@ -25,6 +26,7 @@ export default function EnrollModal({ camp, onClose }) {
         }),
       });
       if (!res.ok) throw new Error();
+      sendLeadToBitrix({ name: form.name, phone: form.phone, email: form.email, topic: camp.countryLabel[lang] + ' — ' + camp.org, message: form.message });
       setStatus('success');
     } catch {
       setStatus('error');

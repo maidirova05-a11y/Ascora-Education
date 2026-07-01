@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLang } from '../context/LangContext';
+import { sendLeadToBitrix } from '../utils/bitrix';
 
 export default function Contacts() {
   const { lang, t } = useLang();
@@ -16,6 +17,7 @@ export default function Contacts() {
         body: JSON.stringify({ name: form.name, phone: form.phone, email: form.email, camp_name: form.topic || null, message: form.message || null, lang }),
       });
       if (!res.ok) throw new Error();
+      sendLeadToBitrix({ name: form.name, phone: form.phone, email: form.email, topic: form.topic, message: form.message });
       setStatus('success');
       setForm({ name: '', phone: '', email: '', topic: '', message: '' });
     } catch {
