@@ -7,6 +7,9 @@ import LeadForm from '../components/LeadForm';
 
 const camp = campsData.find((c) => c.id === 11);
 
+// FAQPage structured data stays in Russian to match the statically
+// prerendered <head> crawlers see (scripts/prerender-meta.mjs) —
+// duplicating per-language JSON-LD would fight that snapshot.
 const FAQ_RU = [
   { q: 'Что входит в стоимость путёвки?', a: 'Перелёт из Астаны (Turkish Airlines / Air Astana), проживание в отеле 5⭐ Ultra All Inclusive, трансфер и медицинская страховка, вся образовательная и развлекательная программа, круглосуточное сопровождение и безопасность детей.' },
   { q: 'Какие даты заездов доступны в 2026 году?', a: 'Три смены по 7 дней / 6 ночей: 20–26 июля, 28 июля – 3 августа и 2–8 августа 2026 года.' },
@@ -16,8 +19,13 @@ const FAQ_RU = [
 ];
 
 export default function LagerAntalya() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   if (!camp) return null;
+
+  const FAQ = [1, 2, 3, 4, 5].map((i) => ({
+    q: t(`seo.antalya.faq.q${i}`),
+    a: t(`seo.antalya.faq.a${i}`),
+  }));
 
   const jsonLd = [
     {
@@ -51,8 +59,8 @@ export default function LagerAntalya() {
   return (
     <>
       <SeoHead
-        title="Детский летний лагерь в Турции (Анталья) 2026 из Астаны — отель 5⭐ Ultra All Inclusive | ASCORA Education"
-        description="Детский лагерь в Турции для детей из Казахстана: Анталья, отель 5⭐ Ultra All Inclusive, английский язык, STEM и робототехника. Перелёт из Астаны, трансфер и страховка включены. От 890 000 ₸, рассрочка на 6 месяцев."
+        title={t('seo.antalya.meta.title')}
+        description={t('seo.antalya.meta.desc')}
         path="/leto-lager-v-turcii"
         jsonLd={jsonLd}
       />
@@ -60,27 +68,24 @@ export default function LagerAntalya() {
       <main>
         <section className="seo-hero">
           <div className="seo-breadcrumb">
-            <a href="/">Главная</a><span>／</span>
-            <a href="/letnie-lagerya-za-rubezhom">Летние лагеря за рубежом</a><span>／</span>
-            <span>Турция (Анталья)</span>
+            <a href="/">{t('seo.breadcrumb.home')}</a><span>／</span>
+            <a href="/letnie-lagerya-za-rubezhom">{t('seo.antalya.breadcrumb.hub')}</a><span>／</span>
+            <span>{t('seo.antalya.breadcrumb.current')}</span>
           </div>
-          <h1>Летний лагерь в Турции — Анталья, отель 5⭐ Ultra All Inclusive</h1>
-          <p className="seo-hero-desc">
-            Горящее предложение ASCORA Education: 7 дней в Анталье с проживанием в отеле 5⭐ Ultra All Inclusive,
-            английским языком, STEM и робототехникой на практике. Перелёт, трансфер и медстраховка уже включены в стоимость.
-          </p>
+          <h1>{t('seo.antalya.h1')}</h1>
+          <p className="seo-hero-desc">{t('seo.antalya.hero.desc')}</p>
           <a href="#zayavka" className="btn-primary seo-hero-cta">
-            <span>Оставить заявку</span>
+            <span>{t('seo.antalya.cta1')}</span>
             <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
           </a>
         </section>
 
         <section className="seo-section">
           <div className="container">
-            <div className="section-label">Программа лагеря</div>
-            <h2>Что входит в путёвку</h2>
+            <div className="section-label">{t('seo.antalya.section1.label')}</div>
+            <h2>{t('seo.antalya.section1.h2')}</h2>
             <div className="seo-key-facts">
-              {camp.includes.ru.map((item, i) => (
+              {(camp.includes[lang] || camp.includes.ru).map((item, i) => (
                 <div key={i} className="about-feature">
                   <div className="feat-icon">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C9A84C" strokeWidth="2"><path d="M20 6L9 17l-5-5"/></svg>
@@ -92,21 +97,21 @@ export default function LagerAntalya() {
 
             <div className="seo-price-band">
               <div>
-                <div className="seo-price-band-label">Стоимость участия</div>
+                <div className="seo-price-band-label">{t('seo.antalya.price.label')}</div>
                 <div className="seo-price-band-val">890 000 ₸</div>
-                <div className="seo-price-band-note">Доступна рассрочка на 6 месяцев · 7 дней / 6 ночей · возраст 7–17 лет</div>
+                <div className="seo-price-band-note">{t('seo.antalya.price.note')}</div>
               </div>
-              <a href="#zayavka" className="btn-primary">Забронировать место</a>
+              <a href="#zayavka" className="btn-primary">{t('seo.antalya.price.cta')}</a>
             </div>
           </div>
         </section>
 
         <section className="seo-section seo-section--alt">
           <div className="container">
-            <div className="section-label">Даты заездов 2026</div>
-            <h2>Три смены на выбор</h2>
+            <div className="section-label">{t('seo.antalya.dates.label')}</div>
+            <h2>{t('seo.antalya.dates.h2')}</h2>
             <div className="seo-key-facts">
-              {camp.dates.ru.split('\n').map((d, i) => (
+              {(camp.dates[lang] || camp.dates.ru).split('\n').map((d, i) => (
                 <div key={i} className="about-feature">
                   <div className="feat-icon">
                     <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C9A84C" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
@@ -120,25 +125,17 @@ export default function LagerAntalya() {
 
         <section className="seo-section">
           <div className="container">
-            <div className="section-label">О программе</div>
-            <h2>Детский лагерь в Турции для детей из Казахстана</h2>
+            <div className="section-label">{t('seo.antalya.about.label')}</div>
+            <h2>{t('seo.antalya.about.h2')}</h2>
             <div className="seo-faq" style={{ maxWidth: 800 }}>
               <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 18 }}>
-                Лагерь в Анталье от ASCORA Education — это программа «всё включено» в прямом смысле:
-                перелёт из Астаны рейсами Turkish Airlines или Air Astana, трансфер из аэропорта,
-                медицинская страховка и проживание в отеле 5⭐ на системе Ultra All Inclusive уже входят
-                в стоимость путёвки. Родителям не нужно ничего организовывать отдельно.
+                {t('seo.antalya.about.p1')}
               </p>
               <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 18 }}>
-                Это не просто отдых на море: каждый день дети занимаются английским языком с практикой
-                в реальных ситуациях, работают над STEM-проектами и робототехникой, развивают лидерство
-                и soft skills в командных проектах. А после занятий — море, бассейны, спорт,
-                мастер-классы и новые друзья со всего Казахстана.
+                {t('seo.antalya.about.p2')}
               </p>
               <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8 }}>
-                Летний лагерь принимает детей и подростков от 7 до 17 лет. Смены по 7 дней летом 2026 года,
-                круглосуточное сопровождение вожатыми и охрана. Количество мест в каждой смене ограничено —
-                до 5 июля действует специальная цена 890 000 ₸ с рассрочкой на 6 месяцев.
+                {t('seo.antalya.about.p3')}
               </p>
             </div>
           </div>
@@ -146,10 +143,10 @@ export default function LagerAntalya() {
 
         <section className="seo-section seo-section--alt">
           <div className="container">
-            <div className="section-label">Вопросы и ответы</div>
-            <h2>Часто спрашивают</h2>
+            <div className="section-label">{t('seo.antalya.faq.label')}</div>
+            <h2>{t('seo.antalya.faq.h2')}</h2>
             <div className="seo-faq">
-              {FAQ_RU.map((f, i) => (
+              {FAQ.map((f, i) => (
                 <div key={i} className="faq-item">
                   <div className="faq-q">{f.q}</div>
                   <div className="faq-a">{f.a}</div>
@@ -161,8 +158,8 @@ export default function LagerAntalya() {
 
         <section className="seo-lead-band">
           <div className="container">
-            <div className="section-label">Бронирование</div>
-            <h2>Оставьте заявку на лагерь в Анталье</h2>
+            <div className="section-label">{t('seo.antalya.lead.label')}</div>
+            <h2>{t('seo.antalya.lead.h2')}</h2>
             <LeadForm id="zayavka" topic="Летний лагерь в Турции (Анталья)" price={890000} />
           </div>
         </section>

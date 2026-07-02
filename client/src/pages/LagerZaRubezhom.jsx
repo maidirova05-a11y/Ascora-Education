@@ -5,6 +5,8 @@ import Footer from '../components/Footer';
 import SeoHead from '../components/SeoHead';
 import LeadForm from '../components/LeadForm';
 
+// FAQPage structured data stays in Russian to match the statically
+// prerendered <head> crawlers see (scripts/prerender-meta.mjs).
 const FAQ_RU = [
   { q: 'С какого возраста можно поехать в летний лагерь за рубежом?', a: 'В зависимости от программы — от 6 до 18 лет. Мы подбираем лагерь под конкретный возраст и интересы ребёнка.' },
   { q: 'Что обычно входит в стоимость путёвки?', a: 'Как правило — проживание, питание, образовательная программа, трансфер и медицинская страховка. Точный состав зависит от конкретного лагеря и указан в описании каждой программы.' },
@@ -14,6 +16,11 @@ const FAQ_RU = [
 
 export default function LagerZaRubezhom() {
   const { t, lang } = useLang();
+
+  const FAQ = [1, 2, 3, 4].map((i) => ({
+    q: t(`seo.hub.faq.q${i}`),
+    a: t(`seo.hub.faq.a${i}`),
+  }));
 
   const jsonLd = {
     '@context': 'https://schema.org',
@@ -28,8 +35,8 @@ export default function LagerZaRubezhom() {
   return (
     <>
       <SeoHead
-        title="Летние лагеря за рубежом для детей 2026 — ASCORA Education"
-        description="Летние языковые и спортивные лагеря за рубежом: Турция, Болгария, Испания, Англия, Малайзия и другие страны. Полное сопровождение, английский язык, от 7 до 18 лет."
+        title={t('seo.hub.meta.title')}
+        description={t('seo.hub.meta.desc')}
         path="/letnie-lagerya-za-rubezhom"
         jsonLd={jsonLd}
       />
@@ -37,21 +44,21 @@ export default function LagerZaRubezhom() {
       <main>
         <section className="seo-hero">
           <div className="seo-breadcrumb">
-            <a href="/">Главная</a><span>／</span>
-            <span>Летние лагеря за рубежом</span>
+            <a href="/">{t('seo.breadcrumb.home')}</a><span>／</span>
+            <span>{t('seo.hub.breadcrumb')}</span>
           </div>
-          <h1>Летние лагеря за рубежом для детей и подростков</h1>
+          <h1>{t('seo.hub.h1')}</h1>
           <p className="seo-hero-desc">{t('camps.desc')} {t('camps.desc2')}</p>
           <a href="#zayavka" className="btn-primary seo-hero-cta">
-            <span>Подобрать лагерь</span>
+            <span>{t('seo.hub.cta')}</span>
             <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
           </a>
         </section>
 
         <section className="seo-section">
           <div className="container">
-            <div className="section-label">Программы 2026</div>
-            <h2>Все направления летних лагерей</h2>
+            <div className="section-label">{t('seo.hub.programs.label')}</div>
+            <h2>{t('seo.hub.programs.h2')}</h2>
             <div className="seo-camp-list">
               {campsData.map((camp) => (
                 <a
@@ -64,11 +71,11 @@ export default function LagerZaRubezhom() {
                       {camp.hot && '🔥 '}{camp.countryLabel[lang] || camp.countryLabel.ru} — {camp.org}
                     </div>
                     <div className="seo-camp-row-meta">
-                      {(camp.city[lang] || camp.city.ru)} · {camp.ageTag} лет · {camp.durTag[lang] || camp.durTag.ru}
+                      {(camp.city[lang] || camp.city.ru)} · {camp.ageTag} {t('seo.hub.age.suffix')} · {camp.durTag[lang] || camp.durTag.ru}
                     </div>
                   </div>
                   <div className="seo-camp-row-price">
-                    от {camp.price.toLocaleString()} {camp.currency === 'kzt' ? '₸' : '$'}
+                    {t('seo.hub.price.from')} {camp.price.toLocaleString()} {camp.currency === 'kzt' ? '₸' : '$'}
                   </div>
                 </a>
               ))}
@@ -78,8 +85,8 @@ export default function LagerZaRubezhom() {
 
         <section className="seo-section seo-section--alt">
           <div className="container">
-            <div className="section-label">Почему ASCORA</div>
-            <h2>Что мы гарантируем в каждой программе</h2>
+            <div className="section-label">{t('seo.hub.why.label')}</div>
+            <h2>{t('seo.hub.why.h2')}</h2>
             <div className="seo-key-facts">
               <div className="about-feature">
                 <div className="feat-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#C9A84C" strokeWidth="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
@@ -103,10 +110,10 @@ export default function LagerZaRubezhom() {
 
         <section className="seo-section">
           <div className="container">
-            <div className="section-label">Вопросы и ответы</div>
-            <h2>Часто спрашивают</h2>
+            <div className="section-label">{t('seo.hub.faq.label')}</div>
+            <h2>{t('seo.hub.faq.h2')}</h2>
             <div className="seo-faq">
-              {FAQ_RU.map((f, i) => (
+              {FAQ.map((f, i) => (
                 <div key={i} className="faq-item">
                   <div className="faq-q">{f.q}</div>
                   <div className="faq-a">{f.a}</div>
@@ -118,8 +125,8 @@ export default function LagerZaRubezhom() {
 
         <section className="seo-lead-band">
           <div className="container">
-            <div className="section-label">Подбор программы</div>
-            <h2>Оставьте заявку — подберём лагерь под ребёнка</h2>
+            <div className="section-label">{t('seo.hub.lead.label')}</div>
+            <h2>{t('seo.hub.lead.h2')}</h2>
             <LeadForm id="zayavka" topic="Летние лагеря за рубежом — общая заявка" />
           </div>
         </section>
