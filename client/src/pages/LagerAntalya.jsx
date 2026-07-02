@@ -19,21 +19,40 @@ export default function LagerAntalya() {
   const { t } = useLang();
   if (!camp) return null;
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ_RU.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  };
+  const jsonLd = [
+    {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: FAQ_RU.map((f) => ({
+        '@type': 'Question',
+        name: f.q,
+        acceptedAnswer: { '@type': 'Answer', text: f.a },
+      })),
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: 'Детский летний лагерь в Турции (Анталья) — ASCORA Summer Camp 2026',
+      description: 'Летний лагерь для детей 7–17 лет в Анталье: отель 5⭐ Ultra All Inclusive, английский язык, STEM и робототехника, перелёт из Астаны, трансфер и страховка включены.',
+      image: 'https://www.ascora.education/logo.png',
+      brand: { '@type': 'Brand', name: 'ASCORA Education' },
+      offers: {
+        '@type': 'Offer',
+        url: 'https://www.ascora.education/leto-lager-v-turcii',
+        price: '890000',
+        priceCurrency: 'KZT',
+        priceValidUntil: '2026-07-05',
+        availability: 'https://schema.org/InStock',
+        seller: { '@type': 'Organization', name: 'ASCORA Education' },
+      },
+    },
+  ];
 
   return (
     <>
       <SeoHead
-        title="Летний лагерь в Турции (Анталья) 2026 — отель 5⭐ Ultra All Inclusive | ASCORA Education"
-        description="Летний лагерь в Анталье 2026: отель 5⭐ Ultra All Inclusive, английский язык, STEM и робототехника, перелёт и трансфер включены. От 890 000 ₸, рассрочка на 6 месяцев."
+        title="Детский летний лагерь в Турции (Анталья) 2026 из Астаны — отель 5⭐ Ultra All Inclusive | ASCORA Education"
+        description="Детский лагерь в Турции для детей из Казахстана: Анталья, отель 5⭐ Ultra All Inclusive, английский язык, STEM и робототехника. Перелёт из Астаны, трансфер и страховка включены. От 890 000 ₸, рассрочка на 6 месяцев."
         path="/leto-lager-v-turcii"
         jsonLd={jsonLd}
       />
@@ -100,6 +119,32 @@ export default function LagerAntalya() {
         </section>
 
         <section className="seo-section">
+          <div className="container">
+            <div className="section-label">О программе</div>
+            <h2>Детский лагерь в Турции для детей из Казахстана</h2>
+            <div className="seo-faq" style={{ maxWidth: 800 }}>
+              <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 18 }}>
+                Лагерь в Анталье от ASCORA Education — это программа «всё включено» в прямом смысле:
+                перелёт из Астаны рейсами Turkish Airlines или Air Astana, трансфер из аэропорта,
+                медицинская страховка и проживание в отеле 5⭐ на системе Ultra All Inclusive уже входят
+                в стоимость путёвки. Родителям не нужно ничего организовывать отдельно.
+              </p>
+              <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8, marginBottom: 18 }}>
+                Это не просто отдых на море: каждый день дети занимаются английским языком с практикой
+                в реальных ситуациях, работают над STEM-проектами и робототехникой, развивают лидерство
+                и soft skills в командных проектах. А после занятий — море, бассейны, спорт,
+                мастер-классы и новые друзья со всего Казахстана.
+              </p>
+              <p style={{ fontSize: 15, color: 'var(--text-muted)', lineHeight: 1.8 }}>
+                Летний лагерь принимает детей и подростков от 7 до 17 лет. Смены по 7 дней летом 2026 года,
+                круглосуточное сопровождение вожатыми и охрана. Количество мест в каждой смене ограничено —
+                до 5 июля действует специальная цена 890 000 ₸ с рассрочкой на 6 месяцев.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <section className="seo-section seo-section--alt">
           <div className="container">
             <div className="section-label">Вопросы и ответы</div>
             <h2>Часто спрашивают</h2>
