@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useLang } from '../context/LangContext';
 
+const EMPTY_FORM = { name: '', phone: '', email: '', message: '', website: '' };
+
 export default function LeadForm({ topic, price, id }) {
   const { lang, t } = useLang();
-  const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState('idle');
 
   function change(e) { setForm({ ...form, [e.target.name]: e.target.value }); }
@@ -33,9 +35,16 @@ export default function LeadForm({ topic, price, id }) {
           <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
           <div style={{ color: 'var(--gold)', fontFamily: "'Cormorant Garamond',serif", fontSize: 22 }}>{t('modal.title')}</div>
           <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, marginTop: 10 }} dangerouslySetInnerHTML={{ __html: t('modal.text') }} />
+          <button className="modal-btn" style={{ marginTop: 24 }} onClick={() => { setForm(EMPTY_FORM); setStatus('idle'); }}>
+            {t('modal.btn')}
+          </button>
         </div>
       ) : (
         <form onSubmit={submit}>
+          {/* Honeypot: невидимое поле-ловушка для ботов */}
+          <input type="text" name="website" value={form.website} onChange={change}
+            style={{ position: 'absolute', left: '-9999px', width: 0, height: 0, opacity: 0 }}
+            tabIndex={-1} autoComplete="off" aria-hidden="true" />
           <div className="form-group">
             <label>{t('form.name.label')}</label>
             <input type="text" placeholder={t('form.name.ph')} value={form.name} onChange={change} name="name" required />

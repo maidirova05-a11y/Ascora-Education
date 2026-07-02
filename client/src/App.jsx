@@ -33,6 +33,17 @@ function Landing() {
     return () => observer.disconnect();
   }, []);
 
+  // Scroll to #anchor when arriving from another page (e.g. /leto-lager-v-turcii → /#camps):
+  // the section doesn't exist until React renders, so the browser's native jump misses.
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (!hash) return;
+    const timer = setTimeout(() => {
+      document.querySelector(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
       <Navbar />

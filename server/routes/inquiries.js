@@ -1,7 +1,20 @@
 const router = require('express').Router();
+const rateLimit = require('express-rate-limit');
 const db = require('../db');
 const { appendInquiry } = require('../sheets');
 const { sendLead } = require('../bitrix');
+
+// Отдельный строгий лимит на создание заявок: живому родителю хватит,
+// бот-спам в CRM отрезается (общий лимит 60/мин для этого слишком щедрый)
+const inquiryLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { error: 'Слишком много заявок с этого адреса. Попробуйте позже или позвоните нам.' },
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const clean = (v, max) => (typeof v === 'string' ? v.trim().slice(0, max) : null) || null;
 
 async function ensureTable() {
   await db.query(`
@@ -14,8 +27,21 @@ async function ensureTable() {
   `);
 }
 
-router.post('/', async (req, res) => {
-  const { name, phone, email, camp_name, camp_price, lang, message } = req.body;
+router.post('/', inquiryLimiter, async (req, res) => {
+  // Honeypot: скрытое поле, которое видят только боты. Заполнено —
+  // отвечаем «успехом», но ничего не сохраняем (бот не поймёт, что пойман).
+  if (req.body.website) {
+    return res.status(201).json({ ok: true, id: 0 });
+  }
+
+  const name = clean(req.body.name, 200);
+  const phone = clean(req.body.phone, 50);
+  const email = clean(req.body.email, 200);
+  const camp_name = clean(req.body.camp_name, 300);
+  const message = clean(req.body.message, 3000);
+  const lang = clean(req.body.lang, 5) || 'ru';
+  const camp_price = Number.isFinite(Number(req.body.camp_price)) ? Number(req.body.camp_price) : null;
+
   if (!name || !phone) {
     return res.status(400).json({ error: 'name and phone are required' });
   }
@@ -24,9 +50,9 @@ router.post('/', async (req, res) => {
     const { rows } = await db.query(
       `INSERT INTO inquiries (name, phone, email, camp_name, camp_price, lang, message)
        VALUES ($1,$2,$3,$4,$5,$6,$7) RETURNING id, created_at`,
-      [name, phone, email || null, camp_name || null, camp_price || null, lang || 'ru', message || null]
+      [name, phone, email, camp_name, camp_price, lang, message]
     );
-    const saved = { ...req.body, id: rows[0].id, created_at: rows[0].created_at };
+    const saved = { name, phone, email, camp_name, camp_price, lang, message, id: rows[0].id, created_at: rows[0].created_at };
     appendInquiry(saved); // не ждём — не блокируем ответ пользователю
     sendLead(saved);      // отправка лида в Bitrix24 (fire-and-forget)
     res.status(201).json({ ok: true, id: rows[0].id });

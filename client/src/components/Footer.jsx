@@ -7,7 +7,7 @@ export default function Footer() {
       <div className="container">
         <div className="footer-grid">
           <div className="footer-brand">
-            <a href="#hero" className="nav-logo">
+            <a href="/#hero" className="nav-logo">
               <img src="/logo-small.png" alt="ASCORA Education" className="nav-logo-img" width="168" height="70" />
             </a>
             <p>{t('footer.desc')}</p>
@@ -24,11 +24,11 @@ export default function Footer() {
           <div className="footer-col">
             <h4>{t('footer.nav')}</h4>
             <ul>
-              <li><a href="#about">{t('nav.about')}</a></li>
+              <li><a href="/#about">{t('nav.about')}</a></li>
               <li><a href="/obuchenie-za-rubezhom">{t('nav.edu')}</a></li>
-              <li><a href="#camps">{t('nav.camps')}</a></li>
-              <li><a href="#news">{t('nav.news')}</a></li>
-              <li><a href="#contacts">{t('nav.contacts')}</a></li>
+              <li><a href="/#camps">{t('nav.camps')}</a></li>
+              <li><a href="/#news">{t('nav.news')}</a></li>
+              <li><a href="/#contacts">{t('nav.contacts')}</a></li>
             </ul>
           </div>
 
@@ -36,11 +36,11 @@ export default function Footer() {
             <h4><a href="/letnie-lagerya-za-rubezhom" style={{ color: 'inherit', textDecoration: 'none' }}>{t('footer.camps')}</a></h4>
             <ul>
               <li><a href="/leto-lager-v-turcii">{t('footer.camp.6')}</a></li>
-              <li><a href="#camps">{t('footer.camp.1')}</a></li>
-              <li><a href="#camps">{t('footer.camp.2')}</a></li>
-              <li><a href="#camps">{t('footer.camp.3')}</a></li>
-              <li><a href="#camps">{t('footer.camp.4')}</a></li>
-              <li><a href="#camps">{t('footer.camp.5')}</a></li>
+              <li><a href="/#camps">{t('footer.camp.1')}</a></li>
+              <li><a href="/#camps">{t('footer.camp.2')}</a></li>
+              <li><a href="/#camps">{t('footer.camp.3')}</a></li>
+              <li><a href="/#camps">{t('footer.camp.4')}</a></li>
+              <li><a href="/#camps">{t('footer.camp.5')}</a></li>
             </ul>
           </div>
 
@@ -50,8 +50,8 @@ export default function Footer() {
               <li><a href="tel:+77003127912">+7 700 312 79 12</a></li>
               <li><a href="mailto:info@az-group.kz">info@az-group.kz</a></li>
               <li><a href="https://www.instagram.com/ascora.education" target="_blank" rel="noopener">@ascora.education</a></li>
-              <li><a href="#contacts">{t('footer.address')}</a></li>
-              <li><a href="#contacts">{t('footer.hours')}</a></li>
+              <li><a href="/#contacts">{t('footer.address')}</a></li>
+              <li><a href="/#contacts">{t('footer.hours')}</a></li>
             </ul>
           </div>
         </div>

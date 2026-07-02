@@ -3,7 +3,7 @@ import { useLang } from '../context/LangContext';
 
 export default function Contacts() {
   const { lang, t } = useLang();
-  const [form, setForm] = useState({ name: '', phone: '', email: '', topic: '', message: '' });
+  const [form, setForm] = useState({ name: '', phone: '', email: '', topic: '', message: '', website: '' });
   const [status, setStatus] = useState(null);
 
   async function submit(e) {
@@ -13,11 +13,11 @@ export default function Contacts() {
       const res = await fetch('/api/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: form.name, phone: form.phone, email: form.email, camp_name: form.topic || null, message: form.message || null, lang }),
+        body: JSON.stringify({ name: form.name, phone: form.phone, email: form.email, camp_name: form.topic || null, message: form.message || null, lang, website: form.website }),
       });
       if (!res.ok) throw new Error();
       setStatus('success');
-      setForm({ name: '', phone: '', email: '', topic: '', message: '' });
+      setForm({ name: '', phone: '', email: '', topic: '', message: '', website: '' });
     } catch {
       setStatus('error');
     }
@@ -94,6 +94,10 @@ export default function Contacts() {
                 </div>
               ) : (
                 <form onSubmit={submit}>
+                  {/* Honeypot: невидимое поле-ловушка для ботов */}
+                  <input type="text" name="website" value={form.website} onChange={(e) => setForm({ ...form, website: e.target.value })}
+                    style={{ position: 'absolute', left: '-9999px', width: 0, height: 0, opacity: 0 }}
+                    tabIndex={-1} autoComplete="off" aria-hidden="true" />
                   <div className="form-group">
                     <label>{t('form.name.label')}</label>
                     <input type="text" placeholder={t('form.name.ph')} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} required />

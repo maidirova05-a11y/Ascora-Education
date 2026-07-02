@@ -1,10 +1,18 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLang } from '../context/LangContext';
+
+const EMPTY_FORM = { name: '', phone: '', email: '', message: '', website: '' };
 
 export default function EnrollModal({ camp, onClose }) {
   const { lang, t } = useLang();
-  const [form, setForm] = useState({ name: '', phone: '', email: '', message: '' });
+  const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
+
+  // Fresh form every time the modal opens for a camp — otherwise the
+  // success screen from a previous enrollment blocks new submissions.
+  useEffect(() => {
+    if (camp) { setForm(EMPTY_FORM); setStatus('idle'); }
+  }, [camp]);
 
   if (!camp) return null;
 
@@ -51,6 +59,10 @@ export default function EnrollModal({ camp, onClose }) {
           </div>
         ) : (
           <form onSubmit={submit} className="enroll-form">
+            {/* Honeypot: невидимое поле-ловушка для ботов */}
+            <input type="text" name="website" value={form.website} onChange={change}
+              style={{ position: 'absolute', left: '-9999px', width: 0, height: 0, opacity: 0 }}
+              tabIndex={-1} autoComplete="off" aria-hidden="true" />
             <div className="form-group">
               <label>{t('enroll.name')} *</label>
               <input name="name" value={form.name} onChange={change} required
