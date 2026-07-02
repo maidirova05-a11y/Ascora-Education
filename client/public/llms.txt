@@ -15,7 +15,7 @@ ASCORA Education — агентство зарубежного образова�
 
 ## Ссылки
 
-- [Главная страница](https://ascora-education.vercel.app)
-- [Летние лагеря](https://ascora-education.vercel.app/#camps)
-- [Обучение за рубежом](https://ascora-education.vercel.app/#education)
-- [Контакты](https://ascora-education.vercel.app/#contacts)
+- [Главная страница](https://www.ascora.education)
+- [Летние лагеря](https://www.ascora.education/#camps)
+- [Обучение за рубежом](https://www.ascora.education/#education)
+- [Контакты](https://www.ascora.education/#contacts)
