@@ -12,6 +12,9 @@ import News from './components/News';
 import Contacts from './components/Contacts';
 import Footer from './components/Footer';
 import EnrollModal from './components/EnrollModal';
+import LagerAntalya from './pages/LagerAntalya';
+import LagerZaRubezhom from './pages/LagerZaRubezhom';
+import ObuchenieZaRubezhom from './pages/ObuchenieZaRubezhom';
 
 const Admin = lazy(() => import('./pages/Admin'));
 
@@ -54,6 +57,9 @@ export default function App() {
     <LangProvider>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/leto-lager-v-turcii" element={<LagerAntalya />} />
+        <Route path="/letnie-lagerya-za-rubezhom" element={<LagerZaRubezhom />} />
+        <Route path="/obuchenie-za-rubezhom" element={<ObuchenieZaRubezhom />} />
         <Route path="/admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
       </Routes>
     </LangProvider>

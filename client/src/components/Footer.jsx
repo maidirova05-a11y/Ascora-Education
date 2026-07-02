@@ -25,7 +25,7 @@ export default function Footer() {
             <h4>{t('footer.nav')}</h4>
             <ul>
               <li><a href="#about">{t('nav.about')}</a></li>
-              <li><a href="#education">{t('nav.edu')}</a></li>
+              <li><a href="/obuchenie-za-rubezhom">{t('nav.edu')}</a></li>
               <li><a href="#camps">{t('nav.camps')}</a></li>
               <li><a href="#news">{t('nav.news')}</a></li>
               <li><a href="#contacts">{t('nav.contacts')}</a></li>
@@ -33,8 +33,9 @@ export default function Footer() {
           </div>
 
           <div className="footer-col">
-            <h4>{t('footer.camps')}</h4>
+            <h4><a href="/letnie-lagerya-za-rubezhom" style={{ color: 'inherit', textDecoration: 'none' }}>{t('footer.camps')}</a></h4>
             <ul>
+              <li><a href="/leto-lager-v-turcii">{t('footer.camp.6')}</a></li>
               <li><a href="#camps">{t('footer.camp.1')}</a></li>
               <li><a href="#camps">{t('footer.camp.2')}</a></li>
               <li><a href="#camps">{t('footer.camp.3')}</a></li>

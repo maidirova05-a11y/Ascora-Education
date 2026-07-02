@@ -990,3 +990,42 @@ footer{background:#060D18;padding:64px 6% 32px;color:rgba(255,255,255,0.35)}
   .adm-stats { grid-template-columns: repeat(2,1fr); }
   .adm-table th:nth-child(5), .adm-table td:nth-child(5) { display: none; }
 }
+
+/* ── SEO landing pages ──────────────────────────── */
+.seo-hero{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-mid) 100%);padding:130px 6% 70px;text-align:center;position:relative;overflow:hidden}
+.seo-breadcrumb{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:rgba(255,255,255,0.45);margin-bottom:24px;font-family:'Manrope',sans-serif}
+.seo-breadcrumb a{color:rgba(255,255,255,0.65);text-decoration:none;transition:color 180ms}
+.seo-breadcrumb a:hover{color:var(--gold)}
+.seo-hero h1{max-width:900px;margin-left:auto;margin-right:auto}
+.seo-hero-desc{max-width:680px;margin:0 auto;color:rgba(255,255,255,0.72);font-size:16px;line-height:1.7}
+.seo-hero-cta{margin-top:32px;display:inline-flex}
+.seo-section{padding:70px 0}
+.seo-section--alt{background:var(--off-white)}
+.seo-key-facts{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;margin-top:8px}
+.seo-price-band{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;background:var(--navy);border-radius:var(--radius-xl);padding:32px 40px;margin-top:40px;color:#fff}
+.seo-price-band-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px}
+.seo-price-band-val{font-family:'Fraunces',serif;font-size:38px;font-weight:700}
+.seo-price-band-note{font-size:13px;color:rgba(255,255,255,0.55);margin-top:4px}
+.seo-faq{max-width:800px;margin:0 auto}
+.faq-item{border-bottom:1px solid var(--border);padding:24px 0}
+.faq-item:first-child{padding-top:0}
+.faq-q{font-size:17px;font-weight:600;color:var(--text);margin-bottom:10px;font-family:'Manrope',sans-serif}
+.faq-a{font-size:14.5px;color:var(--text-muted);line-height:1.75}
+.seo-camp-list{display:flex;flex-direction:column;gap:0}
+.seo-camp-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:22px 0;border-bottom:1px solid var(--border);text-decoration:none;transition:padding-left 180ms var(--ease)}
+.seo-camp-row:hover{padding-left:8px}
+.seo-camp-row:last-child{border-bottom:none}
+.seo-camp-row-main{display:flex;flex-direction:column;gap:4px}
+.seo-camp-row-country{font-family:'Manrope',sans-serif;font-weight:700;font-size:15px;color:var(--text)}
+.seo-camp-row-meta{font-size:13px;color:var(--text-muted)}
+.seo-camp-row-price{font-family:'Manrope',sans-serif;font-weight:700;font-size:15px;color:var(--gold);white-space:nowrap}
+.seo-lead-band{background:linear-gradient(160deg,var(--navy) 0%,var(--navy-mid) 100%);padding:70px 6%}
+.seo-lead-band .form-card{max-width:520px;margin:0 auto}
+.seo-lead-band h2{color:#fff;text-align:center}
+.seo-lead-band .section-label{justify-content:center}
+@media(max-width:768px){
+  .seo-hero{padding:100px 6% 50px}
+  .seo-key-facts{grid-template-columns:1fr}
+  .seo-price-band{flex-direction:column;align-items:flex-start;padding:26px 24px}
+  .seo-price-band-val{font-size:30px}
+}
