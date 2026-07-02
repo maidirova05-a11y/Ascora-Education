@@ -55,7 +55,7 @@ export default function Navbar() {
       {/* Backdrop — click outside to close */}
       {open && <div className="mobile-backdrop" onClick={close} aria-hidden="true" />}
 
-      <div className={`mobile-menu ${open ? 'open' : ''}`} role="dialog" aria-modal="true">
+      <div className={`mobile-menu ${open ? 'open' : ''}`} role="dialog" aria-modal="true" aria-label="Меню навигации">
         {/* Header row */}
         <div className="mm-header">
           <a href="/#hero" className="mm-logo" onClick={close}>

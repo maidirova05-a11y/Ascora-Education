@@ -41,9 +41,9 @@ export default function EnrollModal({ camp, onClose }) {
 
   return (
     <div className="modal-overlay open" onClick={(e) => e.target === e.currentTarget && onClose()}>
-      <div className="modal-box">
-        <button className="modal-close" onClick={onClose}>✕</button>
-        <h3 className="modal-title">{t('enroll.title')}</h3>
+      <div className="modal-box" role="dialog" aria-modal="true" aria-labelledby="enroll-modal-title">
+        <button className="modal-close" onClick={onClose} aria-label="Закрыть">✕</button>
+        <h3 className="modal-title" id="enroll-modal-title">{t('enroll.title')}</h3>
         {camp && (
           <div className="modal-camp-info">
             <strong>{camp.countryLabel[lang]}</strong> — {camp.org}
