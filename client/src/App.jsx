@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { LangProvider } from './context/LangContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -61,6 +61,7 @@ export default function App() {
         <Route path="/letnie-lagerya-za-rubezhom" element={<LagerZaRubezhom />} />
         <Route path="/obuchenie-za-rubezhom" element={<ObuchenieZaRubezhom />} />
         <Route path="/admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </LangProvider>
   );
