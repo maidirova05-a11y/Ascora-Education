@@ -7,7 +7,7 @@ import gsap from 'gsap';
 
 gsap.registerPlugin(useGSAP);
 
-const HERO_BG = 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&q=90&fit=crop&auto=format';
+const HERO_BG = 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1280&q=70&fit=crop&auto=format';
 
 const SLIDES = [
   {
