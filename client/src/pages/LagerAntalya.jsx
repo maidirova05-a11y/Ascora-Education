@@ -49,7 +49,6 @@ export default function LagerAntalya() {
         url: 'https://www.ascora.education/leto-lager-v-turcii',
         price: '890000',
         priceCurrency: 'KZT',
-        priceValidUntil: '2026-07-05',
         availability: 'https://schema.org/InStock',
         seller: { '@type': 'Organization', name: 'ASCORA Education' },
       },

@@ -248,7 +248,7 @@ export default function Hero() {
         >
           <span className="hero-hot-badge-fire">🔥</span>
           <span className="hero-hot-badge-text">
-            <strong>{t('hero.hot.label')}</strong> — {t('hero.hot.title')} · {t('hero.hot.until')}
+            <strong>{t('hero.hot.label')}</strong> — {t('hero.hot.title')}
           </span>
           <span className="hero-hot-badge-arrow">{t('hero.hot.cta')}</span>
         </a>
