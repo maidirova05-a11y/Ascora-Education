@@ -42,6 +42,7 @@ const antalyaProduct = {
     price: '890000',
     priceCurrency: 'KZT',
     availability: 'https://schema.org/InStock',
+    validFrom: '2026-07-16',
     seller: { '@type': 'Organization', name: 'ASCORA Education' },
   },
 };
