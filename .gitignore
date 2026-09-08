@@ -26,3 +26,6 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Local Claude Code settings (contain machine-specific paths/secrets)
+.claude/settings.local.json
