@@ -4,15 +4,20 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SeoHead from '../components/SeoHead';
 import LeadForm from '../components/LeadForm';
+import { routeFor, graphFor } from '../seo/pages';
 
-// FAQPage structured data stays in Russian to match the statically
-// prerendered <head> crawlers see (scripts/prerender-meta.mjs).
-const FAQ_RU = [
-  { q: 'С какого возраста можно поехать в летний лагерь за рубежом?', a: 'В зависимости от программы — от 6 до 18 лет. Мы подбираем лагерь под конкретный возраст и интересы ребёнка.' },
-  { q: 'Что обычно входит в стоимость путёвки?', a: 'Как правило — проживание, питание, образовательная программа, трансфер и медицинская страховка. Точный состав зависит от конкретного лагеря и указан в описании каждой программы.' },
-  { q: 'Кто сопровождает детей в поездке?', a: 'Все программы предполагают круглосуточное сопровождение и охрану на месте, а в отдельных лагерях — сопровождающего от ASCORA от вылета до прилёта.' },
-  { q: 'Как выбрать подходящий лагерь?', a: 'Оставьте заявку — консультант ASCORA подберёт программу по возрасту ребёнка, бюджету и интересам (языковой, спортивный, STEM-лагерь).' },
-];
+/*
+ * Title, description, breadcrumb and the whole schema.org graph come from
+ * src/seo/pages.js — the same module scripts/prerender-meta.mjs uses to bake
+ * the static <head>. Computed once at module scope rather than per render:
+ * <SeoHead> takes `jsonLd` as an effect dependency, and a fresh object literal
+ * every render would re-run that effect on every state change.
+ *
+ * The page used to carry its own hand-copied `FAQ_RU` array. Nothing kept it
+ * in step with the prerendered snapshot.
+ */
+const ROUTE = routeFor('/letnie-lagerya-za-rubezhom');
+const JSON_LD = graphFor(ROUTE);
 
 export default function LagerZaRubezhom() {
   const { t, lang } = useLang();
@@ -22,23 +27,13 @@ export default function LagerZaRubezhom() {
     a: t(`seo.hub.faq.a${i}`),
   }));
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ_RU.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  };
-
   return (
     <>
       <SeoHead
         title={t('seo.hub.meta.title')}
         description={t('seo.hub.meta.desc')}
         path="/letnie-lagerya-za-rubezhom"
-        jsonLd={jsonLd}
+        jsonLd={JSON_LD}
       />
       <Navbar />
       <main>

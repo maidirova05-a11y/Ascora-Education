@@ -1,5 +1,5 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 import { LangProvider } from './context/LangContext';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -15,6 +15,7 @@ import EnrollModal from './components/EnrollModal';
 import LagerAntalya from './pages/LagerAntalya';
 import LagerZaRubezhom from './pages/LagerZaRubezhom';
 import ObuchenieZaRubezhom from './pages/ObuchenieZaRubezhom';
+import NotFound from './pages/NotFound';
 
 const Admin = lazy(() => import('./pages/Admin'));
 
@@ -72,7 +73,13 @@ export default function App() {
         <Route path="/letnie-lagerya-za-rubezhom" element={<LagerZaRubezhom />} />
         <Route path="/obuchenie-za-rubezhom" element={<ObuchenieZaRubezhom />} />
         <Route path="/admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/*
+          A real 404 rather than <Navigate to="/">. The host answers 200 for
+          every path, so redirecting made each dead URL a duplicate of the home
+          page — a soft 404 that competes with the page it copies. See
+          pages/NotFound.jsx.
+        */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </LangProvider>
   );

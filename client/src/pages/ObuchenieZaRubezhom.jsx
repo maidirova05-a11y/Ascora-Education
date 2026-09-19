@@ -3,17 +3,20 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SeoHead from '../components/SeoHead';
 import LeadForm from '../components/LeadForm';
+import { routeFor, graphFor } from '../seo/pages';
 
-// FAQPage structured data stays in Russian to match the statically
-// prerendered <head> crawlers see (scripts/prerender-meta.mjs).
-const FAQ_RU = [
-  { q: 'В какие страны можно поступить с помощью ASCORA?', a: 'Мы сопровождаем поступление в университеты Великобритании, США, Канады и стран Европы — более чем в 20 странах-партнёрах.' },
-  { q: 'На каком этапе назначается консультант?', a: 'Сразу после первой заявки. Консультант — выпускник ведущего зарубежного университета, который сам прошёл этот путь.' },
-  { q: 'Что входит в сопровождение?', a: 'Выбор университета, подготовка документов, помощь с эссе, подача заявки, получение визы и поддержка при поселении — от начала до конца.' },
-  { q: 'Есть ли гарантия поступления?', a: '97% наших клиентов поступают в университет из своего топ-3 списка. Если поступление не состоялось — мы возвращаем деньги.' },
-  { q: 'Как начать процесс поступления?', a: 'Оставьте заявку в форме ниже — консультант свяжется с вами, оценит профиль и предложит план поступления.' },
-  { q: 'Сколько стоит поступление в зарубежный вуз с ASCORA?', a: 'Стоимость сопровождения зависит от страны и уровня программы (бакалавриат, магистратура, подготовительный год). Точную стоимость поступления консультант называет после бесплатной первой консультации, когда понятен профиль и список вузов.' },
-];
+/*
+ * Title, description, breadcrumb and the whole schema.org graph come from
+ * src/seo/pages.js — the same module scripts/prerender-meta.mjs uses to bake
+ * the static <head>. Computed once at module scope rather than per render:
+ * <SeoHead> takes `jsonLd` as an effect dependency, and a fresh object literal
+ * every render would re-run that effect on every state change.
+ *
+ * The page used to carry its own hand-copied `FAQ_RU` array. Nothing kept it
+ * in step with the prerendered snapshot.
+ */
+const ROUTE = routeFor('/obuchenie-za-rubezhom');
+const JSON_LD = graphFor(ROUTE);
 
 export default function ObuchenieZaRubezhom() {
   const { t } = useLang();
@@ -23,23 +26,13 @@ export default function ObuchenieZaRubezhom() {
     a: t(`seo.edu.faq.a${i}`),
   }));
 
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'FAQPage',
-    mainEntity: FAQ_RU.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  };
-
   return (
     <>
       <SeoHead
         title={t('seo.edu.meta.title')}
         description={t('seo.edu.meta.desc')}
         path="/obuchenie-za-rubezhom"
-        jsonLd={jsonLd}
+        jsonLd={JSON_LD}
       />
       <Navbar />
       <main>
