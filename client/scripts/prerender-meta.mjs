@@ -79,7 +79,10 @@ function buildPage(route) {
    * the tag early. JSON.stringify cannot emit a raw `<`, so this is belt and
    * braces against a future value arriving from somewhere less trusted.
    */
-  const json = JSON.stringify(graphFor(route), null, 2).replace(/<\//g, '<\\/');
+  // includeFaq: false — в статическом файле <div id="root"> пуст, а FAQ-разметка
+  // без видимых вопросов недействительна для краулеров, которые не исполняют JS.
+  // Подробности в комментарии к pageGraph() в src/seo/pages.js.
+  const json = JSON.stringify(graphFor(route, { includeFaq: false }), null, 2).replace(/<\//g, '<\\/');
   return html.replace(
     '</head>',
     `  <script type="application/ld+json" id="${JSONLD_ID}">\n${json}\n  </script>\n</head>`,

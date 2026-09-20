@@ -264,7 +264,7 @@ export const urlFor = (path) => (path === '/' ? `${ORIGIN}/` : `${ORIGIN}${path}
  * Never the organisation or the site — those come from index.html and are
  * already in the <head> of every prerendered file.
  */
-export function pageGraph(route) {
+export function pageGraph(route, { includeFaq = true } = {}) {
   const url = urlFor(route.path);
   const nodes = [
     {
@@ -294,7 +294,22 @@ export function pageGraph(route) {
     },
   ];
 
-  if (route.faq.length) {
+  /*
+   * FAQPage только когда includeFaq — то есть НЕ в пререндеренной голове.
+   *
+   * Правило Google: разметка FAQ действительна, только пока те же вопросы и
+   * ответы видны на странице. Здесь <div id="root"> в собранных файлах пустой
+   * — React-дерево не рендерится на сервере. Google страницу отрисует и увидит
+   * и текст, и разметку; Яндекс и краулеры соцсетей в общем случае нет, и для
+   * них статический файл выглядел бы как FAQ-разметка без единого вопроса в
+   * тексте. Это ровно тот случай, за который разметку снимают.
+   *
+   * Поэтому FAQPage добавляет только <SeoHead> на клиенте: там он попадает в
+   * DOM, где вопросы уже отрисованы. Получается согласованно в обе стороны —
+   * кто рендерит, видит и то и другое; кто не рендерит, не видит ни того ни
+   * другого. Вернуть FAQ в статику можно будет вместе с настоящим SSR.
+   */
+  if (includeFaq && route.faq.length) {
     nodes.push({
       '@type': 'FAQPage',
       '@id': `${url}#faq`,
@@ -311,8 +326,15 @@ export function pageGraph(route) {
   return [...nodes, ...route.extra];
 }
 
-/** Ready-to-embed JSON-LD document for one route. */
-export const graphFor = (route) => ({ '@context': 'https://schema.org', '@graph': pageGraph(route) });
+/**
+ * Готовый JSON-LD для одного маршрута.
+ *
+ * `includeFaq: false` — для сборки: см. длинный комментарий в pageGraph().
+ */
+export const graphFor = (route, options) => ({
+  '@context': 'https://schema.org',
+  '@graph': pageGraph(route, options),
+});
 
 /**
  * sitemap.xml, built from the same ROUTES list.
