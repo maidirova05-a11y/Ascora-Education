@@ -40,15 +40,26 @@
   <meta property="og:title" content="ASCORA Education — Зарубежное образование и летние лагеря" />
   <meta property="og:description" content="Поступление в зарубежные университеты, летние языковые и спортивные лагеря в Европе и Азии. Полное сопровождение для детей и студентов из Казахстана." />
   <meta property="og:image" content="https://www.ascora.education/logo.png" />
+  <!-- Real measured size of the file, not the conventional 1200x630. WhatsApp
+       and Telegram lay out the preview before the bytes arrive; without these
+       the card reflows, and a wrong pair is worse than none. -->
+  <meta property="og:image:width" content="1874" />
+  <meta property="og:image:height" content="781" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:alt" content="ASCORA Education — зарубежное образование и летние лагеря" />
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="ASCORA Education — Зарубежное образование и летние лагеря" />
   <meta name="twitter:description" content="Поступление в зарубежные университеты, летние языковые и спортивные лагеря в Европе и Азии." />
   <meta name="twitter:image" content="https://www.ascora.education/logo.png" />
+  <meta name="twitter:image:alt" content="ASCORA Education — зарубежное образование и летние лагеря" />
 
   <link rel="icon" type="image/png" href="/logo-small.png" />
-  <link rel="apple-touch-icon" href="/logo-small.png" />
+  <!-- logo-small.png is 336x140. iOS fits a touch icon into a square, so that
+       one arrived on the home screen stretched; logo2.png is the only square
+       brand asset (1024x1024). -->
+  <link rel="apple-touch-icon" href="/logo2.png" />
   <meta name="theme-color" content="#0A1628" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -58,25 +69,82 @@
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Fraunces:ital,opsz,wght@1,9..144,700;1,9..144,800&family=Manrope:wght@400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
   <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Fraunces:ital,opsz,wght@1,9..144,700;1,9..144,800&family=Manrope:wght@400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap" /></noscript>
 
+  <!-- SITE-WIDE structured data: organisation, site, brand image.
+       Generated from siteGraph() in src/seo/pages.js — keep the two in step
+       (`node -e "import('./src/seo/pages.js')..."` prints it).
+
+       Nothing page-specific belongs here. This block is inherited by every
+       prerendered route, so a WebPage node claiming "/" would end up in the
+       <head> of /leto-lager-v-turcii, asserting the two are one document.
+       Per-page nodes are appended by scripts/prerender-meta.mjs. -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "EducationalOrganization",
-    "name": "ASCORA Education",
-    "url": "https://www.ascora.education/",
-    "logo": "https://www.ascora.education/logo.png",
-    "image": "https://www.ascora.education/logo.png",
-    "description": "Поступление в зарубежные университеты, летние языковые и спортивные лагеря в Европе и Азии.",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "ул. Асқар Тоқпанова 27",
-      "addressLocality": "Астана",
-      "addressCountry": "KZ"
-    },
-    "telephone": "+7-700-312-79-12",
-    "email": "info@az-group.kz",
-    "sameAs": [
-      "https://www.instagram.com/ascora.education"
+    "@graph": [
+      {
+        "@type": "EducationalOrganization",
+        "@id": "https://www.ascora.education/#organization",
+        "name": "ASCORA Education",
+        "url": "https://www.ascora.education/",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://www.ascora.education/logo2.png",
+          "width": 1024,
+          "height": 1024
+        },
+        "image": {
+          "@id": "https://www.ascora.education/#primaryimage"
+        },
+        "description": "Поступление в зарубежные университеты, летние языковые и спортивные лагеря в Европе и Азии.",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "ул. Асқар Тоқпанова 27",
+          "addressLocality": "Астана",
+          "addressCountry": "KZ"
+        },
+        "areaServed": "KZ",
+        "telephone": "+7-700-312-79-12",
+        "email": "info@az-group.kz",
+        "knowsLanguage": [
+          "ru",
+          "kk",
+          "en"
+        ],
+        "sameAs": [
+          "https://www.instagram.com/ascora.education"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "contactType": "customer service",
+          "telephone": "+7-700-312-79-12",
+          "email": "info@az-group.kz",
+          "areaServed": "KZ",
+          "availableLanguage": [
+            "Russian",
+            "Kazakh",
+            "English"
+          ]
+        }
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://www.ascora.education/#website",
+        "url": "https://www.ascora.education/",
+        "name": "ASCORA Education",
+        "inLanguage": "ru",
+        "publisher": {
+          "@id": "https://www.ascora.education/#organization"
+        }
+      },
+      {
+        "@type": "ImageObject",
+        "@id": "https://www.ascora.education/#primaryimage",
+        "url": "https://www.ascora.education/logo.png",
+        "contentUrl": "https://www.ascora.education/logo.png",
+        "width": 1874,
+        "height": 781,
+        "caption": "ASCORA Education"
+      }
     ]
   }
   </script>

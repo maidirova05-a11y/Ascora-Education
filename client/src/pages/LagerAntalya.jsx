@@ -4,19 +4,22 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import SeoHead from '../components/SeoHead';
 import LeadForm from '../components/LeadForm';
+import { routeFor, graphFor } from '../seo/pages';
+
+/*
+ * Title, description, breadcrumb and the whole schema.org graph come from
+ * src/seo/pages.js — the same module scripts/prerender-meta.mjs uses to bake
+ * the static <head>. Computed once at module scope rather than per render:
+ * <SeoHead> takes `jsonLd` as an effect dependency, and a fresh object literal
+ * every render would re-run that effect on every state change.
+ *
+ * The page used to carry its own hand-copied `FAQ_RU` array. Nothing kept it
+ * in step with the prerendered snapshot.
+ */
+const ROUTE = routeFor('/leto-lager-v-turcii');
+const JSON_LD = graphFor(ROUTE);
 
 const camp = campsData.find((c) => c.id === 11);
-
-// FAQPage structured data stays in Russian to match the statically
-// prerendered <head> crawlers see (scripts/prerender-meta.mjs) —
-// duplicating per-language JSON-LD would fight that snapshot.
-const FAQ_RU = [
-  { q: 'Что входит в стоимость путёвки?', a: 'Перелёт из Астаны (Turkish Airlines / Air Astana), проживание в отеле 5⭐ Ultra All Inclusive, трансфер и медицинская страховка, вся образовательная и развлекательная программа, круглосуточное сопровождение и безопасность детей.' },
-  { q: 'Какие даты заездов доступны в 2026 году?', a: 'Три смены по 7 дней / 6 ночей: 20–26 июля, 28 июля – 3 августа и 2–8 августа 2026 года.' },
-  { q: 'С какого возраста можно поехать в лагерь?', a: 'Лагерь принимает детей от 7 до 17 лет.' },
-  { q: 'Есть ли рассрочка на оплату?', a: 'Да, доступна рассрочка на 6 месяцев.' },
-  { q: 'Как забронировать место?', a: 'Оставьте заявку в форме на этой странице или позвоните по номеру +7 700 312 79 12 — консультант ASCORA свяжется с вами и поможет с бронированием.' },
-];
 
 export default function LagerAntalya() {
   const { t, lang } = useLang();
@@ -27,42 +30,13 @@ export default function LagerAntalya() {
     a: t(`seo.antalya.faq.a${i}`),
   }));
 
-  const jsonLd = [
-    {
-      '@context': 'https://schema.org',
-      '@type': 'FAQPage',
-      mainEntity: FAQ_RU.map((f) => ({
-        '@type': 'Question',
-        name: f.q,
-        acceptedAnswer: { '@type': 'Answer', text: f.a },
-      })),
-    },
-    {
-      '@context': 'https://schema.org',
-      '@type': 'Product',
-      name: 'Детский летний лагерь в Турции (Анталья) — ASCORA Summer Camp 2026',
-      description: 'Летний лагерь для детей 7–17 лет в Анталье: отель 5⭐ Ultra All Inclusive, английский язык, STEM и робототехника, перелёт из Астаны, трансфер и страховка включены.',
-      image: 'https://www.ascora.education/logo.png',
-      brand: { '@type': 'Brand', name: 'ASCORA Education' },
-      offers: {
-        '@type': 'Offer',
-        url: 'https://www.ascora.education/leto-lager-v-turcii',
-        price: '890000',
-        priceCurrency: 'KZT',
-        availability: 'https://schema.org/InStock',
-        validFrom: '2026-07-16',
-        seller: { '@type': 'Organization', name: 'ASCORA Education' },
-      },
-    },
-  ];
-
   return (
     <>
       <SeoHead
         title={t('seo.antalya.meta.title')}
         description={t('seo.antalya.meta.desc')}
         path="/leto-lager-v-turcii"
-        jsonLd={jsonLd}
+        jsonLd={JSON_LD}
       />
       <Navbar />
       <main>

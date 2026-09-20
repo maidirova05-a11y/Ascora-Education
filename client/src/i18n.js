@@ -131,6 +131,7 @@ const i18n = {
     'seo.edu.lead.label':'Консультация','seo.edu.lead.h2':'Оставьте заявку на поступление',
     'seo.edu.meta.title':'Обучение за рубежом — поступление в университеты мира | ASCORA Education',
     'seo.edu.meta.desc':'Поступление в университеты Великобритании, США, Канады и Европы. Личный консультант, полное сопровождение до визы, гарантия результата. 300+ студентов, 95% успешных поступлений.',
+    'nf.title':'Страница не найдена','nf.desc':'Такой страницы на сайте нет — возможно, адрес изменился. Вернитесь на главную: там обучение за рубежом и летние лагеря.','nf.cta':'На главную','nf.meta.title':'Страница не найдена | ASCORA Education',
   },
   kz: {
     'nav.about':'Біз туралы','nav.edu':'Шетелде оқу','nav.camps':'Шетелдік лагерь','nav.news':'Жаңалықтар','nav.contacts':'Байланыс','nav.cta':'Кеңес','nav.mob.cta':'Кеңес алу →',
@@ -261,6 +262,7 @@ const i18n = {
     'seo.edu.lead.label':'Кеңес алу','seo.edu.lead.h2':'Түсуге өтінім қалдырыңыз',
     'seo.edu.meta.title':'Шетелде оқу — әлем университеттеріне түсу | ASCORA Education',
     'seo.edu.meta.desc':'Ұлыбритания, АҚШ, Канада және Еуропа университеттеріне түсу. Жеке кеңесші, визаға дейінгі толық сүйемелдеу, нәтиже кепілдігі. 300+ студент, 95% сәтті түсу.',
+    'nf.title':'Бет табылмады','nf.desc':'Мұндай бет сайтта жоқ — мекенжай өзгерген болуы мүмкін. Басты бетке оралыңыз: онда шетелде оқу және жазғы лагерьлер туралы бәрі бар.','nf.cta':'Басты бетке','nf.meta.title':'Бет табылмады | ASCORA Education',
   },
   en: {
     'nav.about':'About','nav.edu':'Study Abroad','nav.camps':'Camps','nav.news':'News','nav.contacts':'Contact','nav.cta':'Consult','nav.mob.cta':'Get a consultation →',
@@ -391,6 +393,7 @@ const i18n = {
     'seo.edu.lead.label':'Consultation','seo.edu.lead.h2':'Leave a Request for Admission',
     'seo.edu.meta.title':'Study Abroad — University Admissions Worldwide | ASCORA Education',
     'seo.edu.meta.desc':'Admissions to universities in the UK, USA, Canada and Europe. Personal consultant, full support through to your visa, results guarantee. 300+ students, 95% success rate.',
+    'nf.title':'Page not found','nf.desc':'There is no such page on this site — the address may have changed. Head back to the home page: study abroad programmes and summer camps are all there.','nf.cta':'Back to home','nf.meta.title':'Page not found | ASCORA Education',
   }
 };
 
