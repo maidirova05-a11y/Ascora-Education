@@ -127,7 +127,7 @@ export const ROUTES = [
       'ASCORA Education (Астана) — поступление в зарубежные университеты, летние языковые и спортивные лагеря в Европе и Азии. Полное сопровождение для детей и студентов из Казахстана.',
     changefreq: 'weekly',
     priority: '1.0',
-    lastmod: '2026-09-19',
+    lastmod: '2026-09-26',
     crumbs: [],
     faq: [],
     extra: [],
@@ -139,7 +139,7 @@ export const ROUTES = [
       'Поступление в университеты Великобритании, США, Канады и Европы для студентов из Казахстана. Личный консультант, полное сопровождение до визы. 300+ студентов, 95% успешных поступлений.',
     changefreq: 'weekly',
     priority: '0.9',
-    lastmod: '2026-09-19',
+    lastmod: '2026-09-26',
     crumbs: [{ name: 'Обучение за рубежом', path: '/obuchenie-za-rubezhom' }],
     faq: [
       {
@@ -171,12 +171,12 @@ export const ROUTES = [
   },
   {
     path: '/letnie-lagerya-za-rubezhom',
-    title: 'Детские летние лагеря за рубежом 2026 — Турция, Европа, Азия | ASCORA Education',
+    title: 'Детские летние лагеря за рубежом 2027 — Турция, Европа, Азия | ASCORA Education',
     description:
       'Летние языковые и спортивные лагеря за границей для детей 7–18 лет из Казахстана: Турция, Болгария, Испания, Англия, Малайзия и другие страны. Полное сопровождение и трансфер.',
     changefreq: 'weekly',
     priority: '0.9',
-    lastmod: '2026-09-19',
+    lastmod: '2026-09-26',
     crumbs: [{ name: 'Летние лагеря за рубежом', path: '/letnie-lagerya-za-rubezhom' }],
     faq: [
       {
@@ -201,12 +201,12 @@ export const ROUTES = [
   {
     path: '/leto-lager-v-turcii',
     title:
-      'Детский летний лагерь в Турции (Анталья) 2026 из Астаны — отель 5⭐ Ultra All Inclusive | ASCORA Education',
+      'Детский летний лагерь в Турции (Анталья) 2027 из Астаны — отель 5⭐ Ultra All Inclusive | ASCORA Education',
     description:
       'Детский лагерь в Турции для детей из Казахстана: Анталья, отель 5⭐ Ultra All Inclusive, английский язык, STEM и робототехника. Перелёт из Астаны, трансфер и страховка включены. От 890 000 ₸, рассрочка на 6 месяцев.',
     changefreq: 'weekly',
     priority: '0.9',
-    lastmod: '2026-09-19',
+    lastmod: '2026-09-26',
     // Three crumbs, matching the trail the page draws: Главная / хаб / страна.
     crumbs: [
       { name: 'Летние лагеря за рубежом', path: '/letnie-lagerya-za-rubezhom' },
@@ -218,8 +218,8 @@ export const ROUTES = [
         a: 'Перелёт из Астаны (Turkish Airlines / Air Astana), проживание в отеле 5⭐ Ultra All Inclusive, трансфер и медицинская страховка, вся образовательная и развлекательная программа, круглосуточное сопровождение и безопасность детей.',
       },
       {
-        q: 'Какие даты заездов доступны в 2026 году?',
-        a: 'Три смены по 7 дней / 6 ночей: 20–26 июля, 28 июля – 3 августа и 2–8 августа 2026 года.',
+        q: 'Когда будут заезды летом 2027 года?',
+        a: 'Смены по 7 дней / 6 ночей летом 2027 года. Точные даты уточняются — оставьте заявку на предзапись, и консультант сообщит их первым делом.',
       },
       { q: 'С какого возраста можно поехать в лагерь?', a: 'Лагерь принимает детей от 7 до 17 лет.' },
       { q: 'Есть ли рассрочка на оплату?', a: 'Да, доступна рассрочка на 6 месяцев.' },
@@ -232,7 +232,7 @@ export const ROUTES = [
       {
         '@type': 'Product',
         '@id': `${ORIGIN}/leto-lager-v-turcii#product`,
-        name: 'Детский летний лагерь в Турции (Анталья) — ASCORA Summer Camp 2026',
+        name: 'Детский летний лагерь в Турции (Анталья) — ASCORA Summer Camp 2027',
         description:
           'Летний лагерь для детей 7–17 лет в Анталье: отель 5⭐ Ultra All Inclusive, английский язык, STEM и робототехника, перелёт из Астаны, трансфер и страховка включены.',
         image: { '@id': IMAGE_ID },
@@ -242,8 +242,8 @@ export const ROUTES = [
           url: `${ORIGIN}/leto-lager-v-turcii`,
           price: '890000',
           priceCurrency: 'KZT',
-          availability: 'https://schema.org/InStock',
-          validFrom: '2026-07-16',
+          // Summer 2027 dates are not announced yet: taking pre-bookings.
+          availability: 'https://schema.org/PreOrder',
           seller: { '@id': ORG_ID },
         },
       },

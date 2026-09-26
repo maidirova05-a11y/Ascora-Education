@@ -28,6 +28,7 @@ async function ensureTable() {
 }
 
 router.post('/', inquiryLimiter, async (req, res) => {
+  req.body = req.body && typeof req.body === 'object' ? req.body : {};
   // Honeypot: скрытое поле, которое видят только боты. Заполнено —
   // отвечаем «успехом», но ничего не сохраняем (бот не поймёт, что пойман).
   if (req.body.website) {
@@ -39,11 +40,21 @@ router.post('/', inquiryLimiter, async (req, res) => {
   const email = clean(req.body.email, 200);
   const camp_name = clean(req.body.camp_name, 300);
   const message = clean(req.body.message, 3000);
-  const lang = clean(req.body.lang, 5) || 'ru';
-  const camp_price = Number.isFinite(Number(req.body.camp_price)) ? Number(req.body.camp_price) : null;
+  const lang = ['ru', 'kz', 'en'].includes(req.body.lang) ? req.body.lang : 'ru';
+  const price = Number(req.body.camp_price);
+  // INTEGER column: anything outside 0..2^31 would crash the insert with a 500.
+  const camp_price = Number.isInteger(price) && price >= 0 && price < 2147483647 ? price : null;
 
   if (!name || !phone) {
     return res.status(400).json({ error: 'name and phone are required' });
+  }
+  // 7–15 digits once formatting is stripped (E.164 upper bound).
+  const digits = phone.replace(/[\s()+\-.]/g, '');
+  if (!/^\d{7,15}$/.test(digits)) {
+    return res.status(400).json({ error: 'invalid phone' });
+  }
+  if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return res.status(400).json({ error: 'invalid email' });
   }
   try {
     await ensureTable();

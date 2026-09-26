@@ -57,7 +57,7 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <div>{t('footer.copy')}</div>
+          <div>{t('footer.copy').replace('{year}', new Date().getFullYear())}</div>
           <div style={{ display: 'flex', gap: 20 }}>
             <a href="#">{t('footer.privacy')}</a>
             <a href="#">{t('footer.offer')}</a>

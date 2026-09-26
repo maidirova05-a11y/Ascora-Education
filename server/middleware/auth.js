@@ -7,7 +7,7 @@ function requireAuth(req, res, next) {
   }
   const token = header.slice(7);
   try {
-    req.admin = jwt.verify(token, process.env.JWT_SECRET);
+    req.admin = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'], issuer: 'ascora-admin' });
     next();
   } catch {
     res.status(401).json({ error: 'Invalid token' });

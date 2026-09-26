@@ -30,7 +30,7 @@ export default function About() {
 
           <div style={{ position: 'relative', paddingBottom: 40 }}>
             <div className="about-card" style={{
-              background: `linear-gradient(rgba(11,25,41,0.91),rgba(11,25,41,0.91)),url('https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=900&q=80&fit=crop&auto=format')`,
+              background: `linear-gradient(rgba(11,25,41,0.91),rgba(11,25,41,0.91)),url('https://images.unsplash.com/photo-1606761568499-6d2451b23c66?w=1600&q=80&fit=crop&auto=format')`,
               backgroundSize: 'cover', backgroundPosition: 'center top'
             }}>
               <div className="about-quote">{t('about.quote')}</div>
