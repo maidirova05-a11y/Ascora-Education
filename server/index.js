@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
+const fs = require('fs');
 const path = require('path');
 const db = require('./db');
 
@@ -28,10 +29,15 @@ app.disable('x-powered-by');
 
 // ── Security headers (защищает от XSS, clickjacking и др.) ──────────────────
 app.use(helmet({
-  // The API only ever returns JSON — nothing on it needs to load or frame anything.
-  contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] } },
+  // CSP is set per area below: the API and the site pages need different ones.
+  contentSecurityPolicy: false,
   crossOriginResourcePolicy: { policy: 'same-site' },
   strictTransportSecurity: { maxAge: 31536000, includeSubDomains: false },
+}));
+// The API only ever returns JSON — nothing on it needs to load or frame anything.
+app.use('/api/', helmet.contentSecurityPolicy({
+  useDefaults: false,
+  directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] },
 }));
 
 // API responses carry personal data — never let a browser or CDN cache them.
@@ -116,10 +122,32 @@ app.use('/api/admin', require('./routes/admin'));
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
 // ── Статика для продакшна ─────────────────────────────────────────────────────
+// Used by the Docker image, where this server also hosts the site; in the
+// Vercel + Forge setup Vercel serves client/ and applies client/vercel.json.
 if (process.env.NODE_ENV === 'production') {
   const dist = path.join(__dirname, '../client/dist');
-  app.use(express.static(dist));
-  app.get('*', (_req, res) => res.sendFile(path.join(dist, 'index.html')));
+  // Same page CSP and admin noindex as client/vercel.json.
+  app.use(helmet.contentSecurityPolicy({
+    useDefaults: false,
+    directives: {
+      // vercel.json sets no default-src either; helmet wants that said explicitly.
+      defaultSrc: helmet.contentSecurityPolicy.dangerouslyDisableDefaultSrc,
+      objectSrc: ["'none'"], baseUri: ["'self'"], frameAncestors: ["'none'"],
+      formAction: ["'self'"], upgradeInsecureRequests: [],
+    },
+  }));
+  app.use('/admin', (_req, res, next) => { res.set('X-Robots-Tag', 'noindex, nofollow'); next(); });
+  // Hashed bundles never change under the same name.
+  app.use('/assets', express.static(path.join(dist, 'assets'), { immutable: true, maxAge: '1y' }));
+  // redirect: false — like Vercel, /page is served from page/index.html as is,
+  // without a 301 to /page/ (the prerendered canonicals have no trailing slash).
+  app.use(express.static(dist, { redirect: false }));
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api/')) return next(); // unknown API route → JSON 404 below
+    const page = path.resolve(dist, `.${req.path}`, 'index.html');
+    const prerendered = page.startsWith(dist + path.sep) && fs.existsSync(page);
+    res.sendFile(prerendered ? page : path.join(dist, 'index.html'));
+  });
 }
 
 // ── Глобальный обработчик ошибок (не показываем детали ошибок пользователю) ──

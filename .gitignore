@@ -26,3 +26,7 @@ Thumbs.db
 # Editor
 .vscode/
 .idea/
+
+# Docker-версия и резервные копии (см. BACKUP.md)
+docker.env
+backups/
