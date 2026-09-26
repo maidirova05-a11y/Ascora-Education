@@ -38,15 +38,15 @@ const DAYS = [
 ];
 
 const campImgMap = {
-  bulgaria:   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400&q=80&fit=crop&auto=format',
-  spain:      'https://images.unsplash.com/photo-1579282240050-352db0a14c21?w=400&q=80&fit=crop&auto=format',
-  england:    'https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?w=400&q=80&fit=crop&auto=format',
-  multi:      'https://images.unsplash.com/photo-1676238753440-53f7a0fb4391?w=400&q=80&fit=crop&auto=format',
-  malaysia:   'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=400&q=80&fit=crop&auto=format',
-  nordic:     'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=400&q=80&fit=crop&auto=format',
-  turkey:     'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=400&q=80&fit=crop&auto=format',
-  azerbaijan: 'https://images.unsplash.com/photo-1566438480900-0609be27a4be?w=400&q=80&fit=crop&auto=format',
-  france:     'https://images.unsplash.com/photo-1533587851505-d119e13fa0d7?w=400&q=80&fit=crop&auto=format',
+  bulgaria:   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80&fit=crop&auto=format',
+  spain:      'https://images.unsplash.com/photo-1579282240050-352db0a14c21?w=900&q=80&fit=crop&auto=format',
+  england:    'https://images.unsplash.com/photo-1580537659466-0a9bfa916a54?w=900&q=80&fit=crop&auto=format',
+  multi:      'https://images.unsplash.com/photo-1676238753440-53f7a0fb4391?w=900&q=80&fit=crop&auto=format',
+  malaysia:   'https://images.unsplash.com/photo-1596422846543-75c6fc197f07?w=900&q=80&fit=crop&auto=format',
+  nordic:     'https://images.unsplash.com/photo-1509356843151-3e7d96241e11?w=900&q=80&fit=crop&auto=format',
+  turkey:     'https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?w=900&q=80&fit=crop&auto=format',
+  azerbaijan: 'https://images.unsplash.com/photo-1566438480900-0609be27a4be?w=900&q=80&fit=crop&auto=format',
+  france:     'https://images.unsplash.com/photo-1533587851505-d119e13fa0d7?w=900&q=80&fit=crop&auto=format',
 };
 
 export default function FilterBar({ onFilter }) {

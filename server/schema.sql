@@ -20,7 +20,5 @@ CREATE TABLE IF NOT EXISTS admin_users (
   created_at    TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Default admin (password: admin123 — change in production)
-INSERT INTO admin_users (username, password_hash)
-VALUES ('admin', '$2a$10$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy')
-ON CONFLICT (username) DO NOTHING;
+-- No default admin is seeded: a known password hash in a public repo is a
+-- standing backdoor. Create the account with `node change-password.js`.

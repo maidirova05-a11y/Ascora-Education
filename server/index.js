@@ -8,8 +8,34 @@ const db = require('./db');
 
 const app = express();
 
+// ── Fail fast on a missing or weak secret ───────────────────────────────────
+// With an empty JWT_SECRET every admin token would be signed with a guessable
+// key; better to refuse to boot than to run like that.
+if (!process.env.JWT_SECRET) {
+  console.error('❌ JWT_SECRET is not set — refusing to start');
+  process.exit(1);
+}
+if (process.env.JWT_SECRET.length < 32) {
+  console.warn('⚠️  JWT_SECRET is shorter than 32 characters — replace it with `openssl rand -base64 48`');
+}
+
+// ── Real client IP behind proxies ───────────────────────────────────────────
+// Requests arrive via the Vercel rewrite and then Forge's nginx: two hops. Without
+// this every visitor shares the proxy's IP, so the rate limits below would lock
+// out all parents at once after a handful of leads. Override with TRUST_PROXY.
+app.set('trust proxy', Number(process.env.TRUST_PROXY ?? 2));
+app.disable('x-powered-by');
+
 // ── Security headers (защищает от XSS, clickjacking и др.) ──────────────────
-app.use(helmet());
+app.use(helmet({
+  // The API only ever returns JSON — nothing on it needs to load or frame anything.
+  contentSecurityPolicy: { directives: { defaultSrc: ["'none'"], frameAncestors: ["'none'"] } },
+  crossOriginResourcePolicy: { policy: 'same-site' },
+  strictTransportSecurity: { maxAge: 31536000, includeSubDomains: false },
+}));
+
+// API responses carry personal data — never let a browser or CDN cache them.
+app.use('/api/', (_req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
 
 // ── CORS: разрешаем только наш домен ────────────────────────────────────────
 const allowedOrigins = [
@@ -24,12 +50,13 @@ app.use(cors({
   origin: (origin, cb) => {
     // Разрешаем запросы без origin (мобильные, Postman) и наш домен
     if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('Not allowed by CORS'));
+    // No CORS headers → the browser blocks the response; no 500 and no stack trace.
+    cb(null, false);
   },
   credentials: true,
 }));
 
-app.use(express.json({ limit: '10kb' })); // Защита от огромных запросов
+app.use(express.json({ limit: '10kb', strict: true })); // Защита от огромных запросов
 
 // ── Rate limiting: максимум 60 запросов в минуту с одного IP ────────────────
 app.use('/api/', rateLimit({
@@ -86,7 +113,7 @@ setInterval(async () => {
 // ── Маршруты ─────────────────────────────────────────────────────────────────
 app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/admin', require('./routes/admin'));
-app.get('/api/health', (_req, res) => res.json({ ok: true, build: 'autodeploy-1' }));
+app.get('/api/health', (_req, res) => res.json({ ok: true }));
 
 // ── Статика для продакшна ─────────────────────────────────────────────────────
 if (process.env.NODE_ENV === 'production') {
@@ -96,7 +123,12 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // ── Глобальный обработчик ошибок (не показываем детали ошибок пользователю) ──
+app.use('/api/', (_req, res) => res.status(404).json({ error: 'Not found' }));
+
 app.use((err, _req, res, _next) => {
+  // Malformed / oversized JSON bodies are the client's fault, not ours.
+  if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'Invalid JSON' });
+  if (err.type === 'entity.too.large') return res.status(413).json({ error: 'Payload too large' });
   console.error(err.stack);
   res.status(500).json({ error: 'Внутренняя ошибка сервера' });
 });

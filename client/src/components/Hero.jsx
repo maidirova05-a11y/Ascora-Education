@@ -7,26 +7,26 @@ import gsap from 'gsap';
 
 gsap.registerPlugin(useGSAP);
 
-const HERO_BG = 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1280&q=70&fit=crop&auto=format';
+const HERO_BG = 'https://images.unsplash.com/photo-1541339907198-e08756dedf3f?w=1920&q=80&fit=crop&auto=format';
 
 const SLIDES = [
   {
     id: 'antalya',
     href: '#camp-11',
-    img: 'https://images.unsplash.com/photo-1509233725247-49e657c54213?w=1400&q=85&fit=crop&auto=format',
+    img: 'https://images.unsplash.com/photo-1509233725247-49e657c54213?w=1920&q=80&fit=crop&auto=format',
     bullets: ['b1', 'b2', 'b3'],
     hot: true,
   },
   {
     id: 'edu',
     href: '#education',
-    img: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=1400&q=85&fit=crop&auto=format',
+    img: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=1920&q=80&fit=crop&auto=format',
     bullets: ['b1', 'b2', 'b3'],
   },
   {
     id: 'camps',
     href: '#camps',
-    img: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1400&q=85&fit=crop&auto=format',
+    img: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80&fit=crop&auto=format',
     bullets: ['b1', 'b2', 'b3'],
   },
 ];

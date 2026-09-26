@@ -6,12 +6,12 @@ const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
 
 const newPassword = process.argv[2];
-if (!newPassword || newPassword.length < 8) {
-  console.error('❌ Укажи пароль минимум 8 символов: node change-password.js МойПароль123');
+if (!newPassword || newPassword.length < 12) {
+  console.error('❌ Укажи пароль минимум 12 символов: node change-password.js МойПароль123');
   process.exit(1);
 }
 
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+const pool = require('./db');
 
 (async () => {
   const hash = await bcrypt.hash(newPassword, 12);
@@ -25,6 +25,5 @@ const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
   console.log('✅ Пароль администратора успешно изменён!');
   console.log('🔐 Логин: admin');
-  console.log('🔐 Пароль: ' + newPassword);
   await pool.end();
 })().catch(e => { console.error('❌ Ошибка:', e.message); pool.end(); });
