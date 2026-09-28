@@ -51,11 +51,15 @@ nav.scrolled{background:rgba(10,22,40,0.82);backdrop-filter:blur(24px) saturate(
   z-index:999;
   display:flex;flex-direction:column;
   transform:translateX(100%);
-  transition:transform 340ms cubic-bezier(0.32,0.72,0,1);
+  /* Closed: no shadow and not focusable. The shadow used to bleed ~48px onto
+     the right edge of every page, and the off-screen links stayed in the tab
+     order. visibility flips only after the slide-out finishes. */
+  visibility:hidden;
+  transition:transform 340ms cubic-bezier(0.32,0.72,0,1),box-shadow 340ms ease,visibility 0s linear 340ms;
   border-left:1px solid rgba(255,255,255,0.06);
-  box-shadow:-12px 0 48px rgba(0,0,0,0.45);
+  box-shadow:none;
 }
-.mobile-menu.open{transform:translateX(0)}
+.mobile-menu.open{transform:translateX(0);visibility:visible;box-shadow:-12px 0 48px rgba(0,0,0,0.45);transition:transform 340ms cubic-bezier(0.32,0.72,0,1),box-shadow 340ms ease,visibility 0s}
 
 /* Header row */
 .mm-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px 20px;border-bottom:1px solid rgba(255,255,255,0.07)}
@@ -402,9 +406,11 @@ h1 em{font-style:italic;color:var(--gold);font-weight:700}
 .camp-card:hover{border-color:var(--border-gold);transform:translateY(-3px);box-shadow:var(--shadow-lg)}
 .camp-card--hot{border-color:rgba(255,90,60,0.45);box-shadow:0 6px 28px rgba(255,90,60,0.14)}
 .camp-card--hot:hover{border-color:rgba(255,90,60,0.65);box-shadow:0 16px 48px rgba(255,90,60,0.24)}
-.camp-hot-badge{position:absolute;top:16px;right:16px;z-index:5;display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#FF7A54,#E5493C);color:#fff;font-size:11.5px;font-weight:700;letter-spacing:0.2px;white-space:nowrap;padding:6px 14px;border-radius:100px;box-shadow:0 3px 12px rgba(229,73,60,0.45)}
+.camp-hot-badge{position:absolute;top:18px;left:26px;z-index:5;display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#FF7A54,#E5493C);color:#fff;font-size:11.5px;font-weight:700;letter-spacing:0.2px;white-space:nowrap;padding:6px 14px;border-radius:100px;box-shadow:0 3px 12px rgba(229,73,60,0.45)}
 .camp-card-inner{display:grid;grid-template-columns:280px 1fr auto;gap:0}
 .camp-flag-block{background:var(--navy);padding:32px 26px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background-size:cover;background-position:center}
+/* The hot badge sits above the country name instead of on top of it. */
+.camp-card--hot .camp-flag-block{padding-top:60px}
 .camp-flag-block::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;border-radius:50%;background:rgba(201,168,76,0.06)}
 .camp-country{font-family:'Fraunces',serif;font-size:22px;font-weight:500;color:var(--white);line-height:1.2;margin-bottom:4px;position:relative;z-index:1}
 .camp-city{font-size:12px;color:rgba(255,255,255,0.38);letter-spacing:0.5px;position:relative;z-index:1}
@@ -540,6 +546,8 @@ footer{background:#060D18;padding:64px 6% 32px;color:rgba(255,255,255,0.35)}
   .burger{display:flex}
   .camp-card-inner{grid-template-columns:1fr;grid-template-rows:auto 1fr auto}
   .camp-flag-block{padding:24px 22px;min-height:160px}
+  .camp-card--hot .camp-flag-block{padding-top:56px}
+  .camp-hot-badge{left:22px}
   .camp-price-block{border-left:none;border-top:1px solid var(--border);min-width:0}
   .dest-small-grid{grid-template-columns:repeat(2,1fr)}
 }
