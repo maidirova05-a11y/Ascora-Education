@@ -19,8 +19,10 @@
     gtag('config', 'G-TQ3JX4D6XR');
   </script>
 
-  <!-- Yandex.Metrika counter -->
+  <!-- Yandex.Metrika counter. Not on /admin: Webvisor records the screen, and
+       the admin panel shows applicants' personal data. -->
   <script type="text/javascript">
+    if (!/^\/admin/.test(location.pathname)) {
     (function(m,e,t,r,i,k,a){
         m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
         m[i].l=1*new Date();
@@ -29,6 +31,7 @@
     })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113575863', 'ym');
 
     ym(113575863, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
+    }
   </script>
   <!-- /Yandex.Metrika counter -->
 
