@@ -55,11 +55,13 @@
   <meta name="twitter:image" content="https://www.ascora.education/logo.png" />
   <meta name="twitter:image:alt" content="ASCORA Education — зарубежное образование и летние лагеря" />
 
-  <link rel="icon" type="image/png" href="/logo-small.png" />
-  <!-- logo-small.png is 336x140. iOS fits a touch icon into a square, so that
-       one arrived on the home screen stretched; logo2.png is the only square
-       brand asset (1024x1024). -->
-  <link rel="apple-touch-icon" href="/logo2.png" />
+  <!-- Square icons with the "A" from the wordmark on the brand navy. The old
+       favicon was logo-small.png — 336x140 white-on-transparent, so the tab and
+       Yandex/Google showed an empty square. /favicon.ico is what crawlers and
+       older browsers request without reading <link>. -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
   <meta name="theme-color" content="#0A1628" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -88,9 +90,9 @@
         "url": "https://www.ascora.education/",
         "logo": {
           "@type": "ImageObject",
-          "url": "https://www.ascora.education/logo2.png",
-          "width": 1024,
-          "height": 1024
+          "url": "https://www.ascora.education/icon-512.png",
+          "width": 512,
+          "height": 512
         },
         "image": {
           "@id": "https://www.ascora.education/#primaryimage"
