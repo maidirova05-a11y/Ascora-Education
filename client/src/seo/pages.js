@@ -42,7 +42,7 @@ export const JSONLD_ID = 'seo-page-jsonld';
  *  1200x630. Stating a size the file does not have is worse than stating none. */
 const LOGO = { url: `${ORIGIN}/logo.png`, width: 1874, height: 781 };
 /** The only square brand asset, so the only one usable as an icon. */
-const LOGO_SQUARE = { url: `${ORIGIN}/logo2.png`, width: 1024, height: 1024 };
+const LOGO_SQUARE = { url: `${ORIGIN}/icon-512.png`, width: 512, height: 512 };
 
 const ORG_ID = `${ORIGIN}/#organization`;
 const SITE_ID = `${ORIGIN}/#website`;
