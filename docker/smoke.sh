@@ -36,12 +36,14 @@ expect() { # expect <код> <путь> [curl-аргументы…]
 }
 
 echo "ascora: $BASE"
-for p in / /obuchenie-za-rubezhom /letnie-lagerya-za-rubezhom /leto-lager-v-turcii /robots.txt /sitemap.xml /llms.txt /api/health; do
+for p in / /letnie-lagerya-za-rubezhom /leto-lager-v-turcii /oferta /privacy /robots.txt /sitemap.xml /llms.txt /api/health; do
   expect 200 "$p"
 done
 # Пререндеренные страницы отдаются как есть, без редиректа на адрес со слешем.
 grep -q "<link rel=\"canonical\" href=\"$SITE/leto-lager-v-turcii\"" <<<"$(curl -s "$BASE/leto-lager-v-turcii")" \
   && ok "canonical Антальи = $SITE/leto-lager-v-turcii" || bad "у /leto-lager-v-turcii не тот canonical"
+# Страницу «Обучение за рубежом» убрали — старые ссылки ведут на хаб лагерей.
+expect 301 /obuchenie-za-rubezhom
 expect 404 /api/no-such-route
 expect 201 /api/inquiries -X POST -H 'Content-Type: application/json' \
   -H "X-Forwarded-For: 198.51.100.$((RANDOM % 250))" \
