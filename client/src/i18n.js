@@ -332,7 +332,7 @@ const i18n = {
     'footer.desc':'Central Asia\'s leading international education company. University admissions and overseas summer camps.','footer.nav':'Navigation','footer.camps':'Camps',
     'footer.camp.1':'Bulgaria (Varna)','footer.camp.2':'Spain / France','footer.camp.3':'England (Rochester)','footer.camp.4':'SPRACHCAFFE (12 countries)','footer.camp.5':'Malaysia (KL)','footer.camp.6':'🔥 Turkey (Antalya)',
     'footer.address':'Astana, 27 Asqar Toqpanov St','footer.hours':'Mon–Fri: 9:00–19:00',
-    'footer.copy':'© {year} ASCORA EDUCATION. All rights reserved.','footer.privacy':'Privacy Policy','footer.offer':'Terms',
+    'footer.copy':'© {year} ASCORA EDUCATION. All rights reserved.','footer.privacy':'Privacy Policy','footer.offer':'Public Offer',
     'modal.title':'Application received!','modal.text':'Our consultant will contact you within <strong>30 minutes</strong> via WhatsApp or Telegram.','modal.btn':'Great, thank you!',
     'enroll.title':'Enroll in a program','enroll.name':'Name','enroll.phone':'Phone','enroll.email':'Email (optional)','enroll.msg':'Question or comment','enroll.submit':'Send application','enroll.success':'Application sent!','enroll.error':'Sending error. Please try again later.',
 

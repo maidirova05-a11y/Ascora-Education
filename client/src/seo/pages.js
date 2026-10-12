@@ -257,6 +257,20 @@ export const ROUTES = [
       },
     ],
   },
+  {
+    path: '/oferta',
+    keywords:
+      'публичная оферта ASCORA Education, AZ GROUP LLC, договор оказания образовательных услуг, условия оплаты, возврат средств',
+    title: 'Публичная оферта | ASCORA Education',
+    description:
+      'Публичная оферта ТОО «AZ GROUP LLC» на оказание платных образовательных услуг ASCORA Education: условия, оплата, возврат средств и реквизиты Исполнителя.',
+    changefreq: 'yearly',
+    priority: '0.3',
+    lastmod: '2026-10-12',
+    crumbs: [{ name: 'Публичная оферта', path: '/oferta' }],
+    faq: [],
+    extra: [],
+  },
 ];
 
 export const routeFor = (path) => ROUTES.find((r) => r.path === path);

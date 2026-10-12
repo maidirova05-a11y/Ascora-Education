@@ -15,6 +15,7 @@ import EnrollModal from './components/EnrollModal';
 import LagerAntalya from './pages/LagerAntalya';
 import LagerZaRubezhom from './pages/LagerZaRubezhom';
 import ObuchenieZaRubezhom from './pages/ObuchenieZaRubezhom';
+import Oferta from './pages/Oferta';
 import NotFound from './pages/NotFound';
 
 const Admin = lazy(() => import('./pages/Admin'));
@@ -72,6 +73,7 @@ export default function App() {
         <Route path="/leto-lager-v-turcii" element={<LagerAntalya />} />
         <Route path="/letnie-lagerya-za-rubezhom" element={<LagerZaRubezhom />} />
         <Route path="/obuchenie-za-rubezhom" element={<ObuchenieZaRubezhom />} />
+        <Route path="/oferta" element={<Oferta />} />
         <Route path="/admin" element={<Suspense fallback={null}><Admin /></Suspense>} />
         {/*
           A real 404 rather than <Navigate to="/">. The host answers 200 for
