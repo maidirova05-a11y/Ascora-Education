@@ -15,12 +15,6 @@ const COUNTRIES = [
   ['multi',      { ru: 'Несколько стран', kz: 'Бірнеше ел',     en: 'Multi-country' }],
 ];
 
-const PROGRAMS = [
-  ['all',        { ru: 'Все программы',   kz: 'Барлық бағдарлама', en: 'All programs' }],
-  ['camp',       { ru: 'Языковой лагерь', kz: 'Тілдік лагерь',    en: 'Language Camp' }],
-  ['university', { ru: 'Университет',     kz: 'Университет',       en: 'University' }],
-];
-
 const BUDGETS = [
   ['all',       { ru: 'Любой бюджет',  kz: 'Кез келген бюджет', en: 'Any budget' }],
   ['0-1500',    { ru: 'До $1 500',     kz: '$1 500 дейін',       en: 'Up to $1,500' }],
@@ -52,7 +46,6 @@ const campImgMap = {
 export default function FilterBar({ onFilter }) {
   const { lang } = useLang();
   const [country, setCountry] = useState('all');
-  const [program, setProgram] = useState('all');
   const [budget,  setBudget]  = useState('all');
   const [days,    setDays]    = useState('all');
   const [open,    setOpen]    = useState(null);
@@ -73,7 +66,6 @@ export default function FilterBar({ onFilter }) {
     setOpen(null);
     const filtered = campsData.filter((c) => {
       if (country !== 'all' && c.country !== country) return false;
-      if (program !== 'all' && c.type !== program) return false;
       if (budget !== 'all' && c.currency !== 'kzt') {
         const [min, max] = budget === '4000+' ? [4000, 99999] : budget.split('-').map(Number);
         if (c.price < min || c.price > max) return false;
@@ -126,12 +118,6 @@ export default function FilterBar({ onFilter }) {
           name="country" value={country} onChange={setCountry}
           label={L({ ru: 'Страна', kz: 'Ел', en: 'Country' })}
           options={COUNTRIES}
-        />
-        <div className="fb-divider" />
-        <Field
-          name="program" value={program} onChange={setProgram}
-          label={L({ ru: 'Программа', kz: 'Бағдарлама', en: 'Program' })}
-          options={PROGRAMS}
         />
         <div className="fb-divider" />
         <Field

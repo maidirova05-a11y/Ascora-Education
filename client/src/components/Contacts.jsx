@@ -23,7 +23,7 @@ export default function Contacts() {
     }
   }
 
-  const OPTS = ['form.opt.1','form.opt.2','form.opt.3','form.opt.4','form.opt.5','form.opt.6','form.opt.7','form.opt.8'];
+  const OPTS = ['form.opt.1','form.opt.2','form.opt.3','form.opt.4','form.opt.5','form.opt.6','form.opt.7'];
 
   return (
     <section id="contacts">
@@ -127,7 +127,7 @@ export default function Contacts() {
                   {status === 'error' && <div style={{ color: '#f87171', fontSize: 13, marginTop: 10, textAlign: 'center' }}>{t('enroll.error')}</div>}
                 </form>
               )}
-              <div className="form-note">{t('form.note')}</div>
+              <div className="form-note" dangerouslySetInnerHTML={{ __html: t('form.note') }} />
             </div>
           </div>
         </div>

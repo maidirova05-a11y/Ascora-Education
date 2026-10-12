@@ -137,6 +137,9 @@ if (process.env.NODE_ENV === 'production') {
     },
   }));
   app.use('/admin', (_req, res, next) => { res.set('X-Robots-Tag', 'noindex, nofollow'); next(); });
+  // The study-abroad page was removed — the company runs camps only. Send old
+  // links and search results to the camps hub, as vercel.json does.
+  app.get('/obuchenie-za-rubezhom', (_req, res) => res.redirect(301, '/letnie-lagerya-za-rubezhom'));
   // Hashed bundles never change under the same name.
   app.use('/assets', express.static(path.join(dist, 'assets'), { immutable: true, maxAge: '1y' }));
   // redirect: false — like Vercel, /page is served from page/index.html as is,

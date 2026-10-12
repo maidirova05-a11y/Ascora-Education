@@ -1,7 +1,8 @@
-const ITEMS = [
-  'University of Oxford','Imperial College London','MIT','University of Toronto','TU Munich',
-  'Sciences Po','King\'s College London','Varna Education Centre','Bright Language Centre','Abbotsholme School'
-];
+import { campsData } from '../data/camps';
+
+// Organisers of the camps in the catalogue — taken from the data, so the strip
+// only ever names programmes the site actually offers.
+const ITEMS = [...new Set(campsData.map((c) => c.org))];
 
 export default function Ticker() {
   const track = [...ITEMS, ...ITEMS];

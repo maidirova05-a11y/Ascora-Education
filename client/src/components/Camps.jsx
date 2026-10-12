@@ -10,6 +10,15 @@ const WHY = [
   { key: 'cw.4', icon: <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5"><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2"/><circle cx="19" cy="8" r="3"/><path d="M23 21v-2a4 4 0 00-3-3.87"/></svg> },
 ];
 
+// Counted from the catalogue rather than typed in, so the figures always match
+// the programmes listed below.
+const AGES = campsData.flatMap((c) => c.ageTag.split('–').map(Number));
+const CAMP_STATS = [
+  { num: String(campsData.length), sup: '', key: 'cs.1' },
+  { num: String(new Set(campsData.map((c) => c.country)).size), sup: '', key: 'cs.2' },
+  { num: `${Math.min(...AGES)}–${Math.max(...AGES)}`, sup: '', key: 'cs.3' },
+];
+
 export default function Camps({ filter, onEnroll }) {
   const { t } = useLang();
 
@@ -43,11 +52,7 @@ export default function Camps({ filter, onEnroll }) {
               <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 8h10M9 4l4 4-4 4"/></svg>
             </a>
             <div className="camps-stats">
-              {[
-                { num: '10', sup: '+', key: 'cs.1' },
-                { num: '7', sup: '+', key: 'cs.2' },
-                { num: '7–18', sup: '', key: 'cs.3' },
-              ].map((s) => (
+              {CAMP_STATS.map((s) => (
                 <div key={s.key} className="camp-stat">
                   <div className="camp-stat-num">{s.num}<em>{s.sup}</em></div>
                   <div className="camp-stat-label">{t(s.key)}</div>
