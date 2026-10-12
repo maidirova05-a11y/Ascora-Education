@@ -47,11 +47,13 @@ function buildPage(route) {
   const url = urlFor(route.path);
   const title = esc(route.title);
   const description = esc(route.description);
+  const keywords = esc(route.keywords);
 
   /** [regex matching the whole tag, replacement tag, label for the error]. */
   const tags = [
     [/<title>[\s\S]*?<\/title>/, `<title>${title}</title>`, '<title>'],
     [/<meta name="description" content="[^"]*"\s*\/?>/, `<meta name="description" content="${description}" />`, 'meta description'],
+    [/<meta name="keywords" content="[^"]*"\s*\/?>/, `<meta name="keywords" content="${keywords}" />`, 'meta keywords'],
     [/<link rel="canonical" href="[^"]*"\s*\/?>/, `<link rel="canonical" href="${url}" />`, 'canonical'],
     [/<meta property="og:url" content="[^"]*"\s*\/?>/, `<meta property="og:url" content="${url}" />`, 'og:url'],
     [/<meta property="og:title" content="[^"]*"\s*\/?>/, `<meta property="og:title" content="${title}" />`, 'og:title'],
