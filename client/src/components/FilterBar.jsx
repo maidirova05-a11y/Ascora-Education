@@ -23,14 +23,6 @@ const BUDGETS = [
   ['4000+',     { ru: 'Свыше $4 000',  kz: '$4 000 жоғары',      en: 'Above $4,000' }],
 ];
 
-const DAYS = [
-  ['all',   { ru: 'Любая длительность', kz: 'Кез келген ұзақтығы', en: 'Any duration' }],
-  ['7',     { ru: '7 дней',       kz: '7 күн',        en: '7 days' }],
-  ['14',    { ru: '14 дней',      kz: '14 күн',       en: '14 days' }],
-  ['21',    { ru: '21 день',      kz: '21 күн',       en: '21 days' }],
-  ['28',    { ru: '28+ дней',     kz: '28+ күн',      en: '28+ days' }],
-];
-
 const campImgMap = {
   bulgaria:   'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=900&q=80&fit=crop&auto=format',
   spain:      'https://images.unsplash.com/photo-1579282240050-352db0a14c21?w=900&q=80&fit=crop&auto=format',
@@ -47,7 +39,6 @@ export default function FilterBar({ onFilter }) {
   const { lang } = useLang();
   const [country, setCountry] = useState('all');
   const [budget,  setBudget]  = useState('all');
-  const [days,    setDays]    = useState('all');
   const [open,    setOpen]    = useState(null);
   const [results, setResults] = useState(null);
   const barRef = useRef(null);
@@ -124,12 +115,6 @@ export default function FilterBar({ onFilter }) {
           name="budget" value={budget} onChange={setBudget}
           label={L({ ru: 'Бюджет', kz: 'Бюджет', en: 'Budget' })}
           options={BUDGETS}
-        />
-        <div className="fb-divider" />
-        <Field
-          name="days" value={days} onChange={setDays}
-          label={L({ ru: 'Длительность', kz: 'Ұзақтығы', en: 'Duration' })}
-          options={DAYS}
         />
         <button className="fb-btn" onClick={apply}>
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.2">
