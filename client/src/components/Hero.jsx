@@ -4,6 +4,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { campsData } from '../data/camps';
 
 gsap.registerPlugin(useGSAP);
 
@@ -18,12 +19,6 @@ const SLIDES = [
     hot: true,
   },
   {
-    id: 'edu',
-    href: '#education',
-    img: 'https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?w=1920&q=80&fit=crop&auto=format',
-    bullets: ['b1', 'b2', 'b3'],
-  },
-  {
     id: 'camps',
     href: '#camps',
     img: 'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1920&q=80&fit=crop&auto=format',
@@ -31,12 +26,13 @@ const SLIDES = [
   },
 ];
 
-// target value + suffix for counter animation
+// target value + suffix for counter animation.
+// Counted from the camp catalogue itself, so the numbers can never claim more
+// than the site actually offers.
 const STATS = [
-  { target: 300, suffix: '+', key: 'stat.students' },
-  { target: 20,  suffix: '+', key: 'stat.countries' },
-  { target: 95,  suffix: '%', key: 'stat.success' },
-  { target: 10,  suffix: '',  key: 'stat.programs' },
+  { target: campsData.length, suffix: '', key: 'stat.programs' },
+  { target: new Set(campsData.map((c) => c.country)).size, suffix: '', key: 'stat.countries' },
+  { target: 2027, suffix: '', key: 'stat.season' },
 ];
 
 export default function Hero() {

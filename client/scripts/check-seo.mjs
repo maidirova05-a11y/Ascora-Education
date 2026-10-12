@@ -33,9 +33,10 @@ const SITEMAP = 'sitemap.xml';
  *  проверка вопросов тут просто не срабатывает — и это правильно. */
 const PAGES = [
   ['/',                           'index.html',                            { indexable: true, lang: 'ru' }],
-  ['/obuchenie-za-rubezhom',      'obuchenie-za-rubezhom/index.html',      { indexable: true, lang: 'ru' }],
   ['/letnie-lagerya-za-rubezhom', 'letnie-lagerya-za-rubezhom/index.html', { indexable: true, lang: 'ru' }],
   ['/leto-lager-v-turcii',        'leto-lager-v-turcii/index.html',        { indexable: true, lang: 'ru' }],
+  ['/oferta',                     'oferta/index.html',                     { indexable: true, lang: 'ru' }],
+  ['/privacy',                    'privacy/index.html',                    { indexable: true, lang: 'ru' }],
 ];
 /* ─────────────────────────────────────────────────────────────────────────
  * Общая часть проверки. Ниже, под ── НАСТРОЙКИ ──, лежит всё, что отличает

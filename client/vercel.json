@@ -9,6 +9,13 @@
       "destination": "/index.html"
     }
   ],
+  "redirects": [
+    {
+      "source": "/obuchenie-za-rubezhom",
+      "destination": "/letnie-lagerya-za-rubezhom",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",

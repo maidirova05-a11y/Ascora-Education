@@ -15,26 +15,12 @@ const COUNTRIES = [
   ['multi',      { ru: 'Несколько стран', kz: 'Бірнеше ел',     en: 'Multi-country' }],
 ];
 
-const PROGRAMS = [
-  ['all',        { ru: 'Все программы',   kz: 'Барлық бағдарлама', en: 'All programs' }],
-  ['camp',       { ru: 'Языковой лагерь', kz: 'Тілдік лагерь',    en: 'Language Camp' }],
-  ['university', { ru: 'Университет',     kz: 'Университет',       en: 'University' }],
-];
-
 const BUDGETS = [
   ['all',       { ru: 'Любой бюджет',  kz: 'Кез келген бюджет', en: 'Any budget' }],
   ['0-1500',    { ru: 'До $1 500',     kz: '$1 500 дейін',       en: 'Up to $1,500' }],
   ['1500-2500', { ru: '$1 500 – $2 500', kz: '$1 500 – $2 500',  en: '$1,500 – $2,500' }],
   ['2500-4000', { ru: '$2 500 – $4 000', kz: '$2 500 – $4 000',  en: '$2,500 – $4,000' }],
   ['4000+',     { ru: 'Свыше $4 000',  kz: '$4 000 жоғары',      en: 'Above $4,000' }],
-];
-
-const DAYS = [
-  ['all',   { ru: 'Любая длительность', kz: 'Кез келген ұзақтығы', en: 'Any duration' }],
-  ['7',     { ru: '7 дней',       kz: '7 күн',        en: '7 days' }],
-  ['14',    { ru: '14 дней',      kz: '14 күн',       en: '14 days' }],
-  ['21',    { ru: '21 день',      kz: '21 күн',       en: '21 days' }],
-  ['28',    { ru: '28+ дней',     kz: '28+ күн',      en: '28+ days' }],
 ];
 
 const campImgMap = {
@@ -52,9 +38,7 @@ const campImgMap = {
 export default function FilterBar({ onFilter }) {
   const { lang } = useLang();
   const [country, setCountry] = useState('all');
-  const [program, setProgram] = useState('all');
   const [budget,  setBudget]  = useState('all');
-  const [days,    setDays]    = useState('all');
   const [open,    setOpen]    = useState(null);
   const [results, setResults] = useState(null);
   const barRef = useRef(null);
@@ -73,7 +57,6 @@ export default function FilterBar({ onFilter }) {
     setOpen(null);
     const filtered = campsData.filter((c) => {
       if (country !== 'all' && c.country !== country) return false;
-      if (program !== 'all' && c.type !== program) return false;
       if (budget !== 'all' && c.currency !== 'kzt') {
         const [min, max] = budget === '4000+' ? [4000, 99999] : budget.split('-').map(Number);
         if (c.price < min || c.price > max) return false;
@@ -129,21 +112,9 @@ export default function FilterBar({ onFilter }) {
         />
         <div className="fb-divider" />
         <Field
-          name="program" value={program} onChange={setProgram}
-          label={L({ ru: 'Программа', kz: 'Бағдарлама', en: 'Program' })}
-          options={PROGRAMS}
-        />
-        <div className="fb-divider" />
-        <Field
           name="budget" value={budget} onChange={setBudget}
           label={L({ ru: 'Бюджет', kz: 'Бюджет', en: 'Budget' })}
           options={BUDGETS}
-        />
-        <div className="fb-divider" />
-        <Field
-          name="days" value={days} onChange={setDays}
-          label={L({ ru: 'Длительность', kz: 'Ұзақтығы', en: 'Duration' })}
-          options={DAYS}
         />
         <button className="fb-btn" onClick={apply}>
           <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="2.2">

@@ -67,7 +67,7 @@ export default function LeadForm({ topic, price, id }) {
           {status === 'error' && <div style={{ color: '#f87171', fontSize: 13, marginTop: 10, textAlign: 'center' }}>{t('enroll.error')}</div>}
         </form>
       )}
-      <div className="form-note">{t('form.note')}</div>
+      <div className="form-note" dangerouslySetInnerHTML={{ __html: t('form.note') }} />
     </div>
   );
 }

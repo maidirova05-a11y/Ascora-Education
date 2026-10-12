@@ -1,4 +1,5 @@
 import { useLang } from '../context/LangContext';
+import { campsData } from '../data/camps';
 
 const FEATURES = [
   { key: 'f1', icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg> },
@@ -35,15 +36,15 @@ export default function About() {
             }}>
               <div className="about-quote">{t('about.quote')}</div>
               <div className="about-author">
-                <div className="author-av">АС</div>
+                <div className="author-av">A</div>
                 <div>
-                  <div className="author-name">Айгерим Сейтқали</div>
-                  <div className="author-meta">UCL, MSc Finance · London, 2024</div>
+                  <div className="author-name">{t('about.author')}</div>
+                  <div className="author-meta">{t('about.author.meta')}</div>
                 </div>
               </div>
             </div>
             <div className="about-badge">
-              <span>95%</span>
+              <span>{campsData.length}</span>
               <span>{t('about.badge')}</span>
             </div>
           </div>

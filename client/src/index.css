@@ -1009,6 +1009,20 @@ footer{background:#060D18;padding:64px 6% 32px;color:rgba(255,255,255,0.35)}
 .seo-hero-cta{margin-top:32px;display:inline-flex}
 .seo-section{padding:70px 0}
 .seo-section--alt{background:var(--off-white)}
+.legal-doc{max-width:820px}
+.legal-block{margin-bottom:34px}
+.legal-doc h2{font-size:22px;margin-bottom:12px}
+.legal-doc p,.legal-doc li{font-size:15.5px;line-height:1.7;color:var(--text-muted)}
+.legal-doc p+p,.legal-doc p+ul,.legal-doc ul+p{margin-top:10px}
+.legal-doc ul{padding-left:22px;list-style:disc}
+.legal-doc li{margin:4px 0}
+.legal-details{padding:28px;border-radius:16px;background:var(--off-white)}
+.legal-details dl{display:grid;grid-template-columns:max-content 1fr;gap:10px 26px}
+.legal-details dl>div{display:contents}
+.legal-details dt{color:var(--text-muted);font-size:14.5px}
+.legal-details dd{margin:0;font-weight:600;font-size:14.5px;word-break:break-word}
+.legal-details a{color:var(--navy);text-decoration:underline;text-underline-offset:2px}
+@media (max-width:640px){.legal-details dl{grid-template-columns:1fr;gap:2px}.legal-details dd{margin-bottom:10px}}
 .seo-key-facts{display:grid;grid-template-columns:1fr 1fr;gap:0 40px;margin-top:8px}
 .seo-price-band{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px;background:var(--navy);border-radius:var(--radius-xl);padding:32px 40px;margin-top:40px;color:#fff}
 .seo-price-band-label{font-size:12px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-bottom:8px}

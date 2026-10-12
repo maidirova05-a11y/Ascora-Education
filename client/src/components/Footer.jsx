@@ -25,9 +25,7 @@ export default function Footer() {
             <h4>{t('footer.nav')}</h4>
             <ul>
               <li><a href="/#about">{t('nav.about')}</a></li>
-              <li><a href="/obuchenie-za-rubezhom">{t('nav.edu')}</a></li>
               <li><a href="/#camps">{t('nav.camps')}</a></li>
-              <li><a href="/#news">{t('nav.news')}</a></li>
               <li><a href="/#contacts">{t('nav.contacts')}</a></li>
             </ul>
           </div>
@@ -59,8 +57,8 @@ export default function Footer() {
         <div className="footer-bottom">
           <div>{t('footer.copy').replace('{year}', new Date().getFullYear())}</div>
           <div style={{ display: 'flex', gap: 20 }}>
-            <a href="#">{t('footer.privacy')}</a>
-            <a href="#">{t('footer.offer')}</a>
+            <a href="/privacy">{t('footer.privacy')}</a>
+            <a href="/oferta">{t('footer.offer')}</a>
           </div>
         </div>
       </div>

@@ -28,9 +28,7 @@ export default function Navbar() {
         </a>
         <ul className="nav-links">
           <li><a href="/#about">{t('nav.about')}</a></li>
-          <li><a href="/#education">{t('nav.edu')}</a></li>
           <li><a href="/#camps">{t('nav.camps')}</a></li>
-          <li><a href="/#news">{t('nav.news')}</a></li>
           <li><a href="/#contacts">{t('nav.contacts')}</a></li>
           <li><a href="/#contacts" className="nav-cta">{t('nav.cta')}</a></li>
         </ul>
@@ -71,9 +69,7 @@ export default function Navbar() {
         {/* Nav links */}
         <div className="mm-nav" role="navigation">
           <a href="/#about"     className="mm-link" onClick={close}>{t('nav.about')}</a>
-          <a href="/#education" className="mm-link" onClick={close}>{t('nav.edu')}</a>
           <a href="/#camps"     className="mm-link" onClick={close}>{t('nav.camps')}</a>
-          <a href="/#news"      className="mm-link" onClick={close}>{t('nav.news')}</a>
           <a href="/#contacts"  className="mm-link" onClick={close}>{t('nav.contacts')}</a>
         </div>
 

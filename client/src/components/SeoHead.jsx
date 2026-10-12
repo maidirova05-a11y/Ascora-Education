@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 
-import { ORIGIN, JSONLD_ID } from '../seo/pages';
+import { ORIGIN, JSONLD_ID, routeFor } from '../seo/pages';
 
 /**
  * Keeps the document <head> in step with the route the SPA has navigated to.
@@ -122,6 +122,10 @@ export default function SeoHead({ title, description, path = '/', jsonLd, noinde
       // to fetch a URL; it does not stop one indexing it from an inbound link.
       upsertMeta('name', 'robots', noindex ? 'noindex, follow' : 'index, follow'),
     ];
+
+    // Keywords come from the route table, the same place the prerender reads them.
+    const keywords = routeFor(path)?.keywords;
+    if (keywords) undo.push(upsertMeta('name', 'keywords', keywords));
 
     undo.push(setJsonLd(jsonLd ?? null));
 
