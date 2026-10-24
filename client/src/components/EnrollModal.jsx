@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLang } from '../context/LangContext';
+import { attributionFields } from '../utils/attribution';
 
 const EMPTY_FORM = { name: '', phone: '', email: '', message: '', website: '' };
 
@@ -29,7 +30,9 @@ export default function EnrollModal({ camp, onClose }) {
           ...form,
           camp_name: camp.countryLabel[lang] + ' — ' + camp.org,
           camp_price: camp.price,
+          camp_currency: camp.currency === 'kzt' ? 'KZT' : 'USD',
           lang,
+          ...attributionFields(),
         }),
       });
       if (!res.ok) throw new Error();
@@ -47,7 +50,7 @@ export default function EnrollModal({ camp, onClose }) {
         {camp && (
           <div className="modal-camp-info">
             <strong>{camp.countryLabel[lang]}</strong> — {camp.org}
-            <span className="modal-camp-price"> · от ${camp.price.toLocaleString()}</span>
+            <span className="modal-camp-price"> · от {camp.currency === 'kzt' ? `${camp.price.toLocaleString()} ₸` : `$${camp.price.toLocaleString()}`}</span>
           </div>
         )}
 

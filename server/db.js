@@ -15,4 +15,71 @@ const pool = new Pool({
   statement_timeout: 15000,
 });
 
+/**
+ * Brings the database up to the shape in schema.sql: tables, the columns added
+ * since the table was first created, and the indexes the admin list relies on.
+ *
+ * Every statement is idempotent (IF NOT EXISTS), so this is safe to run against
+ * a database that already has everything — which is what happens on every boot.
+ * schema.sql stays the readable reference; this is the copy that actually runs.
+ */
+const SCHEMA_SQL = `
+  CREATE TABLE IF NOT EXISTS inquiries (
+    id          SERIAL PRIMARY KEY,
+    name        VARCHAR(200) NOT NULL,
+    phone       VARCHAR(50)  NOT NULL,
+    email       VARCHAR(200),
+    camp_name   VARCHAR(300),
+    camp_price  INTEGER,
+    lang        VARCHAR(5)   DEFAULT 'ru',
+    message     TEXT,
+    status      VARCHAR(30)  DEFAULT 'new',
+    created_at  TIMESTAMPTZ  DEFAULT NOW()
+  );
+  CREATE TABLE IF NOT EXISTS admin_users (
+    id            SERIAL PRIMARY KEY,
+    username      VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    created_at    TIMESTAMPTZ DEFAULT NOW()
+  );
+  -- Currency of camp_price: the Antalya camp is priced in tenge, the rest in
+  -- dollars, and a bare integer cannot say which.
+  ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS camp_currency VARCHAR(3);
+  -- Marketing attribution, captured by the client on the first page view.
+  ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS utm_source   VARCHAR(120);
+  ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS utm_medium   VARCHAR(120);
+  ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS utm_campaign VARCHAR(120);
+  ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS utm_content  VARCHAR(120);
+  ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS utm_term     VARCHAR(120);
+  ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS referrer     VARCHAR(500);
+  ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS landing_path VARCHAR(255);
+  ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS page         VARCHAR(255);
+  -- The admin list is always "newest first", optionally for one status.
+  CREATE INDEX IF NOT EXISTS inquiries_created_at_idx ON inquiries (created_at DESC);
+  CREATE INDEX IF NOT EXISTS inquiries_status_idx     ON inquiries (status);
+`;
+
+let schemaReady = null;
+
+/**
+ * Runs the schema once per process and hands every caller the same promise.
+ *
+ * Called at startup from index.js and awaited by POST /api/inquiries: after the
+ * first success it resolves immediately, so the insert no longer pays for a
+ * CREATE TABLE round-trip on every lead. A failure (database still waking up,
+ * network blip at boot) clears the memo so the next request retries instead of
+ * being stuck with a rejected promise for the life of the process.
+ */
+function ensureSchema() {
+  if (!schemaReady) {
+    schemaReady = pool.query(SCHEMA_SQL).then(() => undefined).catch((err) => {
+      schemaReady = null;
+      throw err;
+    });
+  }
+  return schemaReady;
+}
+
+pool.ensureSchema = ensureSchema;
+
 module.exports = pool;

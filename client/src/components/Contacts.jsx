@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useLang } from '../context/LangContext';
+import { attributionFields } from '../utils/attribution';
 
 export default function Contacts() {
   const { lang, t } = useLang();
@@ -13,7 +14,12 @@ export default function Contacts() {
       const res = await fetch('/api/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: form.name, phone: form.phone, email: form.email, camp_name: form.topic || null, message: form.message || null, lang, website: form.website }),
+        body: JSON.stringify({
+          name: form.name, phone: form.phone, email: form.email,
+          camp_name: form.topic || null, message: form.message || null,
+          lang, website: form.website,
+          ...attributionFields(),
+        }),
       });
       if (!res.ok) throw new Error();
       setStatus('success');

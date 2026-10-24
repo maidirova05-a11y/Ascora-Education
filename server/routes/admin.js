@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const requireAuth = require('../middleware/auth');
 const { updateInquiryStatus } = require('../sheets');
+const { STATUSES } = require('../inquiry');
 
 // Compared against when the username does not exist, so a wrong login and a
 // wrong password take the same time and the response cannot enumerate users.
@@ -31,12 +32,27 @@ router.post('/login', async (req, res) => {
   }
 });
 
+const MAX_LIMIT = 200;
+const MAX_OFFSET = 1000000;
+
+/**
+ * GET /api/admin/inquiries?status=&limit=&offset=   (or ?page= instead of offset)
+ *
+ * Newest first. `limit` is clamped to 1..200, `offset` to 0..1e6; `page`
+ * (1-based) is kept for the existing admin UI and converted to an offset when
+ * `offset` is not given. Returns the window plus the matching total, and echoes
+ * the effective limit/offset so a client can page without recomputing them.
+ */
 router.get('/inquiries', requireAuth, async (req, res) => {
-  const STATUSES = ['new', 'contacted', 'enrolled', 'cancelled'];
   const status = STATUSES.includes(req.query.status) ? req.query.status : null;
-  const page = Math.max(1, Math.min(10000, parseInt(req.query.page, 10) || 1));
-  const limit = Math.max(1, Math.min(200, parseInt(req.query.limit, 10) || 50));
-  const offset = (page - 1) * limit;
+  const limit = Math.max(1, Math.min(MAX_LIMIT, parseInt(req.query.limit, 10) || 50));
+  let offset;
+  if (req.query.offset !== undefined) {
+    offset = Math.max(0, Math.min(MAX_OFFSET, parseInt(req.query.offset, 10) || 0));
+  } else {
+    const page = Math.max(1, Math.min(10000, parseInt(req.query.page, 10) || 1));
+    offset = (page - 1) * limit;
+  }
   try {
     const selectWhere = status ? 'WHERE status=$3' : '';
     const selectParams = status ? [limit, offset, status] : [limit, offset];
@@ -44,14 +60,14 @@ router.get('/inquiries', requireAuth, async (req, res) => {
     const countParams = status ? [status] : [];
 
     const { rows } = await db.query(
-      `SELECT * FROM inquiries ${selectWhere} ORDER BY created_at DESC LIMIT $1 OFFSET $2`,
+      `SELECT * FROM inquiries ${selectWhere} ORDER BY created_at DESC, id DESC LIMIT $1 OFFSET $2`,
       selectParams
     );
     const { rows: count } = await db.query(
       `SELECT COUNT(*) FROM inquiries ${countWhere}`,
       countParams
     );
-    res.json({ inquiries: rows, total: parseInt(count[0].count) });
+    res.json({ inquiries: rows, total: parseInt(count[0].count, 10), limit, offset, status });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Database error' });
@@ -66,13 +82,14 @@ router.param('id', (req, res, next, id) => {
 
 router.patch('/inquiries/:id', requireAuth, async (req, res) => {
   const { status } = req.body || {};
-  const allowed = ['new', 'contacted', 'enrolled', 'cancelled'];
-  if (!allowed.includes(status)) return res.status(400).json({ error: 'Invalid status' });
+  if (!STATUSES.includes(status)) return res.status(400).json({ error: 'Invalid status' });
   try {
-    await db.query('UPDATE inquiries SET status=$1 WHERE id=$2', [status, req.params.id]);
-    updateInquiryStatus(req.params.id, status);
-    res.json({ ok: true });
+    const { rowCount } = await db.query('UPDATE inquiries SET status=$1 WHERE id=$2', [status, req.params.id]);
+    if (rowCount === 0) return res.status(404).json({ error: 'Not found' });
+    updateInquiryStatus(req.params.id, status); // fire-and-forget, logs its own errors
+    res.json({ ok: true, id: Number(req.params.id), status });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Database error' });
   }
 });
@@ -83,6 +100,7 @@ router.delete('/inquiries/:id', requireAuth, async (req, res) => {
     if (rowCount === 0) return res.status(404).json({ error: 'Not found' });
     res.json({ ok: true });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Database error' });
   }
 });

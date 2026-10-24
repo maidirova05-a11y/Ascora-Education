@@ -83,30 +83,13 @@ app.use('/api/admin/login', rateLimit({
 }));
 
 // ── База данных ──────────────────────────────────────────────────────────────
-async function initDb() {
-  await db.query(`
-    CREATE TABLE IF NOT EXISTS inquiries (
-      id          SERIAL PRIMARY KEY,
-      name        VARCHAR(200) NOT NULL,
-      phone       VARCHAR(50)  NOT NULL,
-      email       VARCHAR(200),
-      camp_name   VARCHAR(300),
-      camp_price  INTEGER,
-      lang        VARCHAR(5)   DEFAULT 'ru',
-      message     TEXT,
-      status      VARCHAR(30)  DEFAULT 'new',
-      created_at  TIMESTAMPTZ  DEFAULT NOW()
-    );
-    CREATE TABLE IF NOT EXISTS admin_users (
-      id            SERIAL PRIMARY KEY,
-      username      VARCHAR(100) UNIQUE NOT NULL,
-      password_hash VARCHAR(255) NOT NULL,
-      created_at    TIMESTAMPTZ DEFAULT NOW()
-    );
-  `);
-  console.log('✅ DB tables ready');
-}
-initDb().catch(e => console.error('❌ DB init error:', e.message));
+// Tables, added columns and indexes — see schema.sql and ensureSchema() in
+// db.js. Runs once here; POST /api/inquiries awaits the same memoised promise,
+// so a lead that arrives before this finishes still waits for the schema, and
+// one that arrives after it pays nothing.
+db.ensureSchema()
+  .then(() => console.log('✅ DB schema ready'))
+  .catch((e) => console.error('❌ DB init error:', e.message));
 
 const { initSheet } = require('./sheets');
 initSheet();
