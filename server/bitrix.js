@@ -7,7 +7,9 @@
 
 const { formatPrice } = require('./inquiry');
 
-const WEBHOOK = (process.env.BITRIX_WEBHOOK || '').replace(/\/?$/, '/'); // ensure trailing slash
+// Empty when unset so the guard in sendLead skips the call ('' .replace() would
+// yield '/', a truthy URL, and every lead logged a failed fetch instead).
+const WEBHOOK = process.env.BITRIX_WEBHOOK ? process.env.BITRIX_WEBHOOK.replace(/\/?$/, '/') : '';
 const CATEGORY_ID = process.env.BITRIX_CATEGORY_ID || '19';             // ASCORA EDU pipeline
 const STAGE_ID = process.env.BITRIX_STAGE_ID || `C${CATEGORY_ID}:NEW`;  // "Новая" stage
 
