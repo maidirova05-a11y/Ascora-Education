@@ -1,4 +1,5 @@
 import { useLang } from '../context/LangContext';
+import { formatCampPrice } from '../utils/price';
 
 export default function CampCard({ camp, onEnroll }) {
   const { lang, t } = useLang();
@@ -47,7 +48,7 @@ export default function CampCard({ camp, onEnroll }) {
         <div className="camp-price-block">
           <div>
             <div className="camp-price-from">{t('camp.price.from')}</div>
-            <div className="camp-price-val">{camp.price.toLocaleString()} {camp.currency === 'kzt' ? '₸' : '$'}</div>
+            <div className="camp-price-val">{formatCampPrice(camp)}</div>
             <div className="camp-dates">
               <div className="camp-dates-title">{t('camp.dates')}</div>
               {camp.dates[lang].split('\n').map((d, i) => (

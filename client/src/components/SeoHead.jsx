@@ -55,6 +55,25 @@ function upsertCanonical(href) {
 }
 
 /**
+ * A noindex page carries no canonical at all.
+ *
+ * Every route the host does not prerender (/admin, any 404) is served the
+ * home page's index.html, so without this it arrives claiming
+ * `canonical: https://www.ascora.education/` — a page that asks not to be
+ * indexed while pointing at the home page as the copy to index instead, which
+ * Google documents as conflicting signals. Removing the tag and putting it
+ * back on unmount keeps the real home page intact after an SPA navigation.
+ */
+function removeCanonical() {
+  const el = document.head.querySelector('link[rel="canonical"]');
+  if (!el) return () => {};
+  const anchor = el.nextSibling;
+  const parent = el.parentNode;
+  el.remove();
+  return () => parent.insertBefore(el, anchor);
+}
+
+/**
  * Rewrites the per-page JSON-LD block, reusing the one the build baked in.
  *
  * `scripts/prerender-meta.mjs` stamps the same id onto the block it writes, so
@@ -112,7 +131,7 @@ export default function SeoHead({ title, description, path = '/', jsonLd, noinde
 
     const undo = [
       upsertMeta('name', 'description', description),
-      upsertCanonical(url),
+      noindex ? removeCanonical() : upsertCanonical(url),
       upsertMeta('property', 'og:title', title),
       upsertMeta('property', 'og:description', description),
       upsertMeta('property', 'og:url', url),

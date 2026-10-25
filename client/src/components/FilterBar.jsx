@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useLang } from '../context/LangContext';
 import { campsData } from '../data/camps';
+import { formatCampPrice } from '../utils/price';
 
 const COUNTRIES = [
   ['all',        { ru: 'Все страны',      kz: 'Барлық елдер',   en: 'All countries' }],
@@ -168,7 +169,7 @@ export default function FilterBar({ onFilter }) {
                     <div className="fb-card-country">{camp.countryLabel?.[lang] ?? camp.country}</div>
                     <div className="fb-card-org">{camp.org}</div>
                     <div className="fb-card-price">
-                      {camp.currency === 'kzt' ? `от ${camp.price.toLocaleString()} ₸` : `от $${camp.price.toLocaleString()}`}
+                      от {formatCampPrice(camp)}
                     </div>
                     <div className="fb-card-age">{camp.ageMin}–{camp.ageMax} {L({ ru: 'лет', kz: 'жас', en: 'y.o.' })}</div>
                   </div>

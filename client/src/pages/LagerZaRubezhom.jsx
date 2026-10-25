@@ -5,6 +5,8 @@ import Footer from '../components/Footer';
 import SeoHead from '../components/SeoHead';
 import LeadForm from '../components/LeadForm';
 import { routeFor, graphFor } from '../seo/pages';
+import { localizedFaq } from '../seo/faq';
+import { formatCampPrice } from '../utils/price';
 
 /*
  * Title, description, breadcrumb and the whole schema.org graph come from
@@ -17,23 +19,24 @@ import { routeFor, graphFor } from '../seo/pages';
  * in step with the prerendered snapshot.
  */
 const ROUTE = routeFor('/letnie-lagerya-za-rubezhom');
+// FAQPage only while the Russian questions are on screen — see LagerAntalya.
 const JSON_LD = graphFor(ROUTE);
+const JSON_LD_NO_FAQ = graphFor(ROUTE, { includeFaq: false });
 
 export default function LagerZaRubezhom() {
   const { t, lang } = useLang();
 
-  const FAQ = [1, 2, 3, 4].map((i) => ({
-    q: t(`seo.hub.faq.q${i}`),
-    a: t(`seo.hub.faq.a${i}`),
-  }));
+  // Russian straight from pages.js (what the JSON-LD says); kk/en from i18n.
+  const FAQ = localizedFaq(ROUTE, 'seo.hub.faq', lang, t);
+  const isRu = lang === 'ru';
 
   return (
     <>
       <SeoHead
-        title={t('seo.hub.meta.title')}
-        description={t('seo.hub.meta.desc')}
+        title={isRu ? ROUTE.title : t('seo.hub.meta.title')}
+        description={isRu ? ROUTE.description : t('seo.hub.meta.desc')}
         path="/letnie-lagerya-za-rubezhom"
-        jsonLd={JSON_LD}
+        jsonLd={isRu ? JSON_LD : JSON_LD_NO_FAQ}
       />
       <Navbar />
       <main>
@@ -70,7 +73,7 @@ export default function LagerZaRubezhom() {
                     </div>
                   </div>
                   <div className="seo-camp-row-price">
-                    {t('seo.hub.price.from')} {camp.price.toLocaleString()} {camp.currency === 'kzt' ? '₸' : '$'}
+                    {t('seo.hub.price.from')} {formatCampPrice(camp)}
                   </div>
                 </a>
               ))}

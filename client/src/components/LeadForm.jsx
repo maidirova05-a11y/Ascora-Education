@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { useLang } from '../context/LangContext';
+import { attributionFields } from '../utils/attribution';
 
 const EMPTY_FORM = { name: '', phone: '', email: '', message: '', website: '' };
 
-export default function LeadForm({ topic, price, id }) {
+// `currency` names what `price` is in (the Antalya camp is priced in tenge).
+export default function LeadForm({ topic, price, currency = 'KZT', id }) {
   const { lang, t } = useLang();
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState('idle');
@@ -17,7 +19,14 @@ export default function LeadForm({ topic, price, id }) {
       const res = await fetch('/api/inquiries', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, camp_name: topic, camp_price: price || null, lang }),
+        body: JSON.stringify({
+          ...form,
+          camp_name: topic,
+          camp_price: price || null,
+          camp_currency: price ? currency : null,
+          lang,
+          ...attributionFields(),
+        }),
       });
       if (!res.ok) throw new Error();
       setStatus('success');

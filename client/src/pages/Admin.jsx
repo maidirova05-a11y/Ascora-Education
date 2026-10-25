@@ -1,11 +1,45 @@
-import { useState, useEffect, useCallback } from 'react';
+import { Fragment, useState, useEffect, useCallback } from 'react';
+import SeoHead from '../components/SeoHead';
+import { formatPrice } from '../utils/price';
 
 const STATUS = {
   new:       { label: 'Новая',    color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
   contacted: { label: 'Связались', color: '#f59e0b', bg: 'rgba(245,158,11,0.1)' },
   enrolled:  { label: 'Записан',  color: '#10b981', bg: 'rgba(16,185,129,0.1)' },
   cancelled: { label: 'Отменена', color: '#ef4444', bg: 'rgba(239,68,68,0.1)' },
+  spam:      { label: 'Спам',     color: '#6b7280', bg: 'rgba(107,114,128,0.12)' },
 };
+
+const PAGE_SIZE = 50;
+
+/**
+ * The host has no prerendered file for /admin, so the browser gets the home
+ * page's index.html: its title, canonical, «index, follow» and WebPage node.
+ * The panel shows applicants' personal data and must say for itself that it is
+ * not a page to index — robots.txt only asks a crawler not to fetch the URL,
+ * and the X-Robots-Tag header is set by one host's config, not by the app.
+ * Without `jsonLd` <SeoHead> also removes the inherited home-page graph.
+ */
+const HEAD = (
+  <SeoHead
+    title="Панель управления | ASCORA Education"
+    description="Служебная страница администратора ASCORA Education."
+    path="/admin"
+    noindex
+  />
+);
+
+/** utm_source / utm_medium / utm_campaign as one short line, or "прямой заход". */
+function sourceLabel(inq) {
+  const parts = [inq.utm_source, inq.utm_medium, inq.utm_campaign].filter(Boolean);
+  if (parts.length) return parts.join(' / ');
+  if (inq.referrer) { try { return new URL(inq.referrer).host; } catch { return inq.referrer; } }
+  return inq.landing_path || inq.page ? 'прямой заход' : '';
+}
+
+const hasDetails = (inq) =>
+  Boolean(inq.message || inq.utm_source || inq.utm_medium || inq.utm_campaign || inq.utm_content
+    || inq.utm_term || inq.referrer || inq.landing_path || inq.page);
 
 function StatCard({ label, value, color }) {
   return (
@@ -23,8 +57,10 @@ export default function Admin() {
   const [loginLoading, setLoginLoading] = useState(false);
   const [inquiries, setInquiries] = useState([]);
   const [total, setTotal] = useState(0);
+  const [statusCounts, setStatusCounts] = useState(null);
   const [loading, setLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
+  const [offset, setOffset] = useState(0);
   const [expanded, setExpanded] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
 
@@ -32,18 +68,27 @@ export default function Admin() {
     if (!token) return;
     setLoading(true);
     try {
-      const url = '/api/admin/inquiries' + (statusFilter ? `?status=${statusFilter}` : '');
+      const params = new URLSearchParams({ limit: String(PAGE_SIZE), offset: String(offset) });
+      if (statusFilter) params.set('status', statusFilter);
+      const url = `/api/admin/inquiries?${params}`;
       const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
       if (res.status === 401) { setToken(''); localStorage.removeItem('ascora_admin_token'); return; }
       const data = await res.json();
       setInquiries(Array.isArray(data.inquiries) ? data.inquiries : []);
       setTotal(data.total ?? 0);
+      setStatusCounts(data.counts && typeof data.counts === 'object' ? data.counts : null);
     } finally {
       setLoading(false);
     }
-  }, [token, statusFilter]);
+  }, [token, statusFilter, offset]);
 
   useEffect(() => { fetchInquiries(); }, [fetchInquiries]);
+
+  // A new filter starts from the first page. Both states change in one event,
+  // so React batches them into a single fetch; resetting the offset from an
+  // effect instead fired a request with the old offset first, and the stale
+  // response could arrive last and win.
+  function changeFilter(value) { setStatusFilter(value); setOffset(0); }
 
   async function login(e) {
     e.preventDefault();
@@ -86,7 +131,8 @@ export default function Admin() {
 
   function exportToExcel() {
     const BOM = '﻿';
-    const headers = ['#', 'Дата', 'Имя', 'Телефон', 'Email', 'Программа', 'Цена ($)', 'Язык', 'Сообщение', 'Статус'];
+    const headers = ['#', 'Дата', 'Имя', 'Телефон', 'Email', 'Программа', 'Цена', 'Язык', 'Сообщение', 'Статус',
+      'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'Referrer', 'Страница входа', 'Страница формы'];
     const rows = inquiries.map(inq => [
       inq.id,
       new Date(inq.created_at).toLocaleString('ru-RU'),
@@ -94,10 +140,12 @@ export default function Admin() {
       inq.phone,
       inq.email || '',
       inq.camp_name || '',
-      inq.camp_price || '',
+      formatPrice(inq.camp_price, inq.camp_currency),
       (inq.lang || 'ru').toUpperCase(),
       inq.message || '',
       STATUS[inq.status]?.label || inq.status,
+      inq.utm_source || '', inq.utm_medium || '', inq.utm_campaign || '', inq.utm_content || '', inq.utm_term || '',
+      inq.referrer || '', inq.landing_path || '', inq.page || '',
     ]);
     const csv = BOM + [headers, ...rows]
       .map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(';'))
@@ -111,11 +159,20 @@ export default function Admin() {
     URL.revokeObjectURL(url);
   }
 
-  const counts = Object.fromEntries(Object.keys(STATUS).map(s => [s, inquiries.filter(i => i.status === s).length]));
+  // Per-status totals over the whole table, from the server: counting the
+  // loaded rows only covered the current page of 50. «Всего» is their sum, so
+  // the cards agree with each other whatever filter or page is shown. An API
+  // that predates `counts` falls back to the old page-only figures.
+  const counts = Object.fromEntries(Object.keys(STATUS).map(s => [s,
+    statusCounts ? Number(statusCounts[s]) || 0 : inquiries.filter(i => i.status === s).length]));
+  const allTotal = statusCounts
+    ? Object.values(statusCounts).reduce((sum, n) => sum + (Number(n) || 0), 0)
+    : total;
 
   /* ── LOGIN ─────────────────────────────────────────────── */
   if (!token) return (
     <div className="adm-login-bg">
+      {HEAD}
       <div className="adm-login-card">
         <div className="adm-login-logo">
           <img src="/logo-small.png" alt="ASCORA" style={{ height: 44 }} />
@@ -154,6 +211,7 @@ export default function Admin() {
   /* ── DASHBOARD ──────────────────────────────────────────── */
   return (
     <div className="adm-layout">
+      {HEAD}
 
       {/* Sidebar */}
       <aside className="adm-sidebar">
@@ -197,11 +255,12 @@ export default function Admin() {
 
         {/* Stats */}
         <div className="adm-stats">
-          <StatCard label="Всего заявок"  value={total}              color="#C9A84C" />
+          <StatCard label="Всего заявок"  value={allTotal}           color="#C9A84C" />
           <StatCard label="Новые"         value={counts.new}         color="#3b82f6" />
           <StatCard label="Связались"     value={counts.contacted}   color="#f59e0b" />
           <StatCard label="Записаны"      value={counts.enrolled}    color="#10b981" />
           <StatCard label="Отменены"      value={counts.cancelled}   color="#ef4444" />
+          <StatCard label="Спам"          value={counts.spam}        color="#6b7280" />
         </div>
 
         {/* Filter */}
@@ -212,7 +271,7 @@ export default function Admin() {
               <button
                 key={val}
                 className={`adm-pill ${statusFilter === val ? 'active' : ''}`}
-                onClick={() => setStatusFilter(val)}
+                onClick={() => changeFilter(val)}
               >{lbl}</button>
             ))}
           </div>
@@ -240,14 +299,15 @@ export default function Admin() {
                     <th>Клиент</th>
                     <th>Контакты</th>
                     <th>Программа</th>
+                    <th>Источник</th>
                     <th>Статус</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
                   {inquiries.map((inq) => (
-                    <>
-                      <tr key={inq.id} className="adm-row" onClick={() => setExpanded(expanded === inq.id ? null : inq.id)}>
+                    <Fragment key={inq.id}>
+                      <tr className="adm-row" onClick={() => setExpanded(expanded === inq.id ? null : inq.id)}>
                         <td className="adm-td-id">#{inq.id}</td>
                         <td className="adm-td-date">
                           {new Date(inq.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' })}
@@ -264,7 +324,8 @@ export default function Admin() {
                           <a href={`tel:${inq.phone}`} onClick={e => e.stopPropagation()}>{inq.phone}</a>
                           {inq.email && <span>{inq.email}</span>}
                         </td>
-                        <td className="adm-td-camp">{inq.camp_name || '—'}{inq.camp_price ? <span>${inq.camp_price.toLocaleString()}</span> : null}</td>
+                        <td className="adm-td-camp">{inq.camp_name || '—'}{inq.camp_price ? <span>{formatPrice(inq.camp_price, inq.camp_currency)}</span> : null}</td>
+                        <td className="adm-td-camp" title={inq.referrer || ''}>{sourceLabel(inq) || '—'}</td>
                         <td className="adm-td-status" onClick={e => e.stopPropagation()}>
                           <select
                             className="adm-status-select"
@@ -290,19 +351,36 @@ export default function Admin() {
                           )}
                         </td>
                       </tr>
-                      {expanded === inq.id && inq.message && (
+                      {expanded === inq.id && hasDetails(inq) && (
                         <tr className="adm-expand-row" key={`${inq.id}-expand`}>
-                          <td colSpan={7}>
+                          <td colSpan={8}>
                             <div className="adm-expand">
-                              <strong>Сообщение:</strong> {inq.message}
+                              {inq.message && <div><strong>Сообщение:</strong> {inq.message}</div>}
+                              {(inq.utm_source || inq.utm_medium || inq.utm_campaign || inq.utm_content || inq.utm_term) && (
+                                <div>
+                                  <strong>UTM:</strong>{' '}
+                                  {['utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term']
+                                    .filter((k) => inq[k]).map((k) => `${k}=${inq[k]}`).join(', ')}
+                                </div>
+                              )}
+                              {inq.referrer && <div><strong>Referrer:</strong> {inq.referrer}</div>}
+                              {inq.landing_path && <div><strong>Страница входа:</strong> {inq.landing_path}</div>}
+                              {inq.page && <div><strong>Страница формы:</strong> {inq.page}</div>}
                             </div>
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   ))}
                 </tbody>
               </table>
+            )}
+            {total > PAGE_SIZE && (
+              <div className="adm-filter-row" style={{ justifyContent: 'space-between', marginTop: 16 }}>
+                <button className="adm-pill" disabled={offset === 0} onClick={() => setOffset(Math.max(0, offset - PAGE_SIZE))}>← Назад</button>
+                <div className="adm-filter-label">{offset + 1}–{Math.min(offset + PAGE_SIZE, total)} из {total}</div>
+                <button className="adm-pill" disabled={offset + PAGE_SIZE >= total} onClick={() => setOffset(offset + PAGE_SIZE)}>Вперёд →</button>
+              </div>
             )}
           </div>
         )}

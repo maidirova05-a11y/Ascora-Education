@@ -14,3 +14,8 @@ services:
         sync: false
       - key: CLIENT_URL
         sync: false
+      # Render puts exactly one proxy in front of the app; the server's default
+      # (2 hops, for Vercel → Forge nginx) would let a client pick its own IP
+      # via X-Forwarded-For and dodge the rate limits.
+      - key: TRUST_PROXY
+        value: "1"

@@ -83,30 +83,13 @@ app.use('/api/admin/login', rateLimit({
 }));
 
 // ── База данных ──────────────────────────────────────────────────────────────
-async function initDb() {
-  await db.query(`
-    CREATE TABLE IF NOT EXISTS inquiries (
-      id          SERIAL PRIMARY KEY,
-      name        VARCHAR(200) NOT NULL,
-      phone       VARCHAR(50)  NOT NULL,
-      email       VARCHAR(200),
-      camp_name   VARCHAR(300),
-      camp_price  INTEGER,
-      lang        VARCHAR(5)   DEFAULT 'ru',
-      message     TEXT,
-      status      VARCHAR(30)  DEFAULT 'new',
-      created_at  TIMESTAMPTZ  DEFAULT NOW()
-    );
-    CREATE TABLE IF NOT EXISTS admin_users (
-      id            SERIAL PRIMARY KEY,
-      username      VARCHAR(100) UNIQUE NOT NULL,
-      password_hash VARCHAR(255) NOT NULL,
-      created_at    TIMESTAMPTZ DEFAULT NOW()
-    );
-  `);
-  console.log('✅ DB tables ready');
-}
-initDb().catch(e => console.error('❌ DB init error:', e.message));
+// Tables, added columns and indexes — see schema.sql and ensureSchema() in
+// db.js. Runs once here; POST /api/inquiries awaits the same memoised promise,
+// so a lead that arrives before this finishes still waits for the schema, and
+// one that arrives after it pays nothing.
+db.ensureSchema()
+  .then(() => console.log('✅ DB schema ready'))
+  .catch((e) => console.error('❌ DB init error:', e.message));
 
 const { initSheet } = require('./sheets');
 initSheet();
@@ -120,6 +103,9 @@ setInterval(async () => {
 app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/admin', require('./routes/admin'));
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
+// Unknown API route → JSON 404. Registered before the site-page handlers below
+// so it keeps the API's CSP (default-src 'none') instead of the page one.
+app.use('/api/', (_req, res) => res.status(404).json({ error: 'Not found' }));
 
 // ── Статика для продакшна ─────────────────────────────────────────────────────
 // Used by the Docker image, where this server also hosts the site; in the
@@ -145,8 +131,7 @@ if (process.env.NODE_ENV === 'production') {
   // redirect: false — like Vercel, /page is served from page/index.html as is,
   // without a 301 to /page/ (the prerendered canonicals have no trailing slash).
   app.use(express.static(dist, { redirect: false }));
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api/')) return next(); // unknown API route → JSON 404 below
+  app.get('*', (req, res) => {
     const page = path.resolve(dist, `.${req.path}`, 'index.html');
     const prerendered = page.startsWith(dist + path.sep) && fs.existsSync(page);
     res.sendFile(prerendered ? page : path.join(dist, 'index.html'));
@@ -154,7 +139,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // ── Глобальный обработчик ошибок (не показываем детали ошибок пользователю) ──
-app.use('/api/', (_req, res) => res.status(404).json({ error: 'Not found' }));
 
 app.use((err, _req, res, _next) => {
   // Malformed / oversized JSON bodies are the client's fault, not ours.

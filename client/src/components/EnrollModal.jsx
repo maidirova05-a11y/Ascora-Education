@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLang } from '../context/LangContext';
+import { attributionFields } from '../utils/attribution';
+import { formatCampPrice } from '../utils/price';
 
 const EMPTY_FORM = { name: '', phone: '', email: '', message: '', website: '' };
 
@@ -29,7 +31,9 @@ export default function EnrollModal({ camp, onClose }) {
           ...form,
           camp_name: camp.countryLabel[lang] + ' — ' + camp.org,
           camp_price: camp.price,
+          camp_currency: camp.currency === 'kzt' ? 'KZT' : 'USD',
           lang,
+          ...attributionFields(),
         }),
       });
       if (!res.ok) throw new Error();
@@ -47,7 +51,7 @@ export default function EnrollModal({ camp, onClose }) {
         {camp && (
           <div className="modal-camp-info">
             <strong>{camp.countryLabel[lang]}</strong> — {camp.org}
-            <span className="modal-camp-price"> · от ${camp.price.toLocaleString()}</span>
+            <span className="modal-camp-price"> · от {formatCampPrice(camp)}</span>
           </div>
         )}
 
@@ -55,7 +59,7 @@ export default function EnrollModal({ camp, onClose }) {
           <div className="modal-success">
             <div className="modal-success-icon">✓</div>
             <p>{t('enroll.success')}</p>
-            <button className="btn-primary" onClick={onClose}>Закрыть</button>
+            <button className="btn-primary" onClick={onClose}>{t('modal.btn')}</button>
           </div>
         ) : (
           <form onSubmit={submit} className="enroll-form">
