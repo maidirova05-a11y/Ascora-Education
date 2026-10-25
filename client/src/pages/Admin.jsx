@@ -1,5 +1,6 @@
 import { Fragment, useState, useEffect, useCallback } from 'react';
 import SeoHead from '../components/SeoHead';
+import { formatPrice } from '../utils/price';
 
 const STATUS = {
   new:       { label: 'Новая',    color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
@@ -27,15 +28,6 @@ const HEAD = (
     noindex
   />
 );
-
-/** "890 000 ₸" / "$2 500"; rows saved before camp_currency existed show a bare number. */
-function formatPrice(price, currency) {
-  if (price == null) return '';
-  const n = Number(price).toLocaleString('ru-RU');
-  if (currency === 'KZT') return `${n} ₸`;
-  if (currency === 'USD') return `$${n}`;
-  return n;
-}
 
 /** utm_source / utm_medium / utm_campaign as one short line, or "прямой заход". */
 function sourceLabel(inq) {
@@ -65,6 +57,7 @@ export default function Admin() {
   const [loginLoading, setLoginLoading] = useState(false);
   const [inquiries, setInquiries] = useState([]);
   const [total, setTotal] = useState(0);
+  const [statusCounts, setStatusCounts] = useState(null);
   const [loading, setLoading] = useState(false);
   const [statusFilter, setStatusFilter] = useState('');
   const [offset, setOffset] = useState(0);
@@ -83,6 +76,7 @@ export default function Admin() {
       const data = await res.json();
       setInquiries(Array.isArray(data.inquiries) ? data.inquiries : []);
       setTotal(data.total ?? 0);
+      setStatusCounts(data.counts && typeof data.counts === 'object' ? data.counts : null);
     } finally {
       setLoading(false);
     }
@@ -165,7 +159,15 @@ export default function Admin() {
     URL.revokeObjectURL(url);
   }
 
-  const counts = Object.fromEntries(Object.keys(STATUS).map(s => [s, inquiries.filter(i => i.status === s).length]));
+  // Per-status totals over the whole table, from the server: counting the
+  // loaded rows only covered the current page of 50. «Всего» is their sum, so
+  // the cards agree with each other whatever filter or page is shown. An API
+  // that predates `counts` falls back to the old page-only figures.
+  const counts = Object.fromEntries(Object.keys(STATUS).map(s => [s,
+    statusCounts ? Number(statusCounts[s]) || 0 : inquiries.filter(i => i.status === s).length]));
+  const allTotal = statusCounts
+    ? Object.values(statusCounts).reduce((sum, n) => sum + (Number(n) || 0), 0)
+    : total;
 
   /* ── LOGIN ─────────────────────────────────────────────── */
   if (!token) return (
@@ -253,7 +255,7 @@ export default function Admin() {
 
         {/* Stats */}
         <div className="adm-stats">
-          <StatCard label="Всего заявок"  value={total}              color="#C9A84C" />
+          <StatCard label="Всего заявок"  value={allTotal}           color="#C9A84C" />
           <StatCard label="Новые"         value={counts.new}         color="#3b82f6" />
           <StatCard label="Связались"     value={counts.contacted}   color="#f59e0b" />
           <StatCard label="Записаны"      value={counts.enrolled}    color="#10b981" />

@@ -162,7 +162,7 @@ const i18n = {
     'seo.antalya.faq.q7':'Балалар лагерьде немен айналысады?','seo.antalya.faq.a7':'Күн сайын — нақты жағдайларда тәжірибе жасалатын ағылшын тілі, STEM жобалары мен робототехника, командалық жобаларда көшбасшылық пен soft skills. Сабақтан кейін — теңіз, бассейндер, спорт, шеберлік сабақтары және бүкіл Қазақстаннан жаңа достар.',
     'seo.antalya.faq.q8':'Балаларды кім қадағалайды және бұл қаншалықты қауіпсіз?','seo.antalya.faq.a8':'Тәрбиешілердің тәулік бойы сүйемелдеуі мен күзет, әуежайдан трансфер және медициналық сақтандыру бағаға кіреді — ата-аналарға бөлек ештеңе ұйымдастырудың қажеті жоқ.',
     'seo.antalya.lead.label':'Брондау','seo.antalya.lead.h2':'Анталиядағы лагерьге өтінім қалдырыңыз',
-    'seo.antalya.meta.title':'Астанадан 2027 жылғы Түркиядағы (Анталья) балалар жазғы лагері — 5⭐ Ultra All Inclusive қонақүйі | ASCORA Education',
+    'seo.antalya.meta.title':'Түркиядағы (Анталья) балалар лагері 2027, Астанадан | ASCORA Education',
     'seo.antalya.meta.desc':'Қазақстандық балаларға арналған Түркиядағы лагерь: Анталья, 5⭐ Ultra All Inclusive қонақүйі, ағылшын тілі, STEM және робототехника. Астанадан ұшу, трансфер және сақтандыру кіреді. 890 000 ₸-ден, 6 айға бөліп төлеу.',
 
     'seo.hub.breadcrumb':'Шетелдік жазғы лагерьлер',
@@ -179,7 +179,7 @@ const i18n = {
     'seo.hub.faq.q6':'Балаға виза керек пе және ұшуды кім ұйымдастырады?','seo.hub.faq.a6':'ASCORA ұшуға және балаға виза рәсімдеуге көмектеседі, сондай-ақ әуежайда қарсы алу мен шығарып салуды ұйымдастырады. Таңдалған ел үшін нақты не қажет екенін кеңесші бағдарлама таңдау кезінде нақтылайды.',
     'seo.hub.faq.q7':'Ата-аналар баланың лагерьдегі жағдайын қалай біледі?','seo.hub.faq.a7':'Сапар алдында ата-аналарға брифинг өткіземіз, лагерь кезінде WhatsApp-топ құрып, лагерьден фото мен бейнелерді тұрақты жібереміз.',
     'seo.hub.lead.label':'Бағдарлама таңдау','seo.hub.lead.h2':'Өтінім қалдырыңыз — балаға лагерь таңдап береміз',
-    'seo.hub.meta.title':'2027 жылғы балаларға арналған шетелдік жазғы лагерьлер — ASCORA Education',
+    'seo.hub.meta.title':'Балаларға арналған шетелдік жазғы лагерьлер 2027 | ASCORA Education',
     'seo.hub.meta.desc':'Шетелдік тілдік және спорттық жазғы лагерьлер: Түркия, Болгария, Испания, Англия, Малайзия және басқа елдер. Толық сүйемелдеу, ағылшын тілі, 7-ден 18 жасқа дейін.',
     'seo.hub.age.suffix':'жас','seo.hub.price.from':'бастап',
     
@@ -264,7 +264,7 @@ const i18n = {
     'seo.antalya.faq.q7':'What do children do at the camp?','seo.antalya.faq.a7':'Every day — English practised in real-life situations, STEM projects and robotics, leadership and soft skills in team projects. After classes — the sea, pools, sports, workshops and new friends from all over Kazakhstan.',
     'seo.antalya.faq.q8':'Who looks after the children, and how safe is it?','seo.antalya.faq.a8':'24/7 supervision by counselors and security, airport transfer and medical insurance are all included in the price — parents don\'t need to arrange anything separately.',
     'seo.antalya.lead.label':'Booking','seo.antalya.lead.h2':'Leave a Request for the Antalya Camp',
-    'seo.antalya.meta.title':'2027 Summer Camp in Turkey (Antalya) from Astana — 5⭐ Ultra All Inclusive Hotel | ASCORA Education',
+    'seo.antalya.meta.title':"Kids' Camp in Turkey (Antalya) 2027 from Astana | ASCORA Education",
     'seo.antalya.meta.desc':'Summer camp in Turkey for children from Kazakhstan: Antalya, 5⭐ Ultra All Inclusive hotel, English language, STEM and robotics. Flights from Astana, transfer and insurance included. From 890,000 ₸, 6-month installments.',
 
     'seo.hub.breadcrumb':'Overseas Summer Camps',

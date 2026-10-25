@@ -6,6 +6,7 @@ import SeoHead from '../components/SeoHead';
 import LeadForm from '../components/LeadForm';
 import { routeFor, graphFor } from '../seo/pages';
 import { localizedFaq } from '../seo/faq';
+import { formatCampPrice } from '../utils/price';
 
 /*
  * Title, description, breadcrumb and the whole schema.org graph come from
@@ -72,7 +73,7 @@ export default function LagerZaRubezhom() {
                     </div>
                   </div>
                   <div className="seo-camp-row-price">
-                    {t('seo.hub.price.from')} {camp.price.toLocaleString()} {camp.currency === 'kzt' ? '₸' : '$'}
+                    {t('seo.hub.price.from')} {formatCampPrice(camp)}
                   </div>
                 </a>
               ))}

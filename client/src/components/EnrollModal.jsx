@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLang } from '../context/LangContext';
 import { attributionFields } from '../utils/attribution';
+import { formatCampPrice } from '../utils/price';
 
 const EMPTY_FORM = { name: '', phone: '', email: '', message: '', website: '' };
 
@@ -50,7 +51,7 @@ export default function EnrollModal({ camp, onClose }) {
         {camp && (
           <div className="modal-camp-info">
             <strong>{camp.countryLabel[lang]}</strong> — {camp.org}
-            <span className="modal-camp-price"> · от {camp.currency === 'kzt' ? `${camp.price.toLocaleString()} ₸` : `$${camp.price.toLocaleString()}`}</span>
+            <span className="modal-camp-price"> · от {formatCampPrice(camp)}</span>
           </div>
         )}
 
