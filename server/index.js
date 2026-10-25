@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
+const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 const path = require('path');
@@ -101,7 +102,11 @@ setInterval(async () => {
 
 // ── Маршруты ─────────────────────────────────────────────────────────────────
 app.use('/api/inquiries', require('./routes/inquiries'));
-app.use('/api/admin', require('./routes/admin'));
+// Compressed (brotli/gzip, negotiated; replies under 1 KB are left alone):
+// the admin list is ~30 KB of JSON per page of 50 and ~120 KB at limit=200,
+// 2–5 KB compressed. Not mounted for the public endpoints — their replies are
+// tiny, and the middleware's per-request cost showed up in the load test.
+app.use('/api/admin', compression(), require('./routes/admin'));
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
 // Unknown API route → JSON 404. Registered before the site-page handlers below
 // so it keeps the API's CSP (default-src 'none') instead of the page one.
@@ -126,6 +131,9 @@ if (process.env.NODE_ENV === 'production') {
   // The study-abroad page was removed — the company runs camps only. Send old
   // links and search results to the camps hub, as vercel.json does.
   app.get('/obuchenie-za-rubezhom', (_req, res) => res.redirect(301, '/letnie-lagerya-za-rubezhom'));
+  // Here this process is the web server too: compress the HTML, JS and CSS
+  // (Vercel does that on its own in the main setup).
+  app.use(compression());
   // Hashed bundles never change under the same name.
   app.use('/assets', express.static(path.join(dist, 'assets'), { immutable: true, maxAge: '1y' }));
   // redirect: false — like Vercel, /page is served from page/index.html as is,
