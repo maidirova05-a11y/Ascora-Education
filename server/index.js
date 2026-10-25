@@ -103,6 +103,9 @@ setInterval(async () => {
 app.use('/api/inquiries', require('./routes/inquiries'));
 app.use('/api/admin', require('./routes/admin'));
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
+// Unknown API route → JSON 404. Registered before the site-page handlers below
+// so it keeps the API's CSP (default-src 'none') instead of the page one.
+app.use('/api/', (_req, res) => res.status(404).json({ error: 'Not found' }));
 
 // ── Статика для продакшна ─────────────────────────────────────────────────────
 // Used by the Docker image, where this server also hosts the site; in the
@@ -128,8 +131,7 @@ if (process.env.NODE_ENV === 'production') {
   // redirect: false — like Vercel, /page is served from page/index.html as is,
   // without a 301 to /page/ (the prerendered canonicals have no trailing slash).
   app.use(express.static(dist, { redirect: false }));
-  app.get('*', (req, res, next) => {
-    if (req.path.startsWith('/api/')) return next(); // unknown API route → JSON 404 below
+  app.get('*', (req, res) => {
     const page = path.resolve(dist, `.${req.path}`, 'index.html');
     const prerendered = page.startsWith(dist + path.sep) && fs.existsSync(page);
     res.sendFile(prerendered ? page : path.join(dist, 'index.html'));
@@ -137,7 +139,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // ── Глобальный обработчик ошибок (не показываем детали ошибок пользователю) ──
-app.use('/api/', (_req, res) => res.status(404).json({ error: 'Not found' }));
 
 app.use((err, _req, res, _next) => {
   // Malformed / oversized JSON bodies are the client's fault, not ours.

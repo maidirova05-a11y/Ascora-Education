@@ -32,6 +32,11 @@ router.post('/login', async (req, res) => {
   }
 });
 
+// Everything under /inquiries needs a valid token, and the check runs before
+// anything else there — before the :id validation below, so an anonymous
+// request gets 401 rather than learning which ids are well-formed (400).
+router.use('/inquiries', requireAuth);
+
 const MAX_LIMIT = 200;
 const MAX_OFFSET = 1000000;
 
@@ -41,9 +46,10 @@ const MAX_OFFSET = 1000000;
  * Newest first. `limit` is clamped to 1..200, `offset` to 0..1e6; `page`
  * (1-based) is kept for the existing admin UI and converted to an offset when
  * `offset` is not given. Returns the window plus the matching total, and echoes
- * the effective limit/offset so a client can page without recomputing them.
+ * the effective limit/offset so a client can page without recomputing them,
+ * and `counts`: {new, contacted, enrolled, cancelled, spam} over all inquiries.
  */
-router.get('/inquiries', requireAuth, async (req, res) => {
+router.get('/inquiries', async (req, res) => {
   const status = STATUSES.includes(req.query.status) ? req.query.status : null;
   const limit = Math.max(1, Math.min(MAX_LIMIT, parseInt(req.query.limit, 10) || 50));
   let offset;
@@ -56,18 +62,24 @@ router.get('/inquiries', requireAuth, async (req, res) => {
   try {
     const selectWhere = status ? 'WHERE status=$3' : '';
     const selectParams = status ? [limit, offset, status] : [limit, offset];
-    const countWhere = status ? 'WHERE status=$1' : '';
-    const countParams = status ? [status] : [];
 
-    const { rows } = await db.query(
-      `SELECT * FROM inquiries ${selectWhere} ORDER BY created_at DESC, id DESC LIMIT $1 OFFSET $2`,
-      selectParams
-    );
-    const { rows: count } = await db.query(
-      `SELECT COUNT(*) FROM inquiries ${countWhere}`,
-      countParams
-    );
-    res.json({ inquiries: rows, total: parseInt(count[0].count, 10), limit, offset, status });
+    const [{ rows }, { rows: grouped }] = await Promise.all([
+      db.query(
+        `SELECT * FROM inquiries ${selectWhere} ORDER BY created_at DESC, id DESC LIMIT $1 OFFSET $2`,
+        selectParams
+      ),
+      // Per-status totals over the whole table, whatever the filter: the admin
+      // stat cards show these, not counts of the page that happens to be loaded.
+      db.query('SELECT status, COUNT(*)::int AS n FROM inquiries GROUP BY status'),
+    ]);
+    const counts = Object.fromEntries(STATUSES.map((s) => [s, 0]));
+    let all = 0;
+    for (const { status: s, n } of grouped) {
+      all += n;
+      if (s in counts) counts[s] = n;
+    }
+    const total = status ? counts[status] : all;
+    res.json({ inquiries: rows, total, counts, limit, offset, status });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Database error' });
@@ -80,7 +92,7 @@ router.param('id', (req, res, next, id) => {
   next();
 });
 
-router.patch('/inquiries/:id', requireAuth, async (req, res) => {
+router.patch('/inquiries/:id', async (req, res) => {
   const { status } = req.body || {};
   if (!STATUSES.includes(status)) return res.status(400).json({ error: 'Invalid status' });
   try {
@@ -94,7 +106,7 @@ router.patch('/inquiries/:id', requireAuth, async (req, res) => {
   }
 });
 
-router.delete('/inquiries/:id', requireAuth, async (req, res) => {
+router.delete('/inquiries/:id', async (req, res) => {
   try {
     const { rowCount } = await db.query('DELETE FROM inquiries WHERE id=$1', [req.params.id]);
     if (rowCount === 0) return res.status(404).json({ error: 'Not found' });
