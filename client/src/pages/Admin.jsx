@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { Fragment, useState, useEffect, useCallback } from 'react';
+import SeoHead from '../components/SeoHead';
 
 const STATUS = {
   new:       { label: 'Новая',    color: '#3b82f6', bg: 'rgba(59,130,246,0.1)' },
@@ -9,6 +10,23 @@ const STATUS = {
 };
 
 const PAGE_SIZE = 50;
+
+/**
+ * The host has no prerendered file for /admin, so the browser gets the home
+ * page's index.html: its title, canonical, «index, follow» and WebPage node.
+ * The panel shows applicants' personal data and must say for itself that it is
+ * not a page to index — robots.txt only asks a crawler not to fetch the URL,
+ * and the X-Robots-Tag header is set by one host's config, not by the app.
+ * Without `jsonLd` <SeoHead> also removes the inherited home-page graph.
+ */
+const HEAD = (
+  <SeoHead
+    title="Панель управления | ASCORA Education"
+    description="Служебная страница администратора ASCORA Education."
+    path="/admin"
+    noindex
+  />
+);
 
 /** "890 000 ₸" / "$2 500"; rows saved before camp_currency existed show a bare number. */
 function formatPrice(price, currency) {
@@ -71,8 +89,12 @@ export default function Admin() {
   }, [token, statusFilter, offset]);
 
   useEffect(() => { fetchInquiries(); }, [fetchInquiries]);
-  // A new filter starts from the first page.
-  useEffect(() => { setOffset(0); }, [statusFilter]);
+
+  // A new filter starts from the first page. Both states change in one event,
+  // so React batches them into a single fetch; resetting the offset from an
+  // effect instead fired a request with the old offset first, and the stale
+  // response could arrive last and win.
+  function changeFilter(value) { setStatusFilter(value); setOffset(0); }
 
   async function login(e) {
     e.preventDefault();
@@ -148,6 +170,7 @@ export default function Admin() {
   /* ── LOGIN ─────────────────────────────────────────────── */
   if (!token) return (
     <div className="adm-login-bg">
+      {HEAD}
       <div className="adm-login-card">
         <div className="adm-login-logo">
           <img src="/logo-small.png" alt="ASCORA" style={{ height: 44 }} />
@@ -186,6 +209,7 @@ export default function Admin() {
   /* ── DASHBOARD ──────────────────────────────────────────── */
   return (
     <div className="adm-layout">
+      {HEAD}
 
       {/* Sidebar */}
       <aside className="adm-sidebar">
@@ -245,7 +269,7 @@ export default function Admin() {
               <button
                 key={val}
                 className={`adm-pill ${statusFilter === val ? 'active' : ''}`}
-                onClick={() => setStatusFilter(val)}
+                onClick={() => changeFilter(val)}
               >{lbl}</button>
             ))}
           </div>
@@ -280,8 +304,8 @@ export default function Admin() {
                 </thead>
                 <tbody>
                   {inquiries.map((inq) => (
-                    <>
-                      <tr key={inq.id} className="adm-row" onClick={() => setExpanded(expanded === inq.id ? null : inq.id)}>
+                    <Fragment key={inq.id}>
+                      <tr className="adm-row" onClick={() => setExpanded(expanded === inq.id ? null : inq.id)}>
                         <td className="adm-td-id">#{inq.id}</td>
                         <td className="adm-td-date">
                           {new Date(inq.created_at).toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: '2-digit' })}
@@ -344,7 +368,7 @@ export default function Admin() {
                           </td>
                         </tr>
                       )}
-                    </>
+                    </Fragment>
                   ))}
                 </tbody>
               </table>

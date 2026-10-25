@@ -58,7 +58,7 @@ export default function EnrollModal({ camp, onClose }) {
           <div className="modal-success">
             <div className="modal-success-icon">✓</div>
             <p>{t('enroll.success')}</p>
-            <button className="btn-primary" onClick={onClose}>Закрыть</button>
+            <button className="btn-primary" onClick={onClose}>{t('modal.btn')}</button>
           </div>
         ) : (
           <form onSubmit={submit} className="enroll-form">
