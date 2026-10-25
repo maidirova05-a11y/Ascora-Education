@@ -15,6 +15,14 @@ const pool = new Pool({
   statement_timeout: 15000,
 });
 
+// An idle pooled client can lose its connection (database restart, Neon
+// suspending, network blip). pg reports that as an 'error' event on the pool,
+// and an unhandled 'error' event would crash the whole process. The pool drops
+// the broken client by itself; the next query opens a fresh one.
+pool.on('error', (err) => {
+  console.error('Postgres idle client error:', err.message);
+});
+
 /**
  * Brings the database up to the shape in schema.sql: tables, the columns added
  * since the table was first created, and the indexes the admin list relies on.

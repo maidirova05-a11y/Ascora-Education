@@ -22,15 +22,28 @@ const UTM_FIELDS = {
   utm_term: 'UTM_TERM',
 };
 
+/**
+ * One Bitrix REST call. Errors name the method, never the webhook URL — the
+ * URL is the secret. A hung Bitrix cannot hold the request open for long: the
+ * call is abandoned after 15 s. A reply without `result` counts as a failure,
+ * so the caller never logs "created id=undefined".
+ */
 async function call(method, payload) {
   const res = await fetch(`${WEBHOOK}${method}.json`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
+    signal: AbortSignal.timeout(15000),
   });
   const data = await res.json().catch(() => ({}));
   if (data.error) {
-    throw new Error(`${data.error}: ${data.error_description || ''}`);
+    throw new Error(`${method}: ${data.error}: ${data.error_description || ''}`);
+  }
+  if (!res.ok) {
+    throw new Error(`${method}: HTTP ${res.status}`);
+  }
+  if (data.result == null || data.result === false) {
+    throw new Error(`${method}: no result in the response`);
   }
   return data.result;
 }
@@ -93,7 +106,8 @@ async function sendLead(inq) {
     const dealId = await call('crm.deal.add', { fields: dealFields });
     console.log(`Bitrix deal created id=${dealId} (contact=${contactId}) in ASCORA EDU`);
   } catch (err) {
-    console.error('Bitrix sendLead error:', err.message);
+    // fetch() failures (DNS, reset, timeout) carry no URL in their message.
+    console.error('Bitrix sendLead error:', err.name === 'TimeoutError' ? 'timed out after 15 s' : err.message);
   }
 }
 
