@@ -13,15 +13,21 @@
  * FAQ markup only on the client, so the snapshot a non-JS crawler saw and the
  * markup a browser built were different documents.
  *
- * WHAT THIS DOES NOT DO: render the React tree. <div id="root"> is still empty
- * in these files, so a crawler that does not run JavaScript gets a correct
- * <head> and no body copy. Fixing that means real SSR (renderToString +
- * StaticRouter) — worth doing, and a larger change than a metadata pass.
+ * Body: the public sub-pages (everything except "/") also get their React tree
+ * rendered into <div id="root"> by src/entry-server.jsx (the `vite build --ssr`
+ * half of `npm run build`), and main.jsx hydrates that markup. A visitor sees
+ * the page before any JavaScript has run, and so does a crawler that never
+ * runs it. The home page is NOT rendered here: its hero is a GSAP intro that
+ * starts hidden and animates in, so server markup would show the headline,
+ * blank it on hydration and play it again. It keeps an empty #root.
+ *
+ * Each route's HTML also preloads its own lazy chunk (see App.jsx), read from
+ * Vite's manifest, so splitting routes does not add a request waterfall.
  */
 
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 import { ROUTES, urlFor, graphFor, buildSitemap, JSONLD_ID } from '../src/seo/pages.js';
 
@@ -29,6 +35,41 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const distDir = resolve(__dirname, '../dist');
 
 const base = readFileSync(resolve(distDir, 'index.html'), 'utf8');
+const manifestPath = resolve(distDir, '.vite/manifest.json');
+const manifest = JSON.parse(readFileSync(manifestPath, 'utf8'));
+const { render } = await import(pathToFileURL(resolve(__dirname, '../dist-ssr/entry-server.js')).href);
+
+/** The lazy page component behind each route in App.jsx. */
+const PAGE_SOURCE = {
+  '/': 'src/pages/Landing.jsx',
+  '/letnie-lagerya-za-rubezhom': 'src/pages/LagerZaRubezhom.jsx',
+  '/leto-lager-v-turcii': 'src/pages/LagerAntalya.jsx',
+  '/oferta': 'src/pages/Oferta.jsx',
+  '/privacy': 'src/pages/Privacy.jsx',
+};
+
+/** Routes whose body is server-rendered. Not "/": see the header comment. */
+const RENDER_BODY = (path) => path !== '/';
+
+/** The home hero photo. The template preloads it at high priority, which is
+ *  right for "/" and pure waste on every other route, none of which shows it. */
+const HERO_PRELOAD = /\s*<link rel="preload" as="image" href="https:\/\/images\.unsplash\.com\/[^"]*"[^>]*>/;
+
+/** <link rel="modulepreload"> for a route's chunk and the chunks it imports,
+ *  minus what the template already loads (the entry and its own imports). */
+function modulePreloads(path) {
+  const key = PAGE_SOURCE[path];
+  if (!manifest[key]) throw new Error(`prerender-meta: в манифесте нет ${key} — маршрут переименован?`);
+  const seen = new Set(['index.html', ...(manifest['index.html'].imports || [])]);
+  const files = [];
+  (function walk(k) {
+    if (seen.has(k)) return;
+    seen.add(k);
+    files.push(manifest[k].file);
+    (manifest[k].imports || []).forEach(walk);
+  })(key);
+  return files.map((f) => `  <link rel="modulepreload" crossorigin href="/${f}">\n`).join('');
+}
 
 /** Replaces exactly one tag, and throws when the template no longer contains
  *  it. Meta tags that silently stop being rewritten are far harder to notice
@@ -43,7 +84,7 @@ function replaceTag(html, pattern, replacement, what) {
 const esc = (s) =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-function buildPage(route) {
+async function buildPage(route) {
   const url = urlFor(route.path);
   const title = esc(route.title);
   const description = esc(route.description);
@@ -84,15 +125,32 @@ function buildPage(route) {
   // includeFaq: false — в статическом файле <div id="root"> пуст, а FAQ-разметка
   // без видимых вопросов недействительна для краулеров, которые не исполняют JS.
   // Подробности в комментарии к pageGraph() в src/seo/pages.js.
+  // Теперь тело подстраниц пререндерится и вопросы в статике видны, так что
+  // FAQ можно вернуть в статический JSON-LD — отдельным SEO-изменением с
+  // проверкой check-seo.mjs, не в рамках оптимизации скорости.
   const json = JSON.stringify(graphFor(route, { includeFaq: false }), null, 2).replace(/<\//g, '<\\/');
-  return html.replace(
+  html = html.replace(
     '</head>',
-    `  <script type="application/ld+json" id="${JSONLD_ID}">\n${json}\n  </script>\n</head>`,
+    `${modulePreloads(route.path)}  <script type="application/ld+json" id="${JSONLD_ID}">\n${json}\n  </script>\n</head>`,
   );
+
+  if (route.path !== '/') html = replaceTag(html, HERO_PRELOAD, '', 'preload фото героя');
+
+  if (RENDER_BODY(route.path)) {
+    const body = await render(route.path);
+    // Everything must be resolved at build time: a streamed-in boundary would
+    // arrive as an inline <script> (and the CSP-free reveal code with it).
+    // \0: see entry-server.jsx — never let a broken byte reach the page.
+    if (!body || /<script|\0|\uFFFD/i.test(body)) {
+      throw new Error(`prerender-meta: ${route.path} — SSR вернул пустую разметку, <script> или битые символы`);
+    }
+    html = replaceTag(html, /<div id="root"><\/div>/, `<div id="root">${body}</div>`, '<div id="root">');
+  }
+  return html;
 }
 
 for (const route of ROUTES) {
-  const html = buildPage(route);
+  const html = await buildPage(route);
 
   if (route.path === '/') {
     // The home page overwrites dist/index.html in place — it IS the template,
@@ -113,4 +171,7 @@ for (const route of ROUTES) {
  * drift from the routes that actually exist, and so every entry has a lastmod.
  */
 writeFileSync(resolve(distDir, 'sitemap.xml'), buildSitemap());
+
+// Build artefacts that must not be deployed: the manifest lives inside dist/.
+rmSync(resolve(distDir, '.vite'), { recursive: true, force: true });
 console.log(`prerender-meta: sitemap.xml — ${ROUTES.length} адресов`);

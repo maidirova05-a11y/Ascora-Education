@@ -13,6 +13,7 @@ client/.env.local
 
 # Build output
 client/dist/
+client/dist-ssr/
 client/build/
 
 # Logs

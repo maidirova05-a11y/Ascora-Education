@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && vite build --ssr src/entry-server.jsx",
     "postbuild": "node scripts/prerender-meta.mjs",
     "preview": "vite preview",
     "check:seo": "node scripts/check-seo.mjs"

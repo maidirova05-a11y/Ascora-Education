@@ -55,7 +55,9 @@ export default function Footer() {
         </div>
 
         <div className="footer-bottom">
-          <div>{t('footer.copy').replace('{year}', new Date().getFullYear())}</div>
+          {/* suppressHydrationWarning: the prerendered sub-pages carry the build year;
+              after New Year the client patches it in without a hydration error. */}
+          <div suppressHydrationWarning>{t('footer.copy').replace('{year}', new Date().getFullYear())}</div>
           <div style={{ display: 'flex', gap: 20 }}>
             <a href="/privacy">{t('footer.privacy')}</a>
             <a href="/oferta">{t('footer.offer')}</a>
