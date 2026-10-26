@@ -10,3 +10,4 @@ server/.env
 docker.env
 backups
 *.log
+client/dist-ssr

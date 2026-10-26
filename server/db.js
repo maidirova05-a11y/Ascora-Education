@@ -62,9 +62,16 @@ const SCHEMA_SQL = `
   ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS referrer     VARCHAR(500);
   ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS landing_path VARCHAR(255);
   ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS page         VARCHAR(255);
-  -- The admin list is always "newest first", optionally for one status.
-  CREATE INDEX IF NOT EXISTS inquiries_created_at_idx ON inquiries (created_at DESC);
-  CREATE INDEX IF NOT EXISTS inquiries_status_idx     ON inquiries (status);
+  -- The admin list is always "newest first" (created_at DESC, id DESC as the
+  -- tie-break), optionally for one status. Each index matches one of the two
+  -- shapes exactly, so the page is read off the index in order — no sort, and
+  -- no reading every row of a status to sort it when paging deep. The status
+  -- one also answers the stat cards' GROUP BY status from the index alone.
+  -- They replace the single-column indexes of the first version.
+  CREATE INDEX IF NOT EXISTS inquiries_list_idx        ON inquiries (created_at DESC, id DESC);
+  CREATE INDEX IF NOT EXISTS inquiries_status_list_idx ON inquiries (status, created_at DESC, id DESC);
+  DROP INDEX IF EXISTS inquiries_created_at_idx;
+  DROP INDEX IF EXISTS inquiries_status_idx;
 `;
 
 let schemaReady = null;

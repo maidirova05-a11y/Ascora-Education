@@ -40,9 +40,14 @@ ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS referrer     VARCHAR(500);
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS landing_path VARCHAR(255);
 ALTER TABLE inquiries ADD COLUMN IF NOT EXISTS page         VARCHAR(255);
 
--- The admin list is "newest first", optionally filtered by status.
-CREATE INDEX IF NOT EXISTS inquiries_created_at_idx ON inquiries (created_at DESC);
-CREATE INDEX IF NOT EXISTS inquiries_status_idx     ON inquiries (status);
+-- The admin list is "newest first" (created_at DESC, id DESC), optionally
+-- filtered by status: one index per shape, so pages come off the index in
+-- order. The status one also covers SELECT status, COUNT(*) ... GROUP BY status.
+CREATE INDEX IF NOT EXISTS inquiries_list_idx        ON inquiries (created_at DESC, id DESC);
+CREATE INDEX IF NOT EXISTS inquiries_status_list_idx ON inquiries (status, created_at DESC, id DESC);
+-- Superseded by the two above (first version of this file).
+DROP INDEX IF EXISTS inquiries_created_at_idx;
+DROP INDEX IF EXISTS inquiries_status_idx;
 
 CREATE TABLE IF NOT EXISTS admin_users (
   id            SERIAL PRIMARY KEY,
