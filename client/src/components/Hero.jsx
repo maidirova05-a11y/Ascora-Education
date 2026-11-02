@@ -287,7 +287,7 @@ export default function Hero() {
                 document.querySelector(slide.href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
               }}
             >
-              <span className="hsc-hot-cta-top">🔥 {t('hero.hot.dontmiss')}!</span>
+              <span className="hsc-hot-cta-top">🔥 {t('hero.hot.dontmiss')}</span>
               <span className="hsc-hot-cta-main">
                 {t('hero.hot.leadcta')}
                 <svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2.5">
