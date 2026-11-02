@@ -20,5 +20,5 @@ Mode: polish, keeping the navy and gold brand, Cormorant/Fraunces headings, Manr
 
 ## Left for later (need a design decision)
 - Route-line signature on program cards and process steps; replacing the Fraunces/Cormorant mix with a single display family.
-- Roughly 40 `!important` overrides in `index.css` (maintenance risk, not visual).
+- About 50 `!important` overrides in `index.css` (maintenance risk, not visual).
 - Admin screen got the same global rules (weights, labels, spacing) but was not redesigned.
