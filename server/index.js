@@ -1,4 +1,5 @@
-require('dotenv').config();
+const config = require('./config');
+config.assertValid(); // refuse to boot on a missing DATABASE_URL / weak JWT_SECRET
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -7,25 +8,20 @@ const rateLimit = require('express-rate-limit');
 const fs = require('fs');
 const path = require('path');
 const db = require('./db');
+const log = require('./logger');
+const { rateLimited, errorHandler } = require('./errors');
 
 const app = express();
 
-// ── Fail fast on a missing or weak secret ───────────────────────────────────
-// With an empty JWT_SECRET every admin token would be signed with a guessable
-// key; better to refuse to boot than to run like that.
-if (!process.env.JWT_SECRET) {
-  console.error('❌ JWT_SECRET is not set — refusing to start');
-  process.exit(1);
-}
-if (process.env.JWT_SECRET.length < 32) {
-  console.warn('⚠️  JWT_SECRET is shorter than 32 characters — replace it with `openssl rand -base64 48`');
+if (config.jwtSecret.length < 32) {
+  log.warn('JWT_SECRET is shorter than 32 characters — replace it with `openssl rand -base64 48`');
 }
 
 // ── Real client IP behind proxies ───────────────────────────────────────────
 // Requests arrive via the Vercel rewrite and then Forge's nginx: two hops. Without
 // this every visitor shares the proxy's IP, so the rate limits below would lock
 // out all parents at once after a handful of leads. Override with TRUST_PROXY.
-app.set('trust proxy', Number(process.env.TRUST_PROXY ?? 2));
+app.set('trust proxy', config.trustProxy);
 app.disable('x-powered-by');
 
 // ── Security headers (защищает от XSS, clickjacking и др.) ──────────────────
@@ -46,11 +42,11 @@ app.use('/api/', (_req, res, next) => { res.set('Cache-Control', 'no-store'); ne
 
 // ── CORS: разрешаем только наш домен ────────────────────────────────────────
 const allowedOrigins = [
-  process.env.CLIENT_URL,
+  config.clientUrl,
   'https://ascora.education',
   'https://www.ascora.education',
-  'http://localhost:5173',
-  'http://localhost:5175',
+  // Local dev servers are not an allowed origin in production.
+  ...(config.isProd ? [] : ['http://localhost:5173', 'http://localhost:5175']),
 ].filter(Boolean);
 
 app.use(cors({
@@ -69,7 +65,7 @@ app.use(express.json({ limit: '10kb', strict: true })); // Защита от о�
 app.use('/api/', rateLimit({
   windowMs: 60 * 1000,
   max: 60,
-  message: { error: 'Слишком много запросов. Попробуйте через минуту.' },
+  message: rateLimited('Слишком много запросов. Попробуйте через минуту.'),
   standardHeaders: true,
   legacyHeaders: false,
 }));
@@ -78,7 +74,7 @@ app.use('/api/', rateLimit({
 app.use('/api/admin/login', rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 5,
-  message: { error: 'Слишком много попыток входа. Попробуйте через 15 минут.' },
+  message: rateLimited('Слишком много попыток входа. Попробуйте через 15 минут.'),
   standardHeaders: true,
   legacyHeaders: false,
 }));
@@ -89,16 +85,17 @@ app.use('/api/admin/login', rateLimit({
 // so a lead that arrives before this finishes still waits for the schema, and
 // one that arrives after it pays nothing.
 db.ensureSchema()
-  .then(() => console.log('✅ DB schema ready'))
-  .catch((e) => console.error('❌ DB init error:', e.message));
+  .then(() => log.info('DB schema ready'))
+  .catch((e) => log.error('DB init error', { err: e.message }));
 
 const { initSheet } = require('./sheets');
 initSheet();
 
 // Пинг каждые 4 минуты чтобы Neon не засыпал (cold start = +2 сек для пользователя)
-setInterval(async () => {
-  try { await db.query('SELECT 1'); } catch (_) {}
+const keepAlive = setInterval(async () => {
+  try { await db.ping(); } catch (e) { log.warn('db keep-alive failed', { err: e.message }); }
 }, 4 * 60 * 1000);
+keepAlive.unref();
 
 // ── Маршруты ─────────────────────────────────────────────────────────────────
 app.use('/api/inquiries', require('./routes/inquiries'));
@@ -107,10 +104,19 @@ app.use('/api/inquiries', require('./routes/inquiries'));
 // 2–5 KB compressed. Not mounted for the public endpoints — their replies are
 // tiny, and the middleware's per-request cost showed up in the load test.
 app.use('/api/admin', compression(), require('./routes/admin'));
+// Liveness: no dependencies, used by the Docker/Render health checks.
 app.get('/api/health', (_req, res) => res.json({ ok: true }));
+// Readiness: also proves the database answers.
+app.get('/api/health/db', async (_req, res) => {
+  try { await db.ping(); res.json({ ok: true, db: true }); }
+  catch (e) {
+    log.error('health db check failed', { err: e.message });
+    res.status(503).json({ error: 'Database unavailable', code: 'DB_DOWN' });
+  }
+});
 // Unknown API route → JSON 404. Registered before the site-page handlers below
 // so it keeps the API's CSP (default-src 'none') instead of the page one.
-app.use('/api/', (_req, res) => res.status(404).json({ error: 'Not found' }));
+app.use('/api/', (_req, res) => res.status(404).json({ error: 'Not found', code: 'NOT_FOUND' }));
 
 // ── Статика для продакшна ─────────────────────────────────────────────────────
 // Used by the Docker image, where this server also hosts the site; in the
@@ -147,14 +153,20 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // ── Глобальный обработчик ошибок (не показываем детали ошибок пользователю) ──
+app.use(errorHandler);
 
-app.use((err, _req, res, _next) => {
-  // Malformed / oversized JSON bodies are the client's fault, not ours.
-  if (err.type === 'entity.parse.failed') return res.status(400).json({ error: 'Invalid JSON' });
-  if (err.type === 'entity.too.large') return res.status(413).json({ error: 'Payload too large' });
-  console.error(err.stack);
-  res.status(500).json({ error: 'Внутренняя ошибка сервера' });
-});
+const server = app.listen(config.port, () => log.info('server listening', { port: config.port, env: config.nodeEnv }));
 
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
+// A rejected promise nobody awaited must not be silent (or, on Node 22, crash
+// with no context): log it. Exceptions are fatal — exit and let the platform restart.
+process.on('unhandledRejection', (reason) => log.error('unhandled rejection', log.errFields(reason)));
+process.on('uncaughtException', (err) => { log.error('uncaught exception', log.errFields(err)); process.exit(1); });
+
+// Graceful shutdown on deploy/restart: stop accepting, finish in-flight, close the pool.
+function shutdown(signal) {
+  log.info('shutting down', { signal });
+  server.close(() => db.end().finally(() => process.exit(0)));
+  setTimeout(() => process.exit(1), 10000).unref();
+}
+process.on('SIGTERM', () => shutdown('SIGTERM'));
+process.on('SIGINT', () => shutdown('SIGINT'));

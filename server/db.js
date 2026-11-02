@@ -1,15 +1,16 @@
 const { Pool } = require('pg');
-require('dotenv').config();
+const config = require('./config');
+const log = require('./logger');
 
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
+  connectionString: config.databaseUrl,
   // Neon presents a publicly trusted certificate, so verify it — an unverified
   // TLS link can be silently intercepted. Other hosts keep the old behaviour
   // unless DB_SSL_VERIFY=1.
-  ssl: process.env.NODE_ENV === 'production'
-    ? { rejectUnauthorized: /neon\.tech/.test(process.env.DATABASE_URL || '') || process.env.DB_SSL_VERIFY === '1' }
+  ssl: config.isProd
+    ? { rejectUnauthorized: /neon\.tech/.test(config.databaseUrl) || config.dbSslVerify }
     : false,
-  max: 10,
+  max: config.dbPoolMax,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
   statement_timeout: 15000,
@@ -20,7 +21,7 @@ const pool = new Pool({
 // and an unhandled 'error' event would crash the whole process. The pool drops
 // the broken client by itself; the next query opens a fresh one.
 pool.on('error', (err) => {
-  console.error('Postgres idle client error:', err.message);
+  log.error('postgres idle client error', { err: err.message });
 });
 
 /**
@@ -32,6 +33,8 @@ pool.on('error', (err) => {
  * schema.sql stays the readable reference; this is the copy that actually runs.
  */
 const SCHEMA_SQL = `
+  -- Two instances booting together must not race on the DDL below.
+  SELECT pg_advisory_xact_lock(727001);
   CREATE TABLE IF NOT EXISTS inquiries (
     id          SERIAL PRIMARY KEY,
     name        VARCHAR(200) NOT NULL,
@@ -72,6 +75,23 @@ const SCHEMA_SQL = `
   CREATE INDEX IF NOT EXISTS inquiries_status_list_idx ON inquiries (status, created_at DESC, id DESC);
   DROP INDEX IF EXISTS inquiries_created_at_idx;
   DROP INDEX IF EXISTS inquiries_status_idx;
+  -- Value constraints. NOT VALID: enforced for new/updated rows without
+  -- scanning or locking out the existing ones, so an old odd row can never
+  -- make the boot fail. Keep the lists in sync with inquiry.js.
+  DO $$ BEGIN
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'inquiries_status_chk') THEN
+      ALTER TABLE inquiries ADD CONSTRAINT inquiries_status_chk
+        CHECK (status IN ('new','contacted','enrolled','cancelled','spam')) NOT VALID;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'inquiries_price_chk') THEN
+      ALTER TABLE inquiries ADD CONSTRAINT inquiries_price_chk
+        CHECK (camp_price IS NULL OR camp_price >= 0) NOT VALID;
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'inquiries_currency_chk') THEN
+      ALTER TABLE inquiries ADD CONSTRAINT inquiries_currency_chk
+        CHECK (camp_currency IS NULL OR camp_currency IN ('KZT','USD')) NOT VALID;
+    END IF;
+  END $$;
 `;
 
 let schemaReady = null;
@@ -96,5 +116,8 @@ function ensureSchema() {
 }
 
 pool.ensureSchema = ensureSchema;
+
+/** Cheap liveness probe of the database for /api/health/db. */
+pool.ping = () => pool.query('SELECT 1');
 
 module.exports = pool;
