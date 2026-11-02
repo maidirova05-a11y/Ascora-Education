@@ -116,6 +116,7 @@ function ensureSchema() {
 }
 
 pool.ensureSchema = ensureSchema;
+pool.SCHEMA_SQL = SCHEMA_SQL; // exported for the concurrent-boot test
 
 /** Cheap liveness probe of the database for /api/health/db. */
 pool.ping = () => pool.query('SELECT 1');
