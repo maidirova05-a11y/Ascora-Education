@@ -23,3 +23,5 @@
 **Process** — `unhandledRejection` is logged, `uncaughtException` exits, `SIGTERM` drains and closes the pool.
 
 **Tests** — `cd server && DATABASE_URL=postgresql://user@127.0.0.1:5432/scratch npm test` (Node's built-in runner, skipped without `DATABASE_URL`). They start the real server against a throwaway Postgres: boot with bad env, health 200/503, login and lockout, CRUD incl. oversized ids, CHECK constraints (and `VALIDATE` failing on legacy rows), concurrent DDL under the advisory lock, SIGTERM. Never point them at production; no Sheets/Bitrix credentials are passed. A database that is down or dropping connections yields 503 `DB_DOWN` on every endpoint, not 500.
+
+**Full stack without Docker** — `docker/local-stack.sh up` starts a throwaway local PostgreSQL with TLS, runs the server in production mode (serving `client/dist`) and runs `docker/smoke.sh check` against it (site, prerendered pages, lead POST, admin login). `down` removes everything. Local database and dummy secrets only.
