@@ -46,7 +46,7 @@ export default function EnrollModal({ camp, onClose }) {
   return (
     <div className="modal-overlay open" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="modal-box" role="dialog" aria-modal="true" aria-labelledby="enroll-modal-title">
-        <button className="modal-close" onClick={onClose} aria-label="Закрыть">✕</button>
+        <button className="modal-close" onClick={onClose} aria-label="Закрыть"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
         <h3 className="modal-title" id="enroll-modal-title">{t('enroll.title')}</h3>
         {camp && (
           <div className="modal-camp-info">
@@ -57,7 +57,7 @@ export default function EnrollModal({ camp, onClose }) {
 
         {status === 'success' ? (
           <div className="modal-success">
-            <div className="modal-success-icon">✓</div>
+            <div className="modal-success-icon"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
             <p>{t('enroll.success')}</p>
             <button className="btn-primary" onClick={onClose}>{t('modal.btn')}</button>
           </div>

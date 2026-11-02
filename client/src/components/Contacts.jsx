@@ -93,7 +93,7 @@ export default function Contacts() {
               <div className="form-subtitle">{t('form.subtitle')}</div>
               {status === 'success' ? (
                 <div style={{ textAlign: 'center', padding: '32px 0' }}>
-                  <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
+                  <div className="success-mark"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
                   <div style={{ color: 'var(--gold)', fontFamily: "'Cormorant Garamond',serif", fontSize: 22 }}>{t('modal.title')}</div>
                   <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, marginTop: 10 }} dangerouslySetInnerHTML={{ __html: t('modal.text') }} />
                   <button className="modal-btn" style={{ marginTop: 24 }} onClick={() => setStatus(null)}>{t('modal.btn')}</button>
