@@ -17,7 +17,8 @@ export default function CampCard({ camp, onEnroll }) {
         >
           {camp.hot && (
             <div className="camp-hot-badge">
-              🔥 {t('hero.hot.label')}
+              <span className="camp-hot-badge-dot" aria-hidden="true" />
+              {t('hero.hot.label')}
             </div>
           )}
           <div>

@@ -1,9 +1,8 @@
 // Запусти этот файл чтобы сменить пароль администратора:
 // node change-password.js ВАШ_НОВЫЙ_ПАРОЛЬ
 
-require('dotenv').config();
 const bcrypt = require('bcryptjs');
-const { Pool } = require('pg');
+const config = require('./config');
 
 const newPassword = process.argv[2];
 if (!newPassword || newPassword.length < 12) {
@@ -11,9 +10,14 @@ if (!newPassword || newPassword.length < 12) {
   process.exit(1);
 }
 
+if (!config.databaseUrl) {
+  console.error('❌ DATABASE_URL is not set');
+  process.exit(1);
+}
 const pool = require('./db');
 
 (async () => {
+  await pool.ensureSchema();
   const hash = await bcrypt.hash(newPassword, 12);
 
   // Создаём admin если не существует, или обновляем пароль
@@ -26,4 +30,8 @@ const pool = require('./db');
   console.log('✅ Пароль администратора успешно изменён!');
   console.log('🔐 Логин: admin');
   await pool.end();
-})().catch(e => { console.error('❌ Ошибка:', e.message); pool.end(); });
+})().catch(async (e) => {
+  console.error('❌ Ошибка:', e.message);
+  await pool.end().catch(() => {});
+  process.exit(1);
+});

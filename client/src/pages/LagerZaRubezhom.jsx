@@ -66,7 +66,7 @@ export default function LagerZaRubezhom() {
                 >
                   <div className="seo-camp-row-main">
                     <div className="seo-camp-row-country">
-                      {camp.hot && '🔥 '}{camp.countryLabel[lang] || camp.countryLabel.ru} — {camp.org}
+                      {camp.countryLabel[lang] || camp.countryLabel.ru} — {camp.org}
                     </div>
                     <div className="seo-camp-row-meta">
                       {(camp.city[lang] || camp.city.ru)} · {camp.ageTag} {t('seo.hub.age.suffix')} · {camp.durTag[lang] || camp.durTag.ru}

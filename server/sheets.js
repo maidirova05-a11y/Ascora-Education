@@ -1,7 +1,8 @@
 const { google } = require('googleapis');
 const { STATUS_LABELS, formatPrice } = require('./inquiry');
 
-const SHEET_ID = '1hLsIK8NPMZ_Gh5eXnxjAVXpWpn8-Ysck1GDhl8FO4Y4';
+const log = require('./logger');
+const { sheetId: SHEET_ID } = require('./config');
 
 const rawKey = process.env.GOOGLE_PRIVATE_KEY_B64
   ? Buffer.from(process.env.GOOGLE_PRIVATE_KEY_B64, 'base64').toString('utf8')
@@ -41,7 +42,7 @@ async function initSheet() {
       });
     }
   } catch (err) {
-    console.error('Sheets init error:', err.message);
+    log.error('sheets init error', { err: err.message });
   }
 }
 
@@ -76,7 +77,7 @@ async function appendInquiry(inq) {
       },
     });
   } catch (err) {
-    console.error('Sheets append error:', err.message);
+    log.error('sheets append error', { err: err.message });
   }
 }
 
@@ -97,7 +98,7 @@ async function updateInquiryStatus(id, status) {
       resource: { values: [[STATUS_LABELS[status] || status]] },
     });
   } catch (err) {
-    console.error('Sheets updateStatus error:', err.message);
+    log.error('sheets updateStatus error', { err: err.message });
   }
 }
 

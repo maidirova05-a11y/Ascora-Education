@@ -1,30 +1,28 @@
 import { useState } from 'react';
 import { useLang } from '../context/LangContext';
 import { attributionFields } from '../utils/attribution';
+import { postInquiry } from '../utils/api';
 
 export default function Contacts() {
   const { lang, t } = useLang();
   const [form, setForm] = useState({ name: '', phone: '', email: '', topic: '', message: '', website: '' });
   const [status, setStatus] = useState(null);
+  const [errKey, setErrKey] = useState('enroll.error');
 
   async function submit(e) {
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: form.name, phone: form.phone, email: form.email,
-          camp_name: form.topic || null, message: form.message || null,
-          lang, website: form.website,
-          ...attributionFields(),
-        }),
+      await postInquiry({
+        name: form.name, phone: form.phone, email: form.email,
+        camp_name: form.topic || null, message: form.message || null,
+        lang, website: form.website,
+        ...attributionFields(),
       });
-      if (!res.ok) throw new Error();
       setStatus('success');
       setForm({ name: '', phone: '', email: '', topic: '', message: '', website: '' });
-    } catch {
+    } catch (err) {
+      setErrKey(err.key || 'enroll.error');
       setStatus('error');
     }
   }
@@ -93,7 +91,7 @@ export default function Contacts() {
               <div className="form-subtitle">{t('form.subtitle')}</div>
               {status === 'success' ? (
                 <div style={{ textAlign: 'center', padding: '32px 0' }}>
-                  <div style={{ fontSize: 48, marginBottom: 16 }}>✓</div>
+                  <div className="success-mark"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div>
                   <div style={{ color: 'var(--gold)', fontFamily: "'Cormorant Garamond',serif", fontSize: 22 }}>{t('modal.title')}</div>
                   <div style={{ color: 'rgba(255,255,255,0.5)', fontSize: 14, marginTop: 10 }} dangerouslySetInnerHTML={{ __html: t('modal.text') }} />
                   <button className="modal-btn" style={{ marginTop: 24 }} onClick={() => setStatus(null)}>{t('modal.btn')}</button>
@@ -130,7 +128,7 @@ export default function Contacts() {
                   <button type="submit" className="btn-primary" disabled={status === 'loading'}>
                     {status === 'loading' ? '...' : t('form.submit')}
                   </button>
-                  {status === 'error' && <div style={{ color: '#f87171', fontSize: 13, marginTop: 10, textAlign: 'center' }}>{t('enroll.error')}</div>}
+                  {status === 'error' && <div style={{ color: '#f87171', fontSize: 13, marginTop: 10, textAlign: 'center' }}>{t(errKey)}</div>}
                 </form>
               )}
               <div className="form-note" dangerouslySetInnerHTML={{ __html: t('form.note') }} />

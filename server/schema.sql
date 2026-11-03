@@ -49,6 +49,23 @@ CREATE INDEX IF NOT EXISTS inquiries_status_list_idx ON inquiries (status, creat
 DROP INDEX IF EXISTS inquiries_created_at_idx;
 DROP INDEX IF EXISTS inquiries_status_idx;
 
+-- Value constraints (NOT VALID: applied to new/updated rows only; existing
+-- rows are never scanned, so this cannot fail on legacy data).
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'inquiries_status_chk') THEN
+    ALTER TABLE inquiries ADD CONSTRAINT inquiries_status_chk
+      CHECK (status IN ('new','contacted','enrolled','cancelled','spam')) NOT VALID;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'inquiries_price_chk') THEN
+    ALTER TABLE inquiries ADD CONSTRAINT inquiries_price_chk
+      CHECK (camp_price IS NULL OR camp_price >= 0) NOT VALID;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname = 'inquiries_currency_chk') THEN
+    ALTER TABLE inquiries ADD CONSTRAINT inquiries_currency_chk
+      CHECK (camp_currency IS NULL OR camp_currency IN ('KZT','USD')) NOT VALID;
+  END IF;
+END $$;
+
 CREATE TABLE IF NOT EXISTS admin_users (
   id            SERIAL PRIMARY KEY,
   username      VARCHAR(100) UNIQUE NOT NULL,

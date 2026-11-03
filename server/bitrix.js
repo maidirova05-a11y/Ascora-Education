@@ -6,6 +6,7 @@
 // "ASCORA EDU" pipeline (CATEGORY_ID=19, stage C19:NEW) linked to that contact.
 
 const { formatPrice } = require('./inquiry');
+const log = require('./logger');
 
 // Empty when unset so the guard in sendLead skips the call ('' .replace() would
 // yield '/', a truthy URL, and every lead logged a failed fetch instead).
@@ -59,7 +60,7 @@ function utmFields(inq) {
 
 async function sendLead(inq) {
   if (!WEBHOOK) {
-    console.warn('Bitrix: BITRIX_WEBHOOK not set — skipping deal');
+    log.warn('bitrix: BITRIX_WEBHOOK not set — skipping deal');
     return;
   }
   try {
@@ -104,10 +105,10 @@ async function sendLead(inq) {
       dealFields.CURRENCY_ID = inq.camp_currency;
     }
     const dealId = await call('crm.deal.add', { fields: dealFields });
-    console.log(`Bitrix deal created id=${dealId} (contact=${contactId}) in ASCORA EDU`);
+    log.info('bitrix deal created', { dealId, contactId });
   } catch (err) {
     // fetch() failures (DNS, reset, timeout) carry no URL in their message.
-    console.error('Bitrix sendLead error:', err.name === 'TimeoutError' ? 'timed out after 15 s' : err.message);
+    log.error('bitrix sendLead error', { err: err.name === 'TimeoutError' ? 'timed out after 15 s' : err.message });
   }
 }
 
