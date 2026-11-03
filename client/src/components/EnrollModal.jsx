@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLang } from '../context/LangContext';
 import { attributionFields } from '../utils/attribution';
+import { postInquiry } from '../utils/api';
 import { formatCampPrice } from '../utils/price';
 
 const EMPTY_FORM = { name: '', phone: '', email: '', message: '', website: '' };
@@ -9,6 +10,7 @@ export default function EnrollModal({ camp, onClose }) {
   const { lang, t } = useLang();
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState('idle'); // idle | loading | success | error
+  const [errKey, setErrKey] = useState('enroll.error');
 
   // Fresh form every time the modal opens for a camp — otherwise the
   // success screen from a previous enrollment blocks new submissions.
@@ -24,21 +26,17 @@ export default function EnrollModal({ camp, onClose }) {
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          camp_name: camp.countryLabel[lang] + ' — ' + camp.org,
-          camp_price: camp.price,
-          camp_currency: camp.currency === 'kzt' ? 'KZT' : 'USD',
-          lang,
-          ...attributionFields(),
-        }),
+      await postInquiry({
+        ...form,
+        camp_name: camp.countryLabel[lang] + ' — ' + camp.org,
+        camp_price: camp.price,
+        camp_currency: camp.currency === 'kzt' ? 'KZT' : 'USD',
+        lang,
+        ...attributionFields(),
       });
-      if (!res.ok) throw new Error();
       setStatus('success');
-    } catch {
+    } catch (err) {
+      setErrKey(err.key || 'enroll.error');
       setStatus('error');
     }
   }
@@ -87,7 +85,7 @@ export default function EnrollModal({ camp, onClose }) {
               <textarea name="message" value={form.message} onChange={change} rows={3}
                 placeholder="..." />
             </div>
-            {status === 'error' && <p className="form-error">{t('enroll.error')}</p>}
+            {status === 'error' && <p className="form-error">{t(errKey)}</p>}
             <button type="submit" className="btn-primary btn-full" disabled={status === 'loading'}>
               {status === 'loading' ? '...' : t('enroll.submit')}
             </button>

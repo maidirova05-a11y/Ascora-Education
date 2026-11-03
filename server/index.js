@@ -145,10 +145,16 @@ if (process.env.NODE_ENV === 'production') {
   // redirect: false — like Vercel, /page is served from page/index.html as is,
   // without a 301 to /page/ (the prerendered canonicals have no trailing slash).
   app.use(express.static(dist, { redirect: false }));
+  // Routes the SPA shell itself serves (the router renders them client-side).
+  const spaRoutes = new Set(['/', '/admin']);
   app.get('*', (req, res) => {
     const page = path.resolve(dist, `.${req.path}`, 'index.html');
     const prerendered = page.startsWith(dist + path.sep) && fs.existsSync(page);
-    res.sendFile(prerendered ? page : path.join(dist, 'index.html'));
+    // Anything else is a dead URL: the shell is sent so the router can draw its
+    // «page not found» screen, but with a real 404 status — a 200 would make
+    // every mistyped URL a soft-404 duplicate of the home page.
+    const known = prerendered || spaRoutes.has(req.path.replace(/(.)\/+$/, '$1'));
+    res.status(known ? 200 : 404).sendFile(prerendered ? page : path.join(dist, 'index.html'));
   });
 }
 

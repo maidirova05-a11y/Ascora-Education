@@ -4,7 +4,7 @@ const camps = [
     hot: true,
     country: 'turkey',
     countryLabel: { ru: 'Турция', kz: 'Түркия', en: 'Turkey' },
-    city: { ru: 'Анталья · отель 5⭐ Ultra All Inclusive', kz: 'Анталья · 5⭐ қонақүй Ultra All Inclusive', en: 'Antalya · 5⭐ Ultra All Inclusive Hotel' },
+    city: { ru: 'Анталья · отель 5★ Ultra All Inclusive', kz: 'Анталья · 5★ қонақүй Ultra All Inclusive', en: 'Antalya · 5★ Ultra All Inclusive Hotel' },
     org: 'ASCORA Summer Camp',
     price: 890000,
     currency: 'kzt',
@@ -14,9 +14,9 @@ const camps = [
     ageTag: '7–17',
     durTag: { ru: '7 дней / 6 ночей', kz: '7 күн / 6 түн', en: '7 days / 6 nights' },
     includes: {
-      ru: ['Перелёт из Астаны (Turkish Airlines / Air Astana)', 'Проживание в отеле 5⭐ Ultra All Inclusive', 'Трансфер и медицинская страховка', 'Английский язык, STEM и робототехника на практике', 'Лидерство, командные проекты и soft skills', 'Круглосуточное сопровождение и безопасность детей'],
-      kz: ['Астанадан ұшу (Turkish Airlines / Air Astana)', '5⭐ Ultra All Inclusive қонақүйде тұру', 'Трансфер және медициналық сақтандыру', 'Ағылшын тілі, STEM және робототехника тәжірибесі', 'Көшбасшылық, командалық жобалар және soft skills', 'Балалардың тәулік бойы қауіпсіздігі мен сүйемелдеуі'],
-      en: ['Flight from Astana (Turkish Airlines / Air Astana)', '5⭐ Ultra All Inclusive hotel accommodation', 'Transfer and medical insurance', 'English language, STEM and robotics in practice', 'Leadership, team projects and soft skills', '24/7 supervision and child safety'],
+      ru: ['Перелёт из Астаны (Turkish Airlines / Air Astana)', 'Проживание в отеле 5★ Ultra All Inclusive', 'Трансфер и медицинская страховка', 'Английский язык, STEM и робототехника на практике', 'Лидерство, командные проекты и soft skills', 'Круглосуточное сопровождение и безопасность детей'],
+      kz: ['Астанадан ұшу (Turkish Airlines / Air Astana)', '5★ Ultra All Inclusive қонақүйде тұру', 'Трансфер және медициналық сақтандыру', 'Ағылшын тілі, STEM және робототехника тәжірибесі', 'Көшбасшылық, командалық жобалар және soft skills', 'Балалардың тәулік бойы қауіпсіздігі мен сүйемелдеуі'],
+      en: ['Flight from Astana (Turkish Airlines / Air Astana)', '5★ Ultra All Inclusive hotel accommodation', 'Transfer and medical insurance', 'English language, STEM and robotics in practice', 'Leadership, team projects and soft skills', '24/7 supervision and child safety'],
     },
     // Summer 2026 sessions are over; 2027 dates are not announced yet.
     dates: { ru: 'Лето 2027 — даты уточняются\nОткрыта предзапись', kz: '2027 жылғы жаз — күндері нақтылануда\nАлдын ала жазылу ашық', en: 'Summer 2027 — dates TBC\nPre-booking open' },

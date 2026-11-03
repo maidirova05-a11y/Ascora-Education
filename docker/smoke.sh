@@ -45,6 +45,8 @@ grep -q "<link rel=\"canonical\" href=\"$SITE/leto-lager-v-turcii\"" <<<"$(curl 
 # Страницу «Обучение за рубежом» убрали — старые ссылки ведут на хаб лагерей.
 expect 301 /obuchenie-za-rubezhom
 expect 404 /api/no-such-route
+expect 404 /no-such-page
+expect 200 /admin
 expect 201 /api/inquiries -X POST -H 'Content-Type: application/json' \
   -H "X-Forwarded-For: 198.51.100.$((RANDOM % 250))" \
   --data '{"name":"Проверка Докер","phone":"+7 701 555 44 33","lang":"ru","camp_name":"Анталья","camp_price":890000}'

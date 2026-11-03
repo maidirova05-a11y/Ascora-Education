@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useLang } from '../context/LangContext';
 import { attributionFields } from '../utils/attribution';
+import { postInquiry } from '../utils/api';
 
 const EMPTY_FORM = { name: '', phone: '', email: '', message: '', website: '' };
 
@@ -9,6 +10,7 @@ export default function LeadForm({ topic, price, currency = 'KZT', id }) {
   const { lang, t } = useLang();
   const [form, setForm] = useState(EMPTY_FORM);
   const [status, setStatus] = useState('idle');
+  const [errKey, setErrKey] = useState('enroll.error');
 
   function change(e) { setForm({ ...form, [e.target.name]: e.target.value }); }
 
@@ -16,21 +18,17 @@ export default function LeadForm({ topic, price, currency = 'KZT', id }) {
     e.preventDefault();
     setStatus('loading');
     try {
-      const res = await fetch('/api/inquiries', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...form,
-          camp_name: topic,
-          camp_price: price || null,
-          camp_currency: price ? currency : null,
-          lang,
-          ...attributionFields(),
-        }),
+      await postInquiry({
+        ...form,
+        camp_name: topic,
+        camp_price: price || null,
+        camp_currency: price ? currency : null,
+        lang,
+        ...attributionFields(),
       });
-      if (!res.ok) throw new Error();
       setStatus('success');
-    } catch {
+    } catch (err) {
+      setErrKey(err.key || 'enroll.error');
       setStatus('error');
     }
   }
@@ -73,7 +71,7 @@ export default function LeadForm({ topic, price, currency = 'KZT', id }) {
           <button type="submit" className="btn-primary" disabled={status === 'loading'}>
             {status === 'loading' ? '...' : t('form.submit')}
           </button>
-          {status === 'error' && <div style={{ color: '#f87171', fontSize: 13, marginTop: 10, textAlign: 'center' }}>{t('enroll.error')}</div>}
+          {status === 'error' && <div style={{ color: '#f87171', fontSize: 13, marginTop: 10, textAlign: 'center' }}>{t(errKey)}</div>}
         </form>
       )}
       <div className="form-note" dangerouslySetInnerHTML={{ __html: t('form.note') }} />

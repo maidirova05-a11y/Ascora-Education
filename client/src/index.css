@@ -565,6 +565,8 @@ footer{background:#060D18;padding:64px 6% 32px;color:rgba(255,255,255,0.35)}
   .hero-stat:nth-child(odd){border-right:1px solid rgba(255,255,255,0.14)!important}
   .hero-stat:nth-child(1),.hero-stat:nth-child(2){border-bottom:1px solid rgba(255,255,255,0.14)!important}
   .hero-stat::before{width:20px;margin-bottom:12px}
+  /* three stats: the last one takes the full second row */
+  .hero-stat:nth-child(3):last-child{grid-column:1/-1;border-right:none!important;padding-right:0!important}
   .hero-stat-num{font-size:clamp(28px,7vw,40px)!important;letter-spacing:-1px}
   .hero-stat-label{font-size:11px}
   /* Programs layer mobile */
@@ -785,6 +787,7 @@ footer{background:#060D18;padding:64px 6% 32px;color:rgba(255,255,255,0.35)}
   transition: background 0.15s, color 0.15s;
 }
 .adm-logout svg { width: 18px; height: 18px; flex-shrink: 0; }
+.adm-logout-m { display: none; }
 .adm-logout:hover { background: rgba(239,68,68,0.1); color: #f87171; }
 
 /* ── Main content ─────────────────────────────── */
@@ -993,6 +996,7 @@ footer{background:#060D18;padding:64px 6% 32px;color:rgba(255,255,255,0.35)}
 }
 @media(max-width:768px){
   .adm-sidebar { display: none; }
+  .adm-logout-m { display: inline-flex; }
   .adm-stats { grid-template-columns: repeat(2,1fr); }
   .adm-table th:nth-child(5), .adm-table td:nth-child(5) { display: none; }
 }

@@ -231,6 +231,15 @@ describe('API against a real database', { skip: SKIP }, () => {
       const { rows: r2 } = await pg.query('SELECT camp_price, camp_currency FROM inquiries WHERE id=$1', [big.json.id]);
       assert.equal(r2[0].camp_price, null);
       assert.equal(r2[0].camp_currency, null);
+
+      // A form without a price sends null (or ''): that is "no price", not a price of 0.
+      for (const none of [null, '']) {
+        const np = await call(srv, 'POST', '/api/inquiries', { body: lead({ camp_price: none, camp_currency: 'KZT' }) });
+        assert.equal(np.status, 201);
+        const { rows: r3 } = await pg.query('SELECT camp_price, camp_currency FROM inquiries WHERE id=$1', [np.json.id]);
+        assert.equal(r3[0].camp_price, null, `camp_price ${JSON.stringify(none)}`);
+        assert.equal(r3[0].camp_currency, null);
+      }
     });
 
     test('list: shape, filter, paging clamps, counts', async () => {

@@ -18,7 +18,9 @@ function parseInquiry(body) {
   if (!/^\d{7,15}$/.test(phone.replace(/[\s()+\-.]/g, ''))) throw badRequest('invalid phone', 'VALIDATION');
   if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw badRequest('invalid email', 'VALIDATION');
 
-  const price = Number(body.camp_price);
+  // null / '' / absent mean "no price" — Number(null) is 0, which would be stored as a 0 price.
+  const price = ['number', 'string'].includes(typeof body.camp_price) && String(body.camp_price).trim() !== ''
+    ? Number(body.camp_price) : NaN;
   // INTEGER column: anything outside 0..2^31 would crash the insert with a 500.
   const camp_price = Number.isInteger(price) && price >= 0 && price < 2147483647 ? price : null;
   const currency = typeof body.camp_currency === 'string' ? body.camp_currency.toUpperCase() : null;

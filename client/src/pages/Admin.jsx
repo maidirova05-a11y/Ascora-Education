@@ -13,6 +13,19 @@ const STATUS = {
 const PAGE_SIZE = 50;
 
 /**
+ * What to tell the admin about a failed API call. The server answers every
+ * error as { error, code }; 429 and 503 (DB_DOWN) carry a Russian sentence
+ * meant for the screen, so it is shown as is. 401 is handled by the callers
+ * (the session is over), anything unexpected gets a generic line.
+ */
+async function failureMessage(res) {
+  const data = await res.json().catch(() => ({}));
+  if (res.status === 429 || res.status === 503) return data.error || 'Сервис временно недоступен. Попробуйте позже.';
+  return `Не удалось выполнить запрос (${data.code || res.status}). Попробуйте ещё раз.`;
+}
+const NETWORK_ERROR = 'Нет соединения с сервером. Проверьте интернет и повторите.';
+
+/**
  * The host has no prerendered file for /admin, so the browser gets the home
  * page's index.html: its title, canonical, «index, follow» and WebPage node.
  * The panel shows applicants' personal data and must say for itself that it is
@@ -63,8 +76,11 @@ export default function Admin() {
   const [offset, setOffset] = useState(0);
   const [expanded, setExpanded] = useState(null);
   const [confirmDelete, setConfirmDelete] = useState(null);
+  const [error, setError] = useState('');
 
-  const fetchInquiries = useCallback(async () => {
+  function endSession() { setToken(''); localStorage.removeItem('ascora_admin_token'); }
+
+  const fetchInquiries = useCallback(async (opts) => {
     if (!token) return;
     setLoading(true);
     try {
@@ -72,11 +88,15 @@ export default function Admin() {
       if (statusFilter) params.set('status', statusFilter);
       const url = `/api/admin/inquiries?${params}`;
       const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
-      if (res.status === 401) { setToken(''); localStorage.removeItem('ascora_admin_token'); return; }
+      if (res.status === 401) { endSession(); return; }
+      if (!res.ok) { setError(await failureMessage(res)); return; }
       const data = await res.json();
+      if (opts?.keepError !== true) setError('');
       setInquiries(Array.isArray(data.inquiries) ? data.inquiries : []);
       setTotal(data.total ?? 0);
       setStatusCounts(data.counts && typeof data.counts === 'object' ? data.counts : null);
+    } catch {
+      setError(NETWORK_ERROR);
     } finally {
       setLoading(false);
     }
@@ -100,33 +120,48 @@ export default function Admin() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(creds),
       });
+      if (res.status === 429 || res.status === 503) { setLoginErr(await failureMessage(res)); return; }
       if (!res.ok) { setLoginErr('Неверный логин или пароль'); return; }
       const { token: t } = await res.json();
       localStorage.setItem('ascora_admin_token', t);
       setToken(t);
+    } catch {
+      setLoginErr(NETWORK_ERROR);
     } finally {
       setLoginLoading(false);
     }
   }
 
   async function updateStatus(id, status) {
-    await fetch(`/api/admin/inquiries/${id}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-      body: JSON.stringify({ status }),
-    });
-    fetchInquiries();
+    try {
+      const res = await fetch(`/api/admin/inquiries/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ status }),
+      });
+      if (res.status === 401) return endSession();
+      if (!res.ok && res.status !== 404) setError(await failureMessage(res));
+    } catch {
+      setError(NETWORK_ERROR);
+    }
+    fetchInquiries({ keepError: true }); // also puts the select back if the change did not go through
   }
 
-  function logout() { setToken(''); localStorage.removeItem('ascora_admin_token'); }
+  const logout = endSession;
 
   async function deleteInquiry(id) {
-    await fetch(`/api/admin/inquiries/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` },
-    });
     setConfirmDelete(null);
-    fetchInquiries();
+    try {
+      const res = await fetch(`/api/admin/inquiries/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (res.status === 401) return endSession();
+      if (!res.ok && res.status !== 404) setError(await failureMessage(res));
+    } catch {
+      setError(NETWORK_ERROR);
+    }
+    fetchInquiries({ keepError: true });
   }
 
   function exportToExcel() {
@@ -250,8 +285,12 @@ export default function Admin() {
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width="16" height="16"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10M23 14l-4.64 4.36A9 9 0 013.51 15"/></svg>
               Обновить
             </button>
+            {/* The sidebar (with its logout) is hidden on phones. */}
+            <button className="adm-refresh adm-logout-m" onClick={logout}>Выйти</button>
           </div>
         </div>
+
+        {error && <div className="adm-login-err" role="alert" style={{ marginBottom: 16 }}>{error}</div>}
 
         {/* Stats */}
         <div className="adm-stats">
